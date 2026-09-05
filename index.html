@@ -3,121 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Team Section</title>
+  <title>Recharge & Service Store</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    
-    body { background-color: #f4f7f6; padding: 40px 20px; }
+    body { background: #f0f2f5; padding: 15px; }
 
-    .team-container { max-width: 1100px; margin: 0 auto; text-align: center; }
-    
-    .team-container h2 { font-size: 32px; color: #333; margin-bottom: 10px; }
-    .team-container p { color: #666; margin-bottom: 40px; }
+    header { background: #007bff; color: white; padding: 15px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-    }
+    .main-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    .card h3 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
 
-    .team-card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      text-align: center;
-    }
+    label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-top: 10px; }
+    input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
 
-    .team-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
+    .btn { width: 100%; margin-top: 15px; padding: 10px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; }
+    .btn-buy { background: #28a745; }
+    .btn-buy:hover { background: #218838; }
+    .btn-add { background: #17a2b8; }
 
-    .photo-wrapper {
-      width: 120px;
-      height: 120px;
-      margin: 0 auto 15px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 4px solid #007bff;
-    }
-
-    .photo-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .team-card h3 { color: #2c3e50; font-size: 20px; margin-bottom: 5px; }
-    .team-card .role { color: #007bff; font-weight: 600; font-size: 14px; margin-bottom: 10px; }
-    .team-card .bio { color: #777; font-size: 13px; line-height: 1.5; margin-bottom: 15px; }
-
-    .social-links { display: flex; justify-content: center; gap: 12px; }
-    .social-links a {
-      text-decoration: none;
-      color: #555;
-      font-size: 14px;
-      background: #f0f0f0;
-      padding: 6px 12px;
-      border-radius: 20px;
-      transition: 0.2s;
-    }
-
-    .social-links a:hover { background: #007bff; color: white; }
+    .plans-list { margin-top: 10px; max-height: 150px; overflow-y: auto; border: 1px solid #eee; padding: 5px; border-radius: 5px; }
+    .plan-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
   </style>
 </head>
 <body>
 
-  <div class="team-container">
-    <h2>Meet Our Team</h2>
-    <p>Hamari team ke mahatvapurna sadasya</p>
+  <header>
+    <h2>Akash Service Store</h2>
+    <div class="wallet-box">Balance: ₹<span id="user-balance">0</span></div>
+  </header>
 
-    <div class="team-grid">
+  <div class="main-container">
 
-      <!-- Member 1 -->
-      <div class="team-card">
-        <div class="photo-wrapper">
-          <img src="https://via.placeholder.com/150" alt="Member Photo">
-        </div>
-        <h3>Akash Sharma</h3>
-        <div class="role">Founder & Lead Developer</div>
-        <p class="bio">Web design aur backend development ke specialist.</p>
-        <div class="social-links">
-          <a href="#">Telegram</a>
-          <a href="#">GitHub</a>
-        </div>
-      </div>
-
-      <!-- Member 2 -->
-      <div class="team-card">
-        <div class="photo-wrapper">
-          <img src="https://via.placeholder.com/150" alt="Member Photo">
-        </div>
-        <h3>Rahul Verma</h3>
-        <div class="role">UI/UX Designer</div>
-        <p class="bio">Creative designs aur frontend layout designer.</p>
-        <div class="social-links">
-          <a href="#">LinkedIn</a>
-          <a href="#">Twitter</a>
-        </div>
-      </div>
-
-      <!-- Member 3 -->
-      <div class="team-card">
-        <div class="photo-wrapper">
-          <img src="https://via.placeholder.com/150" alt="Member Photo">
-        </div>
-        <h3>Priya Singh</h3>
-        <div class="role">Support Executive</div>
-        <p class="bio">Customer queries aur service management expert.</p>
-        <div class="social-links">
-          <a href="#">Contact</a>
-        </div>
-      </div>
-
+    <!-- Add Balance Card -->
+    <div class="card">
+      <h3>💳 Balance Add Karein</h3>
+      <label>Enter Amount (₹)</label>
+      <input type="number" id="add-amt" placeholder="e.g. 100">
+      <label>Transaction ID / UTR</label>
+      <input type="text" id="add-utr" placeholder="Enter UTR after payment">
+      <p style="font-size: 12px; color: #777; margin-top: 8px;">Scan UPI QR & submit UTR for approval.</p>
+      <button class="btn btn-add" onclick="addBalance()">Request Add Balance</button>
     </div>
+
+    <!-- Mobile Recharge / Plan Buy Card -->
+    <div class="card">
+      <h3>📱 Buy Mobile Plan</h3>
+      <label>Mobile Number</label>
+      <input type="number" id="buy-number" placeholder="Enter 10-digit number">
+      <label>Operator</label>
+      <select id="buy-operator" onchange="updatePlans()">
+        <option value="Jio">Jio</option>
+        <option value="Airtel">Airtel</option>
+        <option value="Vi">Vi (Vodafone Idea)</option>
+      </select>
+      <label>Select Plan</label>
+      <select id="buy-plan">
+        <!-- Dynamic options via JS -->
+      </select>
+      <button class="btn btn-buy" onclick="buyPlan()">Buy Plan Now</button>
+    </div>
+
+    <!-- DTH & Google Play Services -->
+    <div class="card">
+      <h3>🎮 Google Play / DTH Buy</h3>
+      <label>Service Type</label>
+      <select id="other-service">
+        <option value="Google Play Code">Google Play Redeem Code</option>
+        <option value="Tata Play">Tata Play DTH</option>
+        <option value="Airtel DTH">Airtel Digital TV</option>
+      </select>
+      <label>Account ID / Mobile</label>
+      <input type="text" id="other-id" placeholder="Enter ID or Mobile">
+      <label>Amount (₹)</label>
+      <input type="number" id="other-amt" placeholder="Enter Amount">
+      <button class="btn btn-buy" onclick="buyOtherService()">Buy Service</button>
+    </div>
+
   </div>
 
+  <script>
+    // Telegram Configuration
+    const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
+    const CHAT_ID = "YOUR_CHAT_ID"; // Apni numeric Chat ID yahan daalein
+
+    let currentBalance = 0;
+
+    // Plans Data for Operators
+    const operatorPlans = {
+      Jio: [
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
+        { label: "₹666 - 1.5GB/Day (84 Days)", price: 666 },
+        { label: "₹19 - 1GB Data Booster", price: 19 }
+      ],
+      Airtel: [
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
+        { label: "₹719 - 1.5GB/Day (84 Days)", price: 719 },
+        { label: "₹65 - 4GB Data Pack", price: 65 }
+      ],
+      Vi: [
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
+        { label: "₹479 - 1.5GB/Day (56 Days)", price: 479 }
+      ]
+    };
+
+    function updatePlans() {
+      const op = document.getElementById("buy-operator").value;
+      const planSelect = document.getElementById("buy-plan");
+      planSelect.innerHTML = "";
+      operatorPlans[op].forEach(item => {
+        planSelect.innerHTML += `<option value="${item.price}">${item.label}</option>`;
+      });
+    }
+
+    function sendTelegram(text) {
+      if(CHAT_ID === "YOUR_CHAT_ID") {
+        alert("Pehle code me JavaScript section ke andar CHAT_ID daalein!");
+        return;
+      }
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: "Markdown" })
+      });
+    }
+
+    // Add Balance Request
+    function addBalance() {
+      const amt = document.getElementById("add-amt").value;
+      const utr = document.getElementById("add-utr").value;
+
+      if(!amt || !utr) {
+        alert("Amount aur UTR dono bharein!");
+        return;
+      }
+
+      const msg = `💰 *BALANCE ADD REQUEST*\n\n💵 *Amount:* ₹${amt}\n🔢 *UTR/Txn ID:* ${utr}\n⏰ *Time:* ${new Date().toLocaleString()}`;
+      sendTelegram(msg);
+      alert("Balance add request submit ho gayi hai! Verify hone par update ho jayega.");
+      document.getElementById("add-amt").value = "";
+      document.getElementById("add-utr").value = "";
+    }
+
+    // Buy Mobile Plan
+    function buyPlan() {
+      const num = document.getElementById("buy-number").value;
+      const op = document.getElementById("buy-operator").value;
+      const planSelect = document.getElementById("buy-plan");
+      const selectedText = planSelect.options[planSelect.selectedIndex].text;
+      const price = Number(planSelect.value);
+
+      if(!num || num.length < 10) {
+        alert("Valid 10-digit mobile number enter karein!");
+        return;
+      }
+
+      const msg = `🛒 *NEW PLAN PURCHASE*\n\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n📦 *Plan:* ${selectedText}\n💵 *Price:* ₹${price}\n⏰ *Time:* ${new Date().toLocaleString()}`;
+      sendTelegram(msg);
+      alert("Purchase request bhej di gayi hai!");
+      document.getElementById("buy-number").value = "";
+    }
+
+    // Buy DTH or Google Play
+    function buyOtherService() {
+      const service = document.getElementById("other-service").value;
+      const accId = document.getElementById("other-id").value;
+      const amt = document.getElementById("other-amt").value;
+
+      if(!accId || !amt) {
+        alert("Sabhi details bharein!");
+        return;
+      }
+
+      const msg = `⚡ *OTHER SERVICE ORDER*\n\n📌 *Service:* ${service}\n🆔 *Account/ID:* ${accId}\n💵 *Amount:* ₹${amt}\n⏰ *Time:* ${new Date().toLocaleString()}`;
+      sendTelegram(msg);
+      alert("Order successfully sent!");
+      document.getElementById("other-id").value = "";
+      document.getElementById("other-amt").value = "";
+    }
+
+    // Initial load
+    updatePlans();
+  </script>
 </body>
 </html>
