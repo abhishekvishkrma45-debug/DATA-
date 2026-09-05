@@ -89,7 +89,7 @@
     </div>
   </div>
 
-  <!-- 2. MAIN USER DASHBOARD (RECHARGE + ADD BALANCE) -->
+  <!-- 2. MAIN USER DASHBOARD -->
   <div id="portal-section" class="main-container">
     
     <!-- ADD BALANCE CARD -->
@@ -130,6 +130,24 @@
       <div class="comm-tag" id="commission-info">MRP: ₹0 | Cashback: ₹0</div>
       <button class="btn btn-buy" onclick="buyPlan()">Proceed Recharge</button>
       <button class="btn btn-admin" style="margin-top:10px;" onclick="logout()">Logout</button>
+    </div>
+
+    <!-- TRANSACTION & RECHARGE HISTORY CARD -->
+    <div class="card" style="grid-column: span 2;">
+      <h3>📜 Balance & Recharge History</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Details</th>
+            <th>Amount</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody id="user-history-body">
+          <!-- History rows will load here -->
+        </tbody>
+      </table>
     </div>
 
   </div>
@@ -184,7 +202,12 @@
       if(pass.length < 8) { alert("Password min 8 digits hona chahiye!"); return; }
       if(usersDB.find(u => u.email === email)) { alert("Email pehle se registered hai!"); return; }
 
-      const newUser = { name, dob, shop, email, password: pass, balance: 10.00 };
+      const timeNow = new Date().toLocaleString();
+      const newUser = {
+        name, dob, shop, email, password: pass, balance: 10.00,
+        history: [{ type: "Bonus", details: "Registration Sign-up Bonus", amount: "+₹10", time: timeNow }]
+      };
+
       usersDB.push(newUser);
       localStorage.setItem("usersDB", JSON.stringify(usersDB));
       currentUser = newUser;
@@ -222,7 +245,12 @@
       const orderId = "ORD" + Date.now();
       const rawUpiUrl = `upi://pay?pa=${UPI_ID}&pn=AkashStore&tr=${orderId}&am=${amount}&cu=INR&tn=WalletTopup`;
 
-      const msg = `🚨 *ADD BALANCE REQUEST*\n\n👤 *User:* ${currentUser.name}\n🆔 *Order ID:* \`${orderId}\`\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n⏰ *Time:* ${new Date().toLocaleString()}`;
+      // Add to user history log
+      const timeNow = new Date().toLocaleString();
+      currentUser.history.unshift({ type: "Add Money", details: `Topup Request (${mobile})`, amount: `+₹${amount}`, time: timeNow });
+      updateUserDataStorage();
+
+      const msg = `🚨 *ADD BALANCE REQUEST*\n\n👤 *User:* ${currentUser.name}\n🆔 *Order ID:* \`${orderId}\`\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n⏰ *Time:* ${timeNow}`;
 
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
@@ -269,9 +297,16 @@
       let amt = prompt("Kitna Balance Add/Subtract karna hai?:");
       if(amt && !isNaN(amt)) {
         usersDB[index].balance = parseFloat(usersDB[index].balance) + parseFloat(amt);
+        const timeNow = new Date().toLocaleString();
+        
+        if(!usersDB[index].history) usersDB[index].history = [];
+        usersDB[index].history.unshift({ type: "Admin Update", details: "Balance Modified by Admin", amount: `${amt > 0 ? '+' : ''}₹${amt}`, time: timeNow });
+
         if(currentUser && currentUser.email === usersDB[index].email) {
-          currentUser.balance = usersDB[index].balance;
+          currentUser = usersDB[index];
           localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          loadHistoryTable();
+          document.getElementById("user-balance").innerText = currentUser.balance;
         }
         localStorage.setItem("usersDB", JSON.stringify(usersDB));
         loadAdminTable();
@@ -284,7 +319,37 @@
       document.getElementById("admin-dashboard").style.display = "none";
       document.getElementById("portal-section").style.display = "grid";
       document.getElementById("user-balance").innerText = currentUser.balance;
+      loadHistoryTable();
       updatePlans();
+    }
+
+    function loadHistoryTable() {
+      const tbody = document.getElementById("user-history-body");
+      tbody.innerHTML = "";
+      if(!currentUser.history || currentUser.history.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4">Koi history available nahi hai.</td></tr>`;
+        return;
+      }
+      currentUser.history.forEach(item => {
+        tbody.innerHTML += `
+          <tr>
+            <td><b>${item.type}</b></td>
+            <td>${item.details}</td>
+            <td style="color:${item.amount.includes('+') ? 'green' : 'red'};">${item.amount}</td>
+            <td>${item.time}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function updateUserDataStorage() {
+      const userIndex = usersDB.findIndex(u => u.email === currentUser.email);
+      if(userIndex !== -1) {
+        usersDB[userIndex] = currentUser;
+      }
+      localStorage.setItem("usersDB", JSON.stringify(usersDB));
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      loadHistoryTable();
     }
 
     function showLogin() {
@@ -326,6 +391,7 @@
       const op = document.getElementById("buy-operator").value;
       const planSelect = document.getElementById("buy-plan");
       const price = Number(planSelect.value);
+      const selectedText = planSelect.options[planSelect.selectedIndex].text;
 
       if(!num || num.length !== 10) { alert("Valid Number Enter Karein!"); return; }
 
@@ -337,19 +403,21 @@
       currentUser.balance -= price;
       document.getElementById("user-balance").innerText = currentUser.balance;
       
-      const userIndex = usersDB.findIndex(u => u.email === currentUser.email);
-      if(userIndex !== -1) usersDB[userIndex].balance = currentUser.balance;
-      localStorage.setItem("usersDB", JSON.stringify(usersDB));
-      localStorage.setItem("currentUser", JSON.stringify(currentUser));
+      const timeNow = new Date().toLocaleString();
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({ type: "Recharge", details: `${op} - ${selectedText} (${num})`, amount: `-₹${price}`, time: timeNow });
+      
+      updateUserDataStorage();
 
-      const msg = `🛒 *RECHARGE PURCHASED*\n\n👤 *User:* ${currentUser.name}\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n💵 *Price:* ₹${price}\n⏰ *Time:* ${new Date().toLocaleString()}`;
+      const msg = `🛒 *RECHARGE PURCHASED*\n\n👤 *User:* ${currentUser.name}\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n💵 *Price:* ₹${price}\n⏰ *Time:* ${timeNow}`;
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
       });
 
-      alert("Recharge Request Placed Successfully!");
+      alert("Recharge Order Placed Successfully!");
+      document.getElementById("buy-number").value = "";
     }
   </script>
 </body>
