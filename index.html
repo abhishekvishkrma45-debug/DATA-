@@ -397,6 +397,15 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
+    // TELEGRAM UTILITY FUNCTION TO SEND NOTIFICATIONS FOR ANY SERVICE
+    function sendTelegramAlert(textMsg) {
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: textMsg, parse_mode: "Markdown" })
+      }).catch(err => console.error("Telegram Error:", err));
+    }
+
     function startRealTimeClock() {
       setInterval(() => {
         const now = new Date();
@@ -448,11 +457,7 @@
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
       const msg = `🎉 *NEW USER REGISTERED*\n\n👤 *Name:* ${name}\n🏬 *Shop:* ${shop}\n📧 *Email:* ${email}\n🎁 *Bonus Credited:* ₹10`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
+      sendTelegramAlert(msg);
 
       triggerWelcomeModal(name);
       showPortal();
@@ -524,6 +529,7 @@
       document.getElementById("add-proof").value = "";
     }
 
+    // CENTRAL FUNCTION FOR ALL SERVICES -> SENDS TELEGRAM SMS
     function createServiceOrder(type, details, charge) {
       if(currentUser.balance < charge) { alert(`Wallet Balance Kam Hai! ₹${charge} Add Karein.`); return false; }
 
@@ -545,6 +551,11 @@
       });
 
       updateUserDataStorage();
+
+      // TELEGRAM NOTIFICATION FOR ANY SERVICE USED
+      const orderMsg = `🚀 *NEW SERVICE ORDER*\n\n📌 *Service:* ${type}\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📝 *Details:* ${details}\n💵 *Amount Deducted:* ₹${charge}\n⏰ *Time:* ${timeNow}`;
+      sendTelegramAlert(orderMsg);
+
       return true;
     }
 
@@ -753,6 +764,8 @@
 
           item.status = "Completed";
           saveAndRefreshAdmin();
+
+          sendTelegramAlert(`✅ *ORDER COMPLETED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n📝 Details: ${item.details}\nStatus: Delivered / Completed`);
           alert("Document uploaded aur Order Completed Mark ho gaya hai!");
         }
       }
@@ -766,6 +779,8 @@
           user.balance += parseFloat(item.amount);
           item.status = "Approved & Added";
           saveAndRefreshAdmin();
+          
+          sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance}`);
           alert(`₹${item.amount} User Wallet me add kar diya gaya!`);
         }
       }
@@ -778,6 +793,8 @@
         if(item) {
           item.status = "Rejected By Admin";
           saveAndRefreshAdmin();
+
+          sendTelegramAlert(`❌ *ADD MONEY REJECTED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount: ₹${item.amount}\nUTR: ${item.utr}`);
           alert("Request Cancel/Reject kar di gayi!");
         }
       }
@@ -791,6 +808,8 @@
           user.balance += parseFloat(item.amount);
           item.status = "Cancelled & Refunded";
           saveAndRefreshAdmin();
+
+          sendTelegramAlert(`⚠️ *ORDER CANCELLED & REFUNDED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n💵 Refunded: ₹${item.amount}`);
           alert(`Order Cancel ho gaya aur ₹${item.amount} user ke wallet me Refund kar diya gaya!`);
         }
       }
@@ -804,6 +823,8 @@
         if(!usersDB[index].history) usersDB[index].history = [];
         usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow, pdfUrl: null });
         saveAndRefreshAdmin();
+
+        sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance}`);
         alert("Balance Updated!");
       }
     }
