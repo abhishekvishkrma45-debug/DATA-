@@ -11,7 +11,7 @@
     header { background: #007bff; color: white; padding: 15px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
-    .main-container { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .main-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
     .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
     .card h3 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
 
@@ -24,9 +24,12 @@
     .btn-admin { background: #dc3545; }
 
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
+    .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
-    /* Hidden Panels */
-    #portal-section, #admin-dashboard { display: none; }
+    #portal-section, #admin-dashboard, #qr-modal { display: none; }
+    #qr-modal { margin-top: 15px; padding: 10px; border: 1px dashed #007bff; border-radius: 8px; background: #f8f9fa; text-align: center; }
+    #qr-modal img { width: 160px; height: 160px; }
+
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
     .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     .admin-table th { background: #007bff; color: white; }
@@ -39,10 +42,10 @@
     <div class="wallet-box">Balance: ₹<span id="user-balance">0</span></div>
   </header>
 
-  <!-- 1. REGISTRATION FORM -->
+  <!-- 1. REGISTRATION & LOGIN SECTION -->
   <div id="auth-section" class="main-container">
     <div class="card">
-      <h3>📝 User Registration (Get ₹10 Bonus)</h3>
+      <h3>📝 Registration (Get ₹10 Bonus)</h3>
       <label>Full Name</label>
       <input type="text" id="reg-name" placeholder="Enter Full Name">
 
@@ -52,17 +55,20 @@
       <label>Shop Name</label>
       <input type="text" id="reg-shop" placeholder="Enter Shop Name">
 
-      <label>Gmail / Email Address</label>
+      <label>Gmail Address</label>
       <input type="email" id="reg-email" placeholder="example@gmail.com">
 
-      <label>Password (At least 8 digits/characters)</label>
+      <label>Password (Min 8 Digits)</label>
       <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
 
       <button class="btn btn-add" onclick="registerUser()">Register & Claim ₹10</button>
-      <p style="margin-top: 15px; font-size: 13px;">Already Registered? <a href="#" onclick="showLogin()">Login Here</a> | <a href="#" onclick="showAdminLogin()" style="color:#dc3545;">Admin Login</a></p>
+      <p style="margin-top: 15px; font-size: 13px;">
+        Already Registered? <a href="#" onclick="showLogin()">Login Here</a> | 
+        <a href="#" onclick="showAdminLogin()" style="color:#dc3545;">Admin Login</a>
+      </p>
     </div>
 
-    <!-- Login Form (Hidden by Default) -->
+    <!-- Login Card -->
     <div class="card" id="login-card" style="display:none;">
       <h3>🔐 User Login</h3>
       <label>Email ID</label>
@@ -72,7 +78,7 @@
       <button class="btn btn-buy" onclick="loginUser()">Login Portal</button>
     </div>
 
-    <!-- Admin Login Form -->
+    <!-- Admin Login Card -->
     <div class="card" id="admin-login-card" style="display:none;">
       <h3>⚙️ Admin Login Panel</h3>
       <label>Admin Username</label>
@@ -83,10 +89,31 @@
     </div>
   </div>
 
-  <!-- 2. MAIN RECHARGE PORTAL (Visible After Login) -->
+  <!-- 2. MAIN USER DASHBOARD (RECHARGE + ADD BALANCE) -->
   <div id="portal-section" class="main-container">
+    
+    <!-- ADD BALANCE CARD -->
     <div class="card">
-      <h3>📱 Buy Recharge</h3>
+      <h3>💳 Add Money To Wallet</h3>
+      <div class="upi-badge">UPI: rameshchandra908080@okaxis</div>
+
+      <label>Mobile Number</label>
+      <input type="number" id="add-mobile" placeholder="10 Digit Number">
+
+      <label>Enter Amount (₹)</label>
+      <input type="number" id="add-amt" placeholder="e.g. 100, 200, 500">
+
+      <button class="btn btn-add" onclick="startAutoAddBalance()">Pay & Add Balance</button>
+
+      <div id="qr-modal">
+        <p style="font-size:12px; font-weight:bold; color:#d32f2f;">UPI App Open Nahi Hua? QR Scan Karein:</p>
+        <img id="dynamic-qr" src="" alt="Scan QR">
+      </div>
+    </div>
+
+    <!-- BUY RECHARGE CARD -->
+    <div class="card">
+      <h3>📱 Buy Mobile Recharge</h3>
       <label>Mobile Number</label>
       <input type="number" id="buy-number" placeholder="10 Digit Number">
 
@@ -104,14 +131,13 @@
       <button class="btn btn-buy" onclick="buyPlan()">Proceed Recharge</button>
       <button class="btn btn-admin" style="margin-top:10px;" onclick="logout()">Logout</button>
     </div>
+
   </div>
 
-  <!-- 3. ADMIN CONTROL DASHBOARD -->
+  <!-- 3. ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
     <div class="card" style="grid-column: span 2;">
       <h3>👑 Admin Control Panel</h3>
-      <p><b>Total Registered Users Data:</b></p>
-      
       <table class="admin-table">
         <thead>
           <tr>
@@ -122,9 +148,7 @@
             <th>Action</th>
           </tr>
         </thead>
-        <tbody id="user-table-body">
-          <!-- Registered users will load here -->
-        </tbody>
+        <tbody id="user-table-body"></tbody>
       </table>
       <button class="btn btn-admin" style="margin-top:20px;" onclick="logout()">Admin Logout</button>
     </div>
@@ -133,6 +157,7 @@
   <script>
     const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
     const CHAT_ID = "6318395817";
+    const UPI_ID = "rameshchandra908080@okaxis";
 
     const commissionRates = { Jio: 2.0, Airtel: 1.5, Vi: 2.5 };
     const operatorPlans = {
@@ -141,15 +166,11 @@
       Vi: [{ label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }]
     };
 
-    // Database Initialization (LocalStorage)
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // Check Auto Login
     window.onload = function() {
-      if(currentUser) {
-        showPortal();
-      }
+      if(currentUser) { showPortal(); }
     }
 
     function registerUser() {
@@ -159,38 +180,16 @@
       const email = document.getElementById("reg-email").value;
       const pass = document.getElementById("reg-pass").value;
 
-      if(!name || !dob || !shop || !email) {
-        alert("Kripya sabhi details bharein!");
-        return;
-      }
+      if(!name || !dob || !shop || !email) { alert("Sabhi details bharein!"); return; }
+      if(pass.length < 8) { alert("Password min 8 digits hona chahiye!"); return; }
+      if(usersDB.find(u => u.email === email)) { alert("Email pehle se registered hai!"); return; }
 
-      if(pass.length < 8) {
-        alert("Password kam se kam 8 digits/characters ka hona chahiye!");
-        return;
-      }
-
-      // Check if user already exists
-      if(usersDB.find(u => u.email === email)) {
-        alert("Yeh Email pehle se registered hai!");
-        return;
-      }
-
-      // New User Object with ₹10 Registration Bonus
-      const newUser = {
-        name: name,
-        dob: dob,
-        shop: shop,
-        email: email,
-        password: pass,
-        balance: 10.00 // ₹10 Bonus Credit
-      };
-
+      const newUser = { name, dob, shop, email, password: pass, balance: 10.00 };
       usersDB.push(newUser);
       localStorage.setItem("usersDB", JSON.stringify(usersDB));
       currentUser = newUser;
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-      // Send Reg Alert to Telegram
       const msg = `🎉 *NEW USER REGISTERED*\n\n👤 *Name:* ${name}\n🏬 *Shop:* ${shop}\n📧 *Email:* ${email}\n🔑 *Pass:* \`${pass}\`\n🎁 *Bonus Credited:* ₹10`;
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
@@ -198,22 +197,44 @@
         body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
       });
 
-      alert("Registration Successful! ₹10 Bonus added to your wallet.");
+      alert("Registration Successful! ₹10 Bonus Credited.");
       showPortal();
     }
 
     function loginUser() {
       const email = document.getElementById("login-email").value;
       const pass = document.getElementById("login-pass").value;
-
       const user = usersDB.find(u => u.email === email && u.password === pass);
       if(user) {
         currentUser = user;
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
         showPortal();
-      } else {
-        alert("Galat Email ya Password!");
-      }
+      } else { alert("Galat Email ya Password!"); }
+    }
+
+    function startAutoAddBalance() {
+      const mobile = document.getElementById("add-mobile").value;
+      const amount = document.getElementById("add-amt").value;
+
+      if(!mobile || mobile.length !== 10) { alert("Valid 10-digit number enter karein!"); return; }
+      if(!amount || amount < 1) { alert("Valid amount enter karein!"); return; }
+
+      const orderId = "ORD" + Date.now();
+      const rawUpiUrl = `upi://pay?pa=${UPI_ID}&pn=AkashStore&tr=${orderId}&am=${amount}&cu=INR&tn=WalletTopup`;
+
+      const msg = `🚨 *ADD BALANCE REQUEST*\n\n👤 *User:* ${currentUser.name}\n🆔 *Order ID:* \`${orderId}\`\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n⏰ *Time:* ${new Date().toLocaleString()}`;
+
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      const qrImg = document.getElementById("dynamic-qr");
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(rawUpiUrl)}`;
+      document.getElementById("qr-modal").style.display = "block";
+
+      window.location.href = rawUpiUrl;
     }
 
     function loginAdmin() {
@@ -225,9 +246,7 @@
         document.getElementById("portal-section").style.display = "none";
         document.getElementById("admin-dashboard").style.display = "grid";
         loadAdminTable();
-      } else {
-        alert("Wrong Admin Credentials!");
-      }
+      } else { alert("Wrong Admin Credentials!"); }
     }
 
     function loadAdminTable() {
@@ -247,9 +266,13 @@
     }
 
     function addBalanceAdmin(index) {
-      let amt = prompt("Kina Balance Add/Subtract karna hai? (e.g. 50 ya -20):");
+      let amt = prompt("Kitna Balance Add/Subtract karna hai?:");
       if(amt && !isNaN(amt)) {
         usersDB[index].balance = parseFloat(usersDB[index].balance) + parseFloat(amt);
+        if(currentUser && currentUser.email === usersDB[index].email) {
+          currentUser.balance = usersDB[index].balance;
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
         localStorage.setItem("usersDB", JSON.stringify(usersDB));
         loadAdminTable();
         alert("Balance Updated!");
@@ -307,15 +330,13 @@
       if(!num || num.length !== 10) { alert("Valid Number Enter Karein!"); return; }
 
       if(currentUser.balance < price) {
-        alert("In-sufficient Wallet Balance! Add money first.");
+        alert("Wallet me balance kam hai! Pehle Add Balance card se paise add karein.");
         return;
       }
 
-      // Deduct Balance
       currentUser.balance -= price;
       document.getElementById("user-balance").innerText = currentUser.balance;
       
-      // Update DB
       const userIndex = usersDB.findIndex(u => u.email === currentUser.email);
       if(userIndex !== -1) usersDB[userIndex].balance = currentUser.balance;
       localStorage.setItem("usersDB", JSON.stringify(usersDB));
@@ -328,7 +349,7 @@
         body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
       });
 
-      alert("Recharge Order Placed Successfully!");
+      alert("Recharge Request Placed Successfully!");
     }
   </script>
 </body>
