@@ -86,6 +86,7 @@
     .btn-rc { background: #17a2b8; }
     .btn-voter { background: #6f42c1; }
     .btn-admin { background: #dc3545; }
+    .btn-test { background: #6c757d; }
 
     .btn-sm { width: auto; padding: 5px 10px; font-size: 12px; margin: 2px; display: inline-block; cursor: pointer; border: none; border-radius: 4px; color: white; }
     .btn-approve { background: #28a745; }
@@ -148,6 +149,7 @@
       <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
 
       <button class="btn btn-add" onclick="registerUser()">Register & Claim ₹10</button>
+      <button class="btn btn-test" onclick="testTelegramMessage()">🧪 Test Telegram Connection</button>
       <p style="margin-top: 15px; font-size: 13px;">
         Already Registered? <a href="#" onclick="showLogin()">Login Here</a> | 
         <a href="#" onclick="showAdminLogin()" style="color:#dc3545;">Admin Login</a>
@@ -157,18 +159,19 @@
     <div class="card" id="login-card" style="display:none;">
       <h3>🔐 User Login</h3>
       <label>Email ID</label>
-      <input type="email" id="login-email">
+      <input type="email" id="login-email" placeholder="Enter Email ID">
       <label>Password</label>
-      <input type="password" id="login-pass">
+      <input type="password" id="login-pass" placeholder="Enter Password">
       <button class="btn btn-buy" onclick="loginUser()">Login Portal</button>
     </div>
 
+    <!-- ADMIN LOGIN CARD WITH UPDATED PLACEHOLDERS -->
     <div class="card" id="admin-login-card" style="display:none;">
       <h3>⚙️ Admin Login Panel</h3>
       <label>Admin Username</label>
-      <input type="text" id="admin-user" placeholder="admin">
+      <input type="text" id="admin-user" placeholder="Enter Admin Username">
       <label>Admin Password</label>
-      <input type="password" id="admin-pass" placeholder="adminpassword123">
+      <input type="password" id="admin-pass" placeholder="Enter Admin Password">
       <button class="btn btn-admin" onclick="loginAdmin()">Login as Admin</button>
     </div>
   </div>
@@ -397,13 +400,29 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // TELEGRAM UTILITY FUNCTION TO SEND NOTIFICATIONS FOR ANY SERVICE
-    function sendTelegramAlert(textMsg) {
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: textMsg, parse_mode: "Markdown" })
-      }).catch(err => console.error("Telegram Error:", err));
+    // ASYNC TELEGRAM FUNCTION WITH DETAILED ERROR LOGGING
+    async function sendTelegramAlert(textMsg) {
+      try {
+        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: textMsg, parse_mode: "Markdown" })
+        });
+        const resData = await response.json();
+        if(!resData.ok) {
+          alert("Telegram Alert Error: " + resData.description);
+        } else {
+          console.log("Telegram Sent Successfully!");
+        }
+      } catch (err) {
+        alert("Network Error while sending Telegram Message: " + err.message);
+      }
+    }
+
+    async function testTelegramMessage() {
+      alert("Testing Telegram Connection...");
+      await sendTelegramAlert("🧪 *TEST MESSAGE*\n\nPortal se Telegram Connection Success hai!");
+      alert("Check Telegram Bot!");
     }
 
     function startRealTimeClock() {
@@ -434,7 +453,7 @@
       }, 2500);
     }
 
-    function registerUser() {
+    async function registerUser() {
       const name = document.getElementById("reg-name").value;
       const dob = document.getElementById("reg-dob").value;
       const shop = document.getElementById("reg-shop").value;
@@ -457,7 +476,7 @@
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
       const msg = `🎉 *NEW USER REGISTERED*\n\n👤 *Name:* ${name}\n🏬 *Shop:* ${shop}\n📧 *Email:* ${email}\n🎁 *Bonus Credited:* ₹10`;
-      sendTelegramAlert(msg);
+      await sendTelegramAlert(msg);
 
       triggerWelcomeModal(name);
       showPortal();
@@ -475,7 +494,7 @@
       } else { alert("Galat Email ya Password!"); }
     }
 
-    function submitAddMoneyWithProof() {
+    async function submitAddMoneyWithProof() {
       const mobile = document.getElementById("add-mobile").value;
       const amount = parseFloat(document.getElementById("add-amt").value);
       const utr = document.getElementById("add-utr").value;
@@ -504,7 +523,7 @@
         formData.append("document", proofFile);
       }
 
-      fetch(apiEndpoint, { method: "POST", body: formData });
+      await fetch(apiEndpoint, { method: "POST", body: formData });
 
       if(!currentUser.history) currentUser.history = [];
       currentUser.history.unshift({
@@ -529,8 +548,7 @@
       document.getElementById("add-proof").value = "";
     }
 
-    // CENTRAL FUNCTION FOR ALL SERVICES -> SENDS TELEGRAM SMS
-    function createServiceOrder(type, details, charge) {
+    async function createServiceOrder(type, details, charge) {
       if(currentUser.balance < charge) { alert(`Wallet Balance Kam Hai! ₹${charge} Add Karein.`); return false; }
 
       currentUser.balance -= charge;
@@ -552,38 +570,37 @@
 
       updateUserDataStorage();
 
-      // TELEGRAM NOTIFICATION FOR ANY SERVICE USED
       const orderMsg = `🚀 *NEW SERVICE ORDER*\n\n📌 *Service:* ${type}\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📝 *Details:* ${details}\n💵 *Amount Deducted:* ₹${charge}\n⏰ *Time:* ${timeNow}`;
-      sendTelegramAlert(orderMsg);
+      await sendTelegramAlert(orderMsg);
 
       return true;
     }
 
-    function getRcPdf() {
+    async function getRcPdf() {
       const rcNo = document.getElementById("rc-number").value.toUpperCase();
       const mob = document.getElementById("rc-mobile").value;
       if(!rcNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(createServiceOrder("Vehicle RC PDF", `RC: ${rcNo} (${mob})`, 50)) {
+      if(await createServiceOrder("Vehicle RC PDF", `RC: ${rcNo} (${mob})`, 50)) {
         alert("Vehicle RC PDF Request Sent!");
         document.getElementById("rc-number").value = "";
         document.getElementById("rc-mobile").value = "";
       }
     }
 
-    function linkVoterMobile() {
+    async function linkVoterMobile() {
       const voterNo = document.getElementById("voter-number").value.toUpperCase();
       const mob = document.getElementById("voter-mobile").value;
       if(!voterNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(createServiceOrder("Voter Mobile Link", `Voter ID: ${voterNo} (${mob})`, 100)) {
+      if(await createServiceOrder("Voter Mobile Link", `Voter ID: ${voterNo} (${mob})`, 100)) {
         alert("Voter ID Linking Request Sent!");
         document.getElementById("voter-number").value = "";
         document.getElementById("voter-mobile").value = "";
       }
     }
 
-    function buyPlan() {
+    async function buyPlan() {
       const num = document.getElementById("buy-number").value;
       const op = document.getElementById("buy-operator").value;
       const planSelect = document.getElementById("buy-plan");
@@ -592,38 +609,38 @@
 
       if(!num || num.length !== 10) { alert("Valid Mobile Number!"); return; }
 
-      if(createServiceOrder("Recharge", `${op} - ${selectedText} (${num})`, price)) {
+      if(await createServiceOrder("Recharge", `${op} - ${selectedText} (${num})`, price)) {
         alert("Recharge Order Submitted!");
         document.getElementById("buy-number").value = "";
       }
     }
 
-    function buyGooglePlayCode() {
+    async function buyGooglePlayCode() {
       const mob = document.getElementById("gplay-mobile").value;
       const amt = Number(document.getElementById("gplay-amt").value);
 
       if(!mob || mob.length !== 10 || !amt || amt < 10) { alert("Valid Details!"); return; }
 
-      if(createServiceOrder("Google Play Code", `Redeem Code (${mob})`, amt)) {
+      if(await createServiceOrder("Google Play Code", `Redeem Code (${mob})`, amt)) {
         alert("Google Play Code Request Placed!");
         document.getElementById("gplay-mobile").value = "";
         document.getElementById("gplay-amt").value = "";
       }
     }
 
-    function buyAmazonGiftCard() {
+    async function buyAmazonGiftCard() {
       const contact = document.getElementById("amz-contact").value;
       const amt = Number(document.getElementById("amz-amt").value);
 
       if(!contact) { alert("Contact Enter Karein!"); return; }
 
-      if(createServiceOrder("Amazon Voucher", `Gift Voucher (${contact})`, amt)) {
+      if(await createServiceOrder("Amazon Voucher", `Gift Voucher (${contact})`, amt)) {
         alert("Amazon Gift Voucher Placed!");
         document.getElementById("amz-contact").value = "";
       }
     }
 
-    function payUppclBill() {
+    async function payUppclBill() {
       const discom = document.getElementById("uppcl-discom").value;
       const acc = document.getElementById("uppcl-acc").value;
       const name = document.getElementById("uppcl-name").value;
@@ -631,7 +648,7 @@
 
       if(!acc || !name || !amt || amt < 1) { alert("Details Sahi Se Bharein!"); return; }
 
-      if(createServiceOrder("Electricity Bill", `${discom} - Acc: ${acc} (${name})`, amt)) {
+      if(await createServiceOrder("Electricity Bill", `${discom} - Acc: ${acc} (${name})`, amt)) {
         alert("UPPCL Bill Request Submitted!");
         document.getElementById("uppcl-acc").value = "";
         document.getElementById("uppcl-name").value = "";
@@ -748,7 +765,7 @@
       }
     }
 
-    function uploadAndCompleteWork(userEmail, itemId) {
+    async function uploadAndCompleteWork(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -765,13 +782,13 @@
           item.status = "Completed";
           saveAndRefreshAdmin();
 
-          sendTelegramAlert(`✅ *ORDER COMPLETED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n📝 Details: ${item.details}\nStatus: Delivered / Completed`);
+          await sendTelegramAlert(`✅ *ORDER COMPLETED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n📝 Details: ${item.details}\nStatus: Delivered / Completed`);
           alert("Document uploaded aur Order Completed Mark ho gaya hai!");
         }
       }
     }
 
-    function approveAddMoney(userEmail, itemId) {
+    async function approveAddMoney(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -780,13 +797,13 @@
           item.status = "Approved & Added";
           saveAndRefreshAdmin();
           
-          sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance}`);
+          await sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance}`);
           alert(`₹${item.amount} User Wallet me add kar diya gaya!`);
         }
       }
     }
 
-    function rejectAddMoney(userEmail, itemId) {
+    async function rejectAddMoney(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -794,13 +811,13 @@
           item.status = "Rejected By Admin";
           saveAndRefreshAdmin();
 
-          sendTelegramAlert(`❌ *ADD MONEY REJECTED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount: ₹${item.amount}\nUTR: ${item.utr}`);
+          await sendTelegramAlert(`❌ *ADD MONEY REJECTED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount: ₹${item.amount}\nUTR: ${item.utr}`);
           alert("Request Cancel/Reject kar di gayi!");
         }
       }
     }
 
-    function rejectAndRefundWork(userEmail, itemId) {
+    async function rejectAndRefundWork(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -809,13 +826,13 @@
           item.status = "Cancelled & Refunded";
           saveAndRefreshAdmin();
 
-          sendTelegramAlert(`⚠️ *ORDER CANCELLED & REFUNDED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n💵 Refunded: ₹${item.amount}`);
+          await sendTelegramAlert(`⚠️ *ORDER CANCELLED & REFUNDED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n💵 Refunded: ₹${item.amount}`);
           alert(`Order Cancel ho gaya aur ₹${item.amount} user ke wallet me Refund kar diya gaya!`);
         }
       }
     }
 
-    function addBalanceAdmin(index) {
+    async function addBalanceAdmin(index) {
       let amt = prompt("Kitna Balance Add/Subtract karna hai?:");
       if(amt && !isNaN(amt)) {
         usersDB[index].balance += parseFloat(amt);
@@ -824,7 +841,7 @@
         usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow, pdfUrl: null });
         saveAndRefreshAdmin();
 
-        sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance}`);
+        await sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance}`);
         alert("Balance Updated!");
       }
     }
