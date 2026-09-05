@@ -8,8 +8,69 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: #f0f2f5; padding: 15px; }
 
-    header { background: #007bff; color: white; padding: 15px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    header { 
+      background: #007bff; 
+      color: white; 
+      padding: 15px 20px; 
+      border-radius: 10px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-bottom: 20px; 
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* KONE ME TIME & NAME DISPLAY BADGE */
+    .user-info-badge {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      text-align: right;
+      color: #fff;
+    }
+    .user-info-badge span { font-weight: bold; color: #ffeb3b; }
+
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
+
+    /* WELCOME POPUP STYLES */
+    #welcome-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+    .welcome-card {
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      animation: popIn 0.4s ease-out;
+      max-width: 380px;
+      width: 90%;
+    }
+    .welcome-card h2 { color: #007bff; margin-bottom: 10px; font-size: 24px; }
+    .welcome-card p { color: #555; font-size: 15px; margin-bottom: 15px; }
+    .welcome-avatar { font-size: 50px; margin-bottom: 10px; }
+
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
 
     .main-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
     .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
@@ -35,7 +96,7 @@
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
     .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
-    #portal-section, #admin-dashboard, #qr-modal { display: none; }
+    #portal-section, #admin-dashboard { display: none; }
 
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
     .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
@@ -45,9 +106,27 @@
 </head>
 <body>
 
+  <!-- WELCOME POPUP OVERLAY -->
+  <div id="welcome-modal">
+    <div class="welcome-card">
+      <div class="welcome-avatar">👋🏼</div>
+      <h2>Welcome Back!</h2>
+      <p id="welcome-user-name">User</p>
+      <small style="color:#888;">Portal me aapka swagat hai...</small>
+    </div>
+  </div>
+
   <header>
-    <h2>Akash Service Store (All-In-One)</h2>
-    <div class="wallet-box">Balance: ₹<span id="user-balance">0</span></div>
+    <h2>Akash Service Store</h2>
+
+    <div class="header-right">
+      <!-- LIVE DATE, TIME & NAME IN TOP RIGHT CORNER -->
+      <div class="user-info-badge" id="top-corner-info">
+        👤 Guest | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>
+      </div>
+      
+      <div class="wallet-box">Balance: ₹<span id="user-balance">0</span></div>
+    </div>
   </header>
 
   <!-- 1. AUTHENTICATION SECTION -->
@@ -239,7 +318,6 @@
   <!-- 3. ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
     
-    <!-- ADMIN SUMMARY & USERS -->
     <div class="card" style="grid-column: span 2;">
       <h3>👑 Admin Control Panel - All Registered Users</h3>
       <table class="admin-table">
@@ -256,7 +334,6 @@
       </table>
     </div>
 
-    <!-- PENDING ADD MONEY REQUESTS -->
     <div class="card admin-section" style="grid-column: span 2;">
       <h3 style="border-bottom-color: #28a745;">💳 Pending Add Money Requests (UTR Verification)</h3>
       <table class="admin-table">
@@ -275,7 +352,6 @@
       </table>
     </div>
 
-    <!-- PENDING WORK & SERVICE REQUESTS -->
     <div class="card admin-section" style="grid-column: span 2;">
       <h3 style="border-bottom-color: #ff9800;">⚙️ Pending Work & Service Orders (Refund / Complete)</h3>
       <table class="admin-table">
@@ -323,8 +399,34 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
+    // REAL-TIME DATE & TIME CLOCK (UPDATES EVERY SECOND)
+    function startRealTimeClock() {
+      setInterval(() => {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('hi-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+
+        document.getElementById("live-date").innerText = dateStr;
+        document.getElementById("live-time").innerText = timeStr;
+      }, 1000);
+    }
+
     window.onload = function() {
-      if(currentUser) { showPortal(); }
+      startRealTimeClock();
+      if(currentUser) { 
+        showPortal(); 
+      }
+    }
+
+    // TRIGGER ANIMATED WELCOME OVERLAY
+    function triggerWelcomeModal(userName) {
+      const modal = document.getElementById("welcome-modal");
+      document.getElementById("welcome-user-name").innerText = userName;
+      modal.style.display = "flex";
+
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 2500);
     }
 
     function registerUser() {
@@ -356,7 +458,7 @@
         body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
       });
 
-      alert("Registration Successful! ₹10 Bonus Credited.");
+      triggerWelcomeModal(name);
       showPortal();
     }
 
@@ -367,6 +469,7 @@
       if(user) {
         currentUser = user;
         localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        triggerWelcomeModal(user.name);
         showPortal();
       } else { alert("Galat Email ya Password!"); }
     }
@@ -527,7 +630,7 @@
       }
     }
 
-    /* --- ADMIN CONTROL PANEL FUNCTIONS --- */
+    /* --- ADMIN PANEL FUNCTIONS --- */
 
     function loginAdmin() {
       const u = document.getElementById("admin-user").value;
@@ -537,6 +640,10 @@
         document.getElementById("auth-section").style.display = "none";
         document.getElementById("portal-section").style.display = "none";
         document.getElementById("admin-dashboard").style.display = "grid";
+        
+        triggerWelcomeModal("Admin");
+        document.getElementById("top-corner-info").innerHTML = `👑 <span>Admin</span> | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>`;
+
         loadAdminDashboard();
       } else { alert("Wrong Admin Credentials!"); }
     }
@@ -709,6 +816,10 @@
       document.getElementById("admin-dashboard").style.display = "none";
       document.getElementById("portal-section").style.display = "grid";
       document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
+      
+      // TOP RIGHT KONE ME USER NAME UPDATE
+      document.getElementById("top-corner-info").innerHTML = `👤 <span>${currentUser.name}</span> | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>`;
+      
       loadUserHistoryTable();
       updatePlans();
     }
