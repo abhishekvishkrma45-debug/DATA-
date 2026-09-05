@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recharge & Service Store</title>
+  <title>Akash Service Store - Recharge & Gateway</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: #f0f2f5; padding: 15px; }
@@ -12,19 +12,17 @@
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
     .main-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-    .card h3 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: center; }
+    .card h3 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 5px; text-align: left; }
 
-    label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-top: 10px; }
+    label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-top: 10px; text-align: left; }
     input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
 
-    .btn { width: 100%; margin-top: 15px; padding: 10px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; }
+    .btn { width: 100%; margin-top: 15px; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; }
     .btn-buy { background: #28a745; }
-    .btn-buy:hover { background: #218838; }
-    .btn-add { background: #17a2b8; }
+    .btn-add { background: #007bff; }
 
-    .plans-list { margin-top: 10px; max-height: 150px; overflow-y: auto; border: 1px solid #eee; padding: 5px; border-radius: 5px; }
-    .plan-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+    .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; }
   </style>
 </head>
 <body>
@@ -36,61 +34,47 @@
 
   <div class="main-container">
 
-    <!-- Add Balance Card -->
+    <!-- Add Balance Gateway Card -->
     <div class="card">
-      <h3>💳 Balance Add Karein</h3>
+      <h3>💳 Add Balance (Auto Gateway)</h3>
+      <div class="upi-badge">UPI: rameshchandra908080@okaxis</div>
+
+      <label>Mobile Number</label>
+      <input type="number" id="add-mobile" placeholder="Enter 10-digit number">
+
       <label>Enter Amount (₹)</label>
-      <input type="number" id="add-amt" placeholder="e.g. 100">
-      <label>Transaction ID / UTR</label>
-      <input type="text" id="add-utr" placeholder="Enter UTR after payment">
-      <p style="font-size: 12px; color: #777; margin-top: 8px;">Scan UPI QR & submit UTR for approval.</p>
-      <button class="btn btn-add" onclick="addBalance()">Request Add Balance</button>
+      <input type="number" id="add-amt" placeholder="e.g. 100, 200">
+
+      <button class="btn btn-add" onclick="startAutoAddBalance()">Pay & Add Balance</button>
     </div>
 
-    <!-- Mobile Recharge / Plan Buy Card -->
+    <!-- Recharge Card -->
     <div class="card">
-      <h3>📱 Buy Mobile Plan</h3>
+      <h3>📱 Buy Mobile Recharge</h3>
       <label>Mobile Number</label>
       <input type="number" id="buy-number" placeholder="Enter 10-digit number">
+      
       <label>Operator</label>
       <select id="buy-operator" onchange="updatePlans()">
         <option value="Jio">Jio</option>
         <option value="Airtel">Airtel</option>
         <option value="Vi">Vi (Vodafone Idea)</option>
       </select>
-      <label>Select Plan</label>
-      <select id="buy-plan">
-        <!-- Dynamic options via JS -->
-      </select>
-      <button class="btn btn-buy" onclick="buyPlan()">Buy Plan Now</button>
-    </div>
 
-    <!-- DTH & Google Play Services -->
-    <div class="card">
-      <h3>🎮 Google Play / DTH Buy</h3>
-      <label>Service Type</label>
-      <select id="other-service">
-        <option value="Google Play Code">Google Play Redeem Code</option>
-        <option value="Tata Play">Tata Play DTH</option>
-        <option value="Airtel DTH">Airtel Digital TV</option>
-      </select>
-      <label>Account ID / Mobile</label>
-      <input type="text" id="other-id" placeholder="Enter ID or Mobile">
-      <label>Amount (₹)</label>
-      <input type="number" id="other-amt" placeholder="Enter Amount">
-      <button class="btn btn-buy" onclick="buyOtherService()">Buy Service</button>
+      <label>Select Plan</label>
+      <select id="buy-plan"></select>
+
+      <button class="btn btn-buy" onclick="buyPlan()">Buy Plan Now</button>
     </div>
 
   </div>
 
   <script>
-    // Telegram Configuration
+    // Configuration Settings
     const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
-    const CHAT_ID = "6318395817"; // Apni numeric Chat ID yahan daalein
+    const CHAT_ID = "6318395817"; 
+    const UPI_ID = "rameshchandra908080@okaxis";
 
-    let currentBalance = 0;
-
-    // Plans Data for Operators
     const operatorPlans = {
       Jio: [
         { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
@@ -99,12 +83,10 @@
       ],
       Airtel: [
         { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
-        { label: "₹719 - 1.5GB/Day (84 Days)", price: 719 },
-        { label: "₹65 - 4GB Data Pack", price: 65 }
+        { label: "₹719 - 1.5GB/Day (84 Days)", price: 719 }
       ],
       Vi: [
-        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
-        { label: "₹479 - 1.5GB/Day (56 Days)", price: 479 }
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }
       ]
     };
 
@@ -117,73 +99,59 @@
       });
     }
 
-    function sendTelegram(text) {
-      if(CHAT_ID === "YOUR_CHAT_ID") {
-        alert("Pehle code me JavaScript section ke andar CHAT_ID daalein!");
+    // Payment Gateway Call on Add Balance
+    function startAutoAddBalance() {
+      const mobile = document.getElementById("add-mobile").value;
+      const amount = document.getElementById("add-amt").value;
+
+      if (!mobile || mobile.length !== 10) {
+        alert("Valid 10-digit mobile number enter karein!");
         return;
       }
+
+      if (!amount || amount < 1) {
+        alert("Valid amount enter karein!");
+        return;
+      }
+
+      const orderId = "ORD" + Date.now();
+      const upiPayUrl = `upi://pay?pa=${UPI_ID}&pn=AkashStore&tr=${orderId}&am=${amount}&cu=INR&tn=WalletTopup`;
+
+      const msg = `🚨 *ADD BALANCE PAYMENT REQUEST*\n\n🆔 *Order ID:* \`${orderId}\`\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🏦 *UPI ID:* ${UPI_ID}\n⏳ *Status:* Redirected to Gateway\n⏰ *Time:* ${new Date().toLocaleString()}`;
+
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: text, parse_mode: "Markdown" })
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      }).then(() => {
+        // Auto Redirect to GPay/PhonePe/Paytm
+        window.location.href = upiPayUrl;
       });
     }
 
-    // Add Balance Request
-    function addBalance() {
-      const amt = document.getElementById("add-amt").value;
-      const utr = document.getElementById("add-utr").value;
-
-      if(!amt || !utr) {
-        alert("Amount aur UTR dono bharein!");
-        return;
-      }
-
-      const msg = `💰 *BALANCE ADD REQUEST*\n\n💵 *Amount:* ₹${amt}\n🔢 *UTR/Txn ID:* ${utr}\n⏰ *Time:* ${new Date().toLocaleString()}`;
-      sendTelegram(msg);
-      alert("Balance add request submit ho gayi hai! Verify hone par update ho jayega.");
-      document.getElementById("add-amt").value = "";
-      document.getElementById("add-utr").value = "";
-    }
-
-    // Buy Mobile Plan
     function buyPlan() {
       const num = document.getElementById("buy-number").value;
       const op = document.getElementById("buy-operator").value;
       const planSelect = document.getElementById("buy-plan");
       const selectedText = planSelect.options[planSelect.selectedIndex].text;
-      const price = Number(planSelect.value);
 
-      if(!num || num.length < 10) {
+      if (!num || num.length !== 10) {
         alert("Valid 10-digit mobile number enter karein!");
         return;
       }
 
-      const msg = `🛒 *NEW PLAN PURCHASE*\n\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n📦 *Plan:* ${selectedText}\n💵 *Price:* ₹${price}\n⏰ *Time:* ${new Date().toLocaleString()}`;
-      sendTelegram(msg);
-      alert("Purchase request bhej di gayi hai!");
+      const msg = `🛒 *NEW RECHARGE ORDER*\n\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n📦 *Plan:* ${selectedText}\n⏰ *Time:* ${new Date().toLocaleString()}`;
+
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      alert("Recharge request bhej di gayi hai!");
       document.getElementById("buy-number").value = "";
     }
 
-    // Buy DTH or Google Play
-    function buyOtherService() {
-      const service = document.getElementById("other-service").value;
-      const accId = document.getElementById("other-id").value;
-      const amt = document.getElementById("other-amt").value;
-
-      if(!accId || !amt) {
-        alert("Sabhi details bharein!");
-        return;
-      }
-
-      const msg = `⚡ *OTHER SERVICE ORDER*\n\n📌 *Service:* ${service}\n🆔 *Account/ID:* ${accId}\n💵 *Amount:* ₹${amt}\n⏰ *Time:* ${new Date().toLocaleString()}`;
-      sendTelegram(msg);
-      alert("Order successfully sent!");
-      document.getElementById("other-id").value = "";
-      document.getElementById("other-amt").value = "";
-    }
-
-    // Initial load
     updatePlans();
   </script>
 </body>
