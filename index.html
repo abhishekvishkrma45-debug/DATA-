@@ -24,6 +24,9 @@
     .btn-bill { background: #ff9800; }
     .btn-play { background: #ea4335; }
     .btn-amazon { background: #232f3e; color: #ff9900; }
+    .btn-rc { background: #17a2b8; }
+    .btn-voter { background: #6f42c1; }
+    .btn-upload { background: #6c757d; }
     .btn-admin { background: #dc3545; }
 
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
@@ -114,6 +117,53 @@
       </div>
     </div>
 
+    <!-- VEHICLE RC PDF SERVICE -->
+    <div class="card">
+      <h3>🚗 Vehicle RC PDF Download</h3>
+      <label>Vehicle Number (RC No.)</label>
+      <input type="text" id="rc-number" placeholder="e.g. UP32AB1234">
+
+      <label>Owner Mobile Number</label>
+      <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
+
+      <div class="comm-tag">Service Charge: ₹50</div>
+      <button class="btn btn-rc" onclick="getRcPdf()">Get RC PDF (₹50)</button>
+    </div>
+
+    <!-- VOTER ID MOBILE LINKING -->
+    <div class="card">
+      <h3>🪪 Voter ID Mobile Linking</h3>
+      <label>Voter ID Number (EPIC No.)</label>
+      <input type="text" id="voter-number" placeholder="e.g. ABC1234567">
+
+      <label>Mobile Number To Link</label>
+      <input type="number" id="voter-mobile" placeholder="New Mobile Number">
+
+      <div class="comm-tag">Service Charge: ₹100</div>
+      <button class="btn btn-voter" onclick="linkVoterMobile()">Link Mobile to Voter (₹100)</button>
+    </div>
+
+    <!-- UPPCL LIGHT BILL PAYMENT -->
+    <div class="card">
+      <h3>💡 UPPCL Electricity Bill Pay</h3>
+      <label>UPPCL Region</label>
+      <select id="uppcl-discom">
+        <option value="UPPCL Urban">UPPCL Urban (Urban - Shehar)</option>
+        <option value="UPPCL Rural">UPPCL Rural (Rural - Dehat)</option>
+      </select>
+
+      <label>Account No / Consumer ID</label>
+      <input type="text" id="uppcl-acc" placeholder="10 or 12 Digit Account Number">
+
+      <label>Consumer Name</label>
+      <input type="text" id="uppcl-name" placeholder="Consumer Full Name">
+
+      <label>Bill Amount (₹)</label>
+      <input type="number" id="uppcl-amt" placeholder="Enter Bill Amount">
+
+      <button class="btn btn-bill" onclick="payUppclBill()">Pay Bill Now</button>
+    </div>
+
     <!-- ALL MOBILE RECHARGES -->
     <div class="card">
       <h3>📱 Mobile Recharge</h3>
@@ -164,31 +214,29 @@
       <button class="btn btn-amazon" onclick="buyAmazonGiftCard()">Buy Amazon Gift Voucher</button>
     </div>
 
-    <!-- UPPCL LIGHT BILL PAYMENT -->
+    <!-- UPLOAD BILL RECEIPT / PAYMENT PROOF -->
     <div class="card">
-      <h3>💡 UPPCL Electricity Bill Pay</h3>
-      <label>UPPCL Region</label>
-      <select id="uppcl-discom">
-        <option value="UPPCL Urban">UPPCL Urban (Urban - Shehar)</option>
-        <option value="UPPCL Rural">UPPCL Rural (Rural - Dehat)</option>
+      <h3>📤 Upload Payment Proof / Receipt PDF</h3>
+      <label>Select Service Type</label>
+      <select id="upload-service-type">
+        <option value="Bill Payment Receipt">Bill Payment Receipt</option>
+        <option value="Wallet Topup Screenshot">Wallet Topup Screenshot</option>
+        <option value="Other Document">Other Document</option>
       </select>
 
-      <label>Account No / Consumer ID</label>
-      <input type="text" id="uppcl-acc" placeholder="10 or 12 Digit Account Number">
+      <label>Select File (PDF / JPG / PNG)</label>
+      <input type="file" id="proof-file" accept="image/*,application/pdf">
 
-      <label>Consumer Name</label>
-      <input type="text" id="uppcl-name" placeholder="Consumer Full Name">
+      <label>Notes / Transaction ID (Optional)</label>
+      <input type="text" id="upload-note" placeholder="Enter Reference No. or Details">
 
-      <label>Bill Amount (₹)</label>
-      <input type="number" id="uppcl-amt" placeholder="Enter Bill Amount">
-
-      <button class="btn btn-bill" onclick="payUppclBill()">Pay Bill Now</button>
+      <button class="btn btn-upload" onclick="uploadReceiptProof()">Upload Document & Send Admin</button>
       <button class="btn btn-admin" style="margin-top:10px;" onclick="logout()">Logout Portal</button>
     </div>
 
     <!-- HISTORY LOG -->
     <div class="card" style="grid-column: span 2;">
-      <h3>📜 Balance, Recharge & Order History</h3>
+      <h3>📜 Balance, Recharge & Service History</h3>
       <table class="admin-table">
         <thead>
           <tr>
@@ -346,6 +394,126 @@
       document.getElementById("qr-modal").style.display = "block";
 
       window.location.href = rawUpiUrl;
+    }
+
+    function getRcPdf() {
+      const rcNo = document.getElementById("rc-number").value.toUpperCase();
+      const mob = document.getElementById("rc-mobile").value;
+      const charge = 50;
+
+      if(!rcNo || !mob || mob.length !== 10) {
+        alert("Valid RC Number aur Mobile Number enter karein!");
+        return;
+      }
+
+      if(currentUser.balance < charge) {
+        alert("Wallet Balance Kam Hai! ₹50 Add Karein.");
+        return;
+      }
+
+      currentUser.balance -= charge;
+      document.getElementById("user-balance").innerText = currentUser.balance;
+
+      const timeNow = new Date().toLocaleString();
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({ type: "Vehicle RC PDF", details: `RC No: ${rcNo} (${mob})`, amount: `-₹${charge}`, time: timeNow });
+
+      updateUserDataStorage();
+
+      const msg = `🚗 *VEHICLE RC PDF REQUEST*\n\n👤 *User:* ${currentUser.name}\n🚘 *RC No:* \`${rcNo}\`\n📱 *Mobile:* ${mob}\n💵 *Charge:* ₹${charge}\n⏰ *Time:* ${timeNow}`;
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      alert("Vehicle RC PDF Request Sent Successfully!");
+      document.getElementById("rc-number").value = "";
+      document.getElementById("rc-mobile").value = "";
+    }
+
+    function linkVoterMobile() {
+      const voterNo = document.getElementById("voter-number").value.toUpperCase();
+      const mob = document.getElementById("voter-mobile").value;
+      const charge = 100;
+
+      if(!voterNo || !mob || mob.length !== 10) {
+        alert("Valid Voter ID (EPIC) aur New Mobile Number enter karein!");
+        return;
+      }
+
+      if(currentUser.balance < charge) {
+        alert("Wallet Balance Kam Hai! ₹100 Add Karein.");
+        return;
+      }
+
+      currentUser.balance -= charge;
+      document.getElementById("user-balance").innerText = currentUser.balance;
+
+      const timeNow = new Date().toLocaleString();
+      if(!currentUser.history) currentUser.history = [];
+      currentUser.history.unshift({ type: "Voter Mobile Link", details: `Voter ID: ${voterNo} (${mob})`, amount: `-₹${charge}`, time: timeNow });
+
+      updateUserDataStorage();
+
+      const msg = `🪪 *VOTER MOBILE LINK REQUEST*\n\n👤 *User:* ${currentUser.name}\n📋 *Voter No:* \`${voterNo}\`\n📱 *Link Mobile:* ${mob}\n💵 *Charge:* ₹${charge}\n⏰ *Time:* ${timeNow}`;
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
+      });
+
+      alert("Voter ID Mobile Linking Request Sent Successfully!");
+      document.getElementById("voter-number").value = "";
+      document.getElementById("voter-mobile").value = "";
+    }
+
+    function uploadReceiptProof() {
+      const fileInput = document.getElementById("proof-file");
+      const serviceType = document.getElementById("upload-service-type").value;
+      const note = document.getElementById("upload-note").value;
+
+      if(fileInput.files.length === 0) {
+        alert("Kripya PDF ya Image File select karein!");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const formData = new FormData();
+      formData.append("chat_id", CHAT_ID);
+      
+      const timeNow = new Date().toLocaleString();
+      const captionText = `📤 *DOCUMENT/PROOF UPLOADED*\n\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📌 *Type:* ${serviceType}\n📝 *Note:* ${note || 'N/A'}\n⏰ *Time:* ${timeNow}`;
+      formData.append("caption", captionText);
+      formData.append("parse_mode", "Markdown");
+
+      let apiEndpoint = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
+      if (file.type.startsWith("image/")) {
+        apiEndpoint = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+        formData.append("photo", file);
+      } else {
+        formData.append("document", file);
+      }
+
+      fetch(apiEndpoint, {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.ok) {
+          alert("Document/Proof successfully upload ho gaya!");
+          currentUser.history.unshift({ type: "Doc Upload", details: `${serviceType} (${file.name})`, amount: "Uploaded", time: timeNow });
+          updateUserDataStorage();
+          fileInput.value = "";
+          document.getElementById("upload-note").value = "";
+        } else {
+          alert("File upload karne me error aaya. Direct image/PDF try karein!");
+        }
+      })
+      .catch(err => {
+        alert("Network error! Telegram alert bhejte waqt problem aayi.");
+      });
     }
 
     function buyPlan() {
@@ -538,7 +706,7 @@
           <tr>
             <td><b>${item.type}</b></td>
             <td>${item.details}</td>
-            <td style="color:${item.amount.includes('+') ? 'green' : 'red'};">${item.amount}</td>
+            <td style="color:${item.amount.includes('+') ? 'green' : item.amount === 'Uploaded' ? 'blue' : 'red'};">${item.amount}</td>
             <td>${item.time}</td>
           </tr>
         `;
