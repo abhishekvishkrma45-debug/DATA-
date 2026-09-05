@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Akash Service Store - Recharge & Gateway</title>
+  <title>Akash Service Store - Auto UPI Gateway</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: #f0f2f5; padding: 15px; }
@@ -23,6 +23,8 @@
     .btn-add { background: #007bff; }
 
     .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; }
+    #qr-modal { display: none; margin-top: 15px; padding: 10px; border: 1px dashed #007bff; border-radius: 8px; background: #f8f9fa; }
+    #qr-modal img { width: 180px; height: 180px; }
   </style>
 </head>
 <body>
@@ -46,6 +48,13 @@
       <input type="number" id="add-amt" placeholder="e.g. 100, 200">
 
       <button class="btn btn-add" onclick="startAutoAddBalance()">Pay & Add Balance</button>
+
+      <!-- QR Fallback Container -->
+      <div id="qr-modal">
+        <p style="font-size:12px; font-weight:bold; color:#d32f2f;">UPI App Open Nahi Hua? QR Scan Karein:</p>
+        <img id="dynamic-qr" src="" alt="Scan QR">
+        <p style="font-size:11px; color:#555; margin-top:5px;">Scan & pay via GPay, PhonePe, Paytm</p>
+      </div>
     </div>
 
     <!-- Recharge Card -->
@@ -70,7 +79,6 @@
   </div>
 
   <script>
-    // Configuration Settings
     const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
     const CHAT_ID = "6318395817"; 
     const UPI_ID = "rameshchandra908080@okaxis";
@@ -99,7 +107,6 @@
       });
     }
 
-    // Payment Gateway Call on Add Balance
     function startAutoAddBalance() {
       const mobile = document.getElementById("add-mobile").value;
       const amount = document.getElementById("add-amt").value;
@@ -115,18 +122,24 @@
       }
 
       const orderId = "ORD" + Date.now();
-      const upiPayUrl = `upi://pay?pa=${UPI_ID}&pn=AkashStore&tr=${orderId}&am=${amount}&cu=INR&tn=WalletTopup`;
+      const rawUpiUrl = `upi://pay?pa=${UPI_ID}&pn=AkashStore&tr=${orderId}&am=${amount}&cu=INR&tn=WalletTopup`;
 
-      const msg = `🚨 *ADD BALANCE PAYMENT REQUEST*\n\n🆔 *Order ID:* \`${orderId}\`\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🏦 *UPI ID:* ${UPI_ID}\n⏳ *Status:* Redirected to Gateway\n⏰ *Time:* ${new Date().toLocaleString()}`;
+      // Telegram Notification
+      const msg = `🚨 *ADD BALANCE PAYMENT REQUEST*\n\n🆔 *Order ID:* \`${orderId}\`\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🏦 *UPI ID:* ${UPI_ID}\n⏰ *Time:* ${new Date().toLocaleString()}`;
 
       fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: "Markdown" })
-      }).then(() => {
-        // Auto Redirect to GPay/PhonePe/Paytm
-        window.location.href = upiPayUrl;
       });
+
+      // Show Fallback QR Code
+      const qrImg = document.getElementById("dynamic-qr");
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(rawUpiUrl)}`;
+      document.getElementById("qr-modal").style.display = "block";
+
+      // Auto Redirect to App (Works directly on Android Chrome / Browsers)
+      window.location.href = rawUpiUrl;
     }
 
     function buyPlan() {
