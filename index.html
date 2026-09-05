@@ -27,7 +27,6 @@
       gap: 15px;
     }
 
-    /* KONE ME TIME & NAME DISPLAY BADGE */
     .user-info-badge {
       background: rgba(255, 255, 255, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.4);
@@ -41,7 +40,6 @@
 
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
-    /* WELCOME POPUP STYLES */
     #welcome-modal {
       display: none;
       position: fixed;
@@ -89,7 +87,7 @@
     .btn-voter { background: #6f42c1; }
     .btn-admin { background: #dc3545; }
 
-    .btn-sm { width: auto; padding: 5px 10px; font-size: 12px; margin: 2px; display: inline-block; }
+    .btn-sm { width: auto; padding: 5px 10px; font-size: 12px; margin: 2px; display: inline-block; cursor: pointer; border: none; border-radius: 4px; color: white; }
     .btn-approve { background: #28a745; }
     .btn-reject { background: #dc3545; }
 
@@ -102,6 +100,8 @@
     .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     .admin-table th { background: #007bff; color: white; }
     .admin-section { margin-bottom: 30px; }
+
+    .pdf-download-link { color: #007bff; font-weight: bold; text-decoration: underline; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -120,7 +120,6 @@
     <h2>Akash Service Store</h2>
 
     <div class="header-right">
-      <!-- LIVE DATE, TIME & NAME IN TOP RIGHT CORNER -->
       <div class="user-info-badge" id="top-corner-info">
         👤 Guest | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>
       </div>
@@ -155,7 +154,6 @@
       </p>
     </div>
 
-    <!-- Login Form -->
     <div class="card" id="login-card" style="display:none;">
       <h3>🔐 User Login</h3>
       <label>Email ID</label>
@@ -165,7 +163,6 @@
       <button class="btn btn-buy" onclick="loginUser()">Login Portal</button>
     </div>
 
-    <!-- Admin Login -->
     <div class="card" id="admin-login-card" style="display:none;">
       <h3>⚙️ Admin Login Panel</h3>
       <label>Admin Username</label>
@@ -297,16 +294,17 @@
       <button class="btn btn-admin" style="margin-top:15px;" onclick="logout()">Logout Portal</button>
     </div>
 
-    <!-- HISTORY LOG -->
+    <!-- UNIFIED HISTORY LOG & DOWNLOAD -->
     <div class="card" style="grid-column: span 2;">
-      <h3>📜 My Transactions & Service History</h3>
+      <h3>📜 My All Services History & Download PDF</h3>
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Type</th>
+            <th>Service Type</th>
             <th>Details</th>
             <th>Amount</th>
             <th>Status / Time</th>
+            <th>PDF / Download</th>
           </tr>
         </thead>
         <tbody id="user-history-body"></tbody>
@@ -335,7 +333,7 @@
     </div>
 
     <div class="card admin-section" style="grid-column: span 2;">
-      <h3 style="border-bottom-color: #28a745;">💳 Pending Add Money Requests (UTR Verification)</h3>
+      <h3 style="border-bottom-color: #28a745;">💳 Pending Add Money Requests</h3>
       <table class="admin-table">
         <thead>
           <tr>
@@ -353,7 +351,7 @@
     </div>
 
     <div class="card admin-section" style="grid-column: span 2;">
-      <h3 style="border-bottom-color: #ff9800;">⚙️ Pending Work & Service Orders (Refund / Complete)</h3>
+      <h3 style="border-bottom-color: #ff9800;">⚙️ Pending Work & Service Orders (Upload PDF to Deliver)</h3>
       <table class="admin-table">
         <thead>
           <tr>
@@ -361,7 +359,7 @@
             <th>Service</th>
             <th>Details</th>
             <th>Amount</th>
-            <th>Time</th>
+            <th>Upload Document (PDF/Photo)</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -399,7 +397,6 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // REAL-TIME DATE & TIME CLOCK (UPDATES EVERY SECOND)
     function startRealTimeClock() {
       setInterval(() => {
         const now = new Date();
@@ -418,7 +415,6 @@
       }
     }
 
-    // TRIGGER ANIMATED WELCOME OVERLAY
     function triggerWelcomeModal(userName) {
       const modal = document.getElementById("welcome-modal");
       document.getElementById("welcome-user-name").innerText = userName;
@@ -443,7 +439,7 @@
       const timeNow = new Date().toLocaleString();
       const newUser = {
         name, dob, shop, email, password: pass, balance: 10.00,
-        history: [{ id: Date.now(), type: "Bonus", details: "Registration Sign-up Bonus", amount: 10, status: "Success", time: timeNow }]
+        history: [{ id: Date.now(), type: "Bonus", details: "Registration Sign-up Bonus", amount: 10, status: "Success", time: timeNow, pdfUrl: null }]
       };
 
       usersDB.push(newUser);
@@ -515,7 +511,8 @@
         mobile: mobile,
         proof: proofUrl,
         status: "Pending Approval",
-        time: timeNow
+        time: timeNow,
+        pdfUrl: null
       });
 
       updateUserDataStorage();
@@ -543,7 +540,8 @@
         details: details,
         amount: charge,
         status: "Pending Work",
-        time: timeNow
+        time: timeNow,
+        pdfUrl: null
       });
 
       updateUserDataStorage();
@@ -720,9 +718,11 @@
                   <td><b>${item.type}</b></td>
                   <td>${item.details}</td>
                   <td>₹${item.amount}</td>
-                  <td>${item.time}</td>
                   <td>
-                    <button class="btn-sm btn-approve" onclick="completeWork('${user.email}', ${item.id})">Mark Completed</button>
+                    <input type="file" id="file-${item.id}" accept="application/pdf,image/*" style="font-size:11px;">
+                  </td>
+                  <td>
+                    <button class="btn-sm btn-approve" onclick="uploadAndCompleteWork('${user.email}', ${item.id})">Upload PDF & Complete</button>
                     <button class="btn-sm btn-reject" onclick="rejectAndRefundWork('${user.email}', ${item.id})">Cancel & Refund</button>
                   </td>
                 </tr>
@@ -734,6 +734,27 @@
 
       if(count === 0) {
         tbody.innerHTML = `<tr><td colspan="6">Koi Pending Service/Work nahi hai.</td></tr>`;
+      }
+    }
+
+    function uploadAndCompleteWork(userEmail, itemId) {
+      const user = usersDB.find(u => u.email === userEmail);
+      if(user) {
+        const item = user.history.find(h => h.id === itemId);
+        if(item) {
+          const fileInput = document.getElementById(`file-${itemId}`);
+          const file = fileInput.files[0];
+
+          if(file) {
+            const fileUrl = URL.createObjectURL(file);
+            item.pdfUrl = fileUrl;
+            item.pdfName = file.name;
+          }
+
+          item.status = "Completed";
+          saveAndRefreshAdmin();
+          alert("Document uploaded aur Order Completed Mark ho gaya hai!");
+        }
       }
     }
 
@@ -762,18 +783,6 @@
       }
     }
 
-    function completeWork(userEmail, itemId) {
-      const user = usersDB.find(u => u.email === userEmail);
-      if(user) {
-        const item = user.history.find(h => h.id === itemId);
-        if(item) {
-          item.status = "Completed";
-          saveAndRefreshAdmin();
-          alert("Order Completed mark kar diya gaya hai!");
-        }
-      }
-    }
-
     function rejectAndRefundWork(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
@@ -793,7 +802,7 @@
         usersDB[index].balance += parseFloat(amt);
         const timeNow = new Date().toLocaleString();
         if(!usersDB[index].history) usersDB[index].history = [];
-        usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow });
+        usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow, pdfUrl: null });
         saveAndRefreshAdmin();
         alert("Balance Updated!");
       }
@@ -817,7 +826,6 @@
       document.getElementById("portal-section").style.display = "grid";
       document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
       
-      // TOP RIGHT KONE ME USER NAME UPDATE
       document.getElementById("top-corner-info").innerHTML = `👤 <span>${currentUser.name}</span> | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>`;
       
       loadUserHistoryTable();
@@ -828,7 +836,7 @@
       const tbody = document.getElementById("user-history-body");
       tbody.innerHTML = "";
       if(!currentUser.history || currentUser.history.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4">Koi transaction history nahi hai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5">Koi transaction history nahi hai.</td></tr>`;
         return;
       }
       currentUser.history.forEach(item => {
@@ -836,12 +844,20 @@
         let amtColor = isAdd ? "green" : "red";
         let sign = isAdd ? "+" : "-";
 
+        let downloadAction = `<span style="color:#aaa;">N/A</span>`;
+        if(item.pdfUrl) {
+          downloadAction = `<a href="${item.pdfUrl}" download="${item.pdfName || 'Document.pdf'}" class="pdf-download-link">📥 Download PDF</a>`;
+        } else if(item.status === "Pending Work") {
+          downloadAction = `<span style="color:#ff9800; font-size:12px;">⏳ In Process</span>`;
+        }
+
         tbody.innerHTML += `
           <tr>
             <td><b>${item.type}</b></td>
             <td>${item.details}</td>
             <td style="color:${amtColor}; font-weight:bold;">${sign}₹${Math.abs(item.amount)}</td>
             <td><small><b>${item.status}</b><br>${item.time}</small></td>
+            <td>${downloadAction}</td>
           </tr>
         `;
       });
