@@ -1,620 +1,166 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Abhishek All-In-One Multi Service Portal</title>
+  <title>Health Wealth World - Login / Register</title>
   <style>
-    :root {
-      --primary-color: #007bff;
-      --bg-color: #f0f2f5;
-      --card-bg: #ffffff;
-      --text-color: #333333;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background: var(--bg-color); color: var(--text-color); padding: 15px; transition: 0.3s; }
-
-    header { 
-      background: var(--primary-color); 
-      color: white; 
-      padding: 15px 20px; 
-      border-radius: 10px; 
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-bottom: 20px; 
-      flex-wrap: wrap;
-      gap: 10px;
+    body {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+      color: #f0f6fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
     }
 
-    .brand-title { font-size: 22px; font-weight: 900; color: #ffffff; letter-spacing: 1px; }
-    .header-right { display: flex; align-items: center; gap: 15px; }
-    .user-info-badge { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #fff; }
-    .user-info-badge span { font-weight: bold; color: #ffeb3b; }
-    .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
+    .card {
+      background-color: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
 
-    .main-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-    .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
-    .card h3 { color: var(--text-color); margin-bottom: 15px; border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; font-size: 16px; }
+    .card h2 {
+      text-align: center;
+      color: #f1c40f;
+      margin-bottom: 24px;
+      font-size: 1.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-    label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-top: 10px; }
-    input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
+    .form-group {
+      margin-bottom: 18px;
+    }
 
-    .btn { width: 100%; margin-top: 15px; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; }
-    .btn-buy { background: #28a745; }
-    .btn-add { background: var(--primary-color); }
-    .btn-rc { background: #17a2b8; }
-    .btn-admin { background: #dc3545; }
-    .btn-success { background: #28a745; padding: 5px 10px; font-size: 12px; width: auto; margin: 2px; }
-    .btn-danger { background: #dc3545; padding: 5px 10px; font-size: 12px; width: auto; margin: 2px; }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: #8b949e;
+    }
 
-    .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
-    
-    #portal-section, #admin-dashboard { display: none; }
-    .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; overflow-x: auto; display: block; }
-    .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; white-space: nowrap; }
-    .admin-table th { background: var(--primary-color); color: white; }
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      background-color: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #f1c40f;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #f1c40f;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #d4ac0d;
+    }
+
+    .toggle-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #8b949e;
+    }
+
+    .toggle-text span {
+      color: #f1c40f;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand-title">Abhishek Service Store</div>
-    <div class="header-right">
-      <div class="user-info-badge" id="top-corner-info">
-        👤 Guest | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>
+  <div class="card">
+    <!-- Register Form -->
+    <div id="registerForm">
+      <h2>Health Wealth World</h2>
+      <form onsubmit="handleAuth(event, 'Register')">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="Apna Naam Enter Karein" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number / User ID</label>
+          <input type="text" id="phone" placeholder="Phone Number ya User ID" required>
+        </div>
+        <div class="form-group">
+          <label for="pin">4-Digit PIN</label>
+          <input type="password" id="pin" maxlength="4" pattern="\d{4}" placeholder="e.g. 1234" required>
+        </div>
+        <button type="submit" class="btn">Submit</button>
+      </form>
+      <div class="toggle-text">
+        Pehle se Account hai? <span onclick="toggleForm()">Login Karein</span>
       </div>
-      <div class="wallet-box">Balance: ₹<span id="user-balance">500.00</span></div>
-    </div>
-  </header>
-
-  <!-- AUTH SECTION -->
-  <div id="auth-section" class="main-container">
-    <div class="card" id="reg-card">
-      <h3>📝 User Registration (Get ₹500 Trial Balance)</h3>
-      <label>Full Name</label>
-      <input type="text" id="reg-name" placeholder="Enter Full Name">
-      <label>Shop Name</label>
-      <input type="text" id="reg-shop" placeholder="Enter Shop Name">
-      <label>Gmail Address (ID)</label>
-      <input type="email" id="reg-email" placeholder="example@gmail.com">
-      <label>Password (Min 8 Digits)</label>
-      <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
-      <button class="btn btn-add" id="btn-register">Register Now</button>
-      <p style="margin-top: 15px; font-size: 13px;">
-        Already Registered? <a href="#" id="link-show-login">Login Here</a> | 
-        <a href="#" id="link-show-admin" style="color:#dc3545;">Admin Login</a>
-      </p>
     </div>
 
-    <div class="card" id="login-card" style="display:none;">
-      <h3>🔐 User Login</h3>
-      <label>Email ID</label>
-      <input type="email" id="login-email" placeholder="Enter Email ID">
-      <label>Password</label>
-      <input type="password" id="login-pass" placeholder="Enter Password">
-      <button class="btn btn-buy" id="btn-login">Login Portal</button>
-      <p style="margin-top:10px;"><a href="#" id="link-back-reg">Back to Register</a></p>
-    </div>
-
-    <div class="card" id="admin-login-card" style="display:none;">
-      <h3>⚙️ Admin Login Panel</h3>
-      <label>Admin Username</label>
-      <input type="text" id="admin-user" placeholder="Enter Admin Username">
-      <label>Admin Password</label>
-      <input type="password" id="admin-pass" placeholder="Enter Admin Password">
-      <button class="btn btn-admin" id="btn-admin-login">Login as Admin</button>
-      <p style="margin-top:10px;"><a href="#" id="link-back-reg-2">Back to Register</a></p>
-    </div>
-  </div>
-
-  <!-- MAIN USER PORTAL (ALL SERVICES) -->
-  <div id="portal-section" class="main-container">
-    
-    <!-- 1. MOBILE RECHARGE SERVICE -->
-    <div class="card">
-      <h3>📱 Mobile Recharge (Screenshot ke sath)</h3>
-      <label>Select Operator</label>
-      <select id="rc-operator">
-        <option value="Jio">Jio</option>
-        <option value="Airtel">Airtel</option>
-        <option value="Vi">Vi (Vodafone Idea)</option>
-        <option value="BSNL">BSNL</option>
-      </select>
-      <label>Mobile Number</label>
-      <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
-      <label>Select Plan</label>
-      <select id="rc-plan-select"></select>
-      <label>Upload Payment Screenshot</label>
-      <input type="file" id="rc-screenshot" accept="image/*">
-      <button class="btn btn-rc" id="btn-recharge">Submit Recharge</button>
-    </div>
-
-    <!-- 2. UTILITY & BILL PAYMENTS -->
-    <div class="card">
-      <h3>💡 Utility & Bill Payments</h3>
-      <label>Select Service</label>
-      <select id="util-service">
-        <option value="Electricity Bill">Electricity Bill Payment</option>
-        <option value="Fastag Recharge">Fastag Recharge</option>
-        <option value="DTH Recharge">DTH Recharge</option>
-        <option value="Gas Booking">LPG Gas Booking</option>
-      </select>
-      <label>Consumer / Vehicle / Customer ID</label>
-      <input type="text" id="util-number" placeholder="Enter Number / ID">
-      <label>Amount (₹)</label>
-      <input type="number" id="util-amount" placeholder="Enter Amount">
-      <button class="btn btn-buy" id="btn-utility">Pay Bill Now</button>
-    </div>
-
-    <!-- 3. FIND ID & DOCUMENT SERVICES -->
-    <div class="card">
-      <h3>🔍 Find ID & Document Services</h3>
-      <label>Select Document Type</label>
-      <select id="doc-type">
-        <option value="PAN Card Find">Find PAN Card Details</option>
-        <option value="Voter ID Print">Voter ID Card Print</option>
-        <option value="Aadhaar Status Check">Aadhaar Verification Service</option>
-        <option value="Driving Licence Find">Driving Licence Details</option>
-      </select>
-      <label>Enter Reference ID / Number</label>
-      <input type="text" id="doc-number" placeholder="Enter ID Number">
-      <button class="btn btn-add" id="btn-doc">Submit Request</button>
-    </div>
-
-    <!-- 4. USER TRANSACTION HISTORY -->
-    <div class="card" style="grid-column: span 1 / -1;">
-      <h3>📜 Aapki Sabhi Services & Transactions History</h3>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Service Type</th>
-            <th>Details</th>
-            <th>Amount</th>
-            <th>Screenshot / Proof</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="user-history-body"></tbody>
-      </table>
-      <button class="btn btn-admin" style="margin-top:15px; width: 200px;" id="btn-logout">Logout Portal</button>
-    </div>
-  </div>
-
-  <!-- ADMIN DASHBOARD -->
-  <div id="admin-dashboard" class="main-container">
-    
-    <!-- REGISTERED USERS LIST (ID, PASSWORD, IP) -->
-    <div class="card" style="grid-column: span 1 / -1;">
-      <h3>👥 All Registered Users List (ID, Password, IP Address)</h3>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Name & Shop</th>
-            <th>User ID (Email)</th>
-            <th>Password</th>
-            <th>IP Address</th>
-            <th>Wallet Balance</th>
-          </tr>
-        </thead>
-        <tbody id="admin-users-list-body">
-          <tr><td colspan="5">Koi user registered nahi hai.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- RECHARGE & SERVICE REQUESTS CONTROL -->
-    <div class="card" style="grid-column: span 1 / -1;">
-      <h3>👑 Admin Panel: Service & Recharge Requests Control</h3>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>User Name & Email</th>
-            <th>Service Details</th>
-            <th>Amount</th>
-            <th>Screenshot / Proof</th>
-            <th>Status</th>
-            <th>Action (Accept / Reject)</th>
-          </tr>
-        </thead>
-        <tbody id="admin-all-requests-body">
-          <tr><td colspan="6">Koi request nahi hai.</td></tr>
-        </tbody>
-      </table>
-      <button class="btn btn-admin" style="margin-top:15px; width: 200px;" id="btn-admin-logout">Admin Logout</button>
+    <!-- Login Form -->
+    <div id="loginForm" class="hidden">
+      <h2>Health Wealth World</h2>
+      <form onsubmit="handleAuth(event, 'Login')">
+        <div class="form-group">
+          <label for="loginPhone">Phone Number / User ID</label>
+          <input type="text" id="loginPhone" placeholder="Enter Registered Phone/ID" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPin">4-Digit PIN</label>
+          <input type="password" id="loginPin" maxlength="4" pattern="\d{4}" placeholder="Enter 4-Digit PIN" required>
+        </div>
+        <button type="submit" class="btn">Login</button>
+      </form>
+      <div class="toggle-text">
+        Naya Account Banayein? <span onclick="toggleForm()">Register Karein</span>
+      </div>
     </div>
   </div>
 
   <script>
-    const telegramBots = [
-      { token: "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s", chatId: "6318395817" }
-    ];
-
-    let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-    let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-
-    let clientIp = localStorage.getItem("clientIp");
-    if(!clientIp) {
-      clientIp = "192.168." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
-      localStorage.setItem("clientIp", clientIp);
+    function toggleForm() {
+      document.getElementById('registerForm').classList.toggle('hidden');
+      document.getElementById('loginForm').classList.toggle('hidden');
     }
 
-    const allRechargePlans = {
-      Jio: [
-        { mrp: 199, discount: 2, desc: "₹199 - 1.5GB/Day (18 Days)" },
-        { mrp: 239, discount: 2, desc: "₹239 - 1.5GB/Day (22 Days)" },
-        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
-      ],
-      Airtel: [
-        { mrp: 199, discount: 2, desc: "₹199 - 1GB/Day (24 Days)" },
-        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
-      ],
-      Vi: [
-        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
-      ],
-      BSNL: [
-        { mrp: 199, discount: 2, desc: "₹199 - 2GB/Day (30 Days)" }
-      ]
-    };
-
-    function sendTelegramAlert(textMsg) {
-      telegramBots.forEach(bot => {
-        fetch(`https://api.telegram.org/bot${bot.token}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: bot.chatId, text: textMsg, parse_mode: 'Markdown' })
-        }).catch(e => console.log("TG Error:", e));
-      });
-    }
-
-    function loadOperatorPlans() {
-      const op = document.getElementById("rc-operator").value;
-      const planSelect = document.getElementById("rc-plan-select");
-      planSelect.innerHTML = "";
-      (allRechargePlans[op] || []).forEach((p, idx) => {
-        const netPrice = p.mrp - p.discount;
-        planSelect.innerHTML += `<option value="${idx}">${p.desc} (Pay: ₹${netPrice})</option>`;
-      });
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-      setInterval(() => {
-        const now = new Date();
-        document.getElementById("live-date").innerText = now.toLocaleDateString();
-        document.getElementById("live-time").innerText = now.toLocaleTimeString();
-      }, 1000);
-
-      if(currentUser) {
-        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        const latestUser = usersDB.find(u => u.email === currentUser.email);
-        if(latestUser) {
-          currentUser = latestUser;
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        }
-        showPortal();
-      }
-
-      loadOperatorPlans();
-      document.getElementById("rc-operator").onchange = loadOperatorPlans;
-
-      document.getElementById("link-show-login").onclick = (e) => {
-        e.preventDefault();
-        document.getElementById("reg-card").style.display = "none";
-        document.getElementById("login-card").style.display = "block";
-      };
-
-      document.getElementById("link-show-admin").onclick = (e) => {
-        e.preventDefault();
-        document.getElementById("reg-card").style.display = "none";
-        document.getElementById("admin-login-card").style.display = "block";
-      };
-
-      document.getElementById("link-back-reg").onclick = document.getElementById("link-back-reg-2").onclick = (e) => {
-        e.preventDefault();
-        document.getElementById("login-card").style.display = "none";
-        document.getElementById("admin-login-card").style.display = "none";
-        document.getElementById("reg-card").style.display = "block";
-      };
-
-      // REGISTER
-      document.getElementById("btn-register").onclick = function() {
-        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        const name = document.getElementById("reg-name").value;
-        const shop = document.getElementById("reg-shop").value;
-        const email = document.getElementById("reg-email").value;
-        const pass = document.getElementById("reg-pass").value;
-
-        if(!name || !email || pass.length < 8) {
-          alert("Kripya sabhi details sahi se bharein (Password min 8 digits)!");
-          return;
-        }
-
-        const existing = usersDB.find(u => u.email === email);
-        if(existing) {
-          alert("Ye Email ID pehle se registered hai! Login karein.");
-          return;
-        }
-
-        const newUser = { 
-          name, 
-          shop, 
-          email, 
-          password: pass, 
-          ip: clientIp, 
-          balance: 500.0, 
-          history: [] 
-        };
-        usersDB.push(newUser);
-        currentUser = newUser;
-        updateStorage();
-        showPortal();
-      };
-
-      // LOGIN
-      document.getElementById("btn-login").onclick = function() {
-        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        const email = document.getElementById("login-email").value;
-        const pass = document.getElementById("login-pass").value;
-        const user = usersDB.find(u => u.email === email && u.password === pass);
-
-        if(user) {
-          currentUser = user;
-          if(!currentUser.history) currentUser.history = [];
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
-          updateStorage();
-          showPortal();
-        } else {
-          alert("Galat Email ya Password!");
-        }
-      };
-
-      // ADMIN LOGIN
-      document.getElementById("btn-admin-login").onclick = function() {
-        const u = document.getElementById("admin-user").value;
-        const p = document.getElementById("admin-pass").value;
-        if(u === "admin" && p === "adminpassword123") {
-          document.getElementById("auth-section").style.display = "none";
-          document.getElementById("admin-dashboard").style.display = "grid";
-          refreshAdminDashboard();
-        } else {
-          alert("Invalid Admin Credentials!");
-        }
-      };
-
-      // 1. MOBILE RECHARGE SUBMIT
-      document.getElementById("btn-recharge").onclick = function() {
-        const op = document.getElementById("rc-operator").value;
-        const mob = document.getElementById("rc-mobile").value;
-        const idx = document.getElementById("rc-plan-select").value;
-        const fileInput = document.getElementById("rc-screenshot");
-
-        if(!mob || mob.length !== 10) { alert("Valid 10 Digit Mobile Number bharein!"); return; }
-        if(fileInput.files.length === 0) { alert("Kripya Screenshot upload karein!"); return; }
-
-        const selectedPlan = allRechargePlans[op][idx];
-        const finalPrice = selectedPlan.mrp - selectedPlan.discount;
-
-        if(currentUser.balance < finalPrice) {
-          alert("Wallet balance kam hai!");
-          return;
-        }
-
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const imgData = e.target.result;
-          currentUser.balance -= finalPrice;
-          if(!currentUser.history) currentUser.history = [];
-
-          const reqId = "REQ_" + Date.now();
-          currentUser.history.push({
-            id: reqId,
-            type: "Mobile Recharge",
-            details: `${op} - ${mob} (${selectedPlan.desc})`,
-            amount: `₹${finalPrice}`,
-            screenshot: imgData,
-            status: "Pending (Review by Admin)"
-          });
-
-          updateStorage();
-          sendTelegramAlert(`📱 *NEW RECHARGE*\nUser: ${currentUser.name}\nDetails: ${op} - ${mob}\nAmount: ₹${finalPrice}`);
-          alert("Recharge request submit ho gayi hai!");
-          document.getElementById("rc-mobile").value = "";
-          document.getElementById("rc-screenshot").value = "";
-          showPortal();
-        };
-        reader.readAsDataURL(file);
-      };
-
-      // 2. UTILITY BILL PAYMENT SUBMIT
-      document.getElementById("btn-utility").onclick = function() {
-        const service = document.getElementById("util-service").value;
-        const number = document.getElementById("util-number").value;
-        const amount = parseFloat(document.getElementById("util-amount").value);
-
-        if(!number || !amount || amount <= 0) { alert("Sabhi details sahi bharein!"); return; }
-
-        if(currentUser.balance < amount) {
-          alert("Wallet balance kam hai!");
-          return;
-        }
-
-        currentUser.balance -= amount;
-        if(!currentUser.history) currentUser.history = [];
-
-        const reqId = "REQ_" + Date.now();
-        currentUser.history.push({
-          id: reqId,
-          type: service,
-          details: `ID/No: ${number}`,
-          amount: `₹${amount}`,
-          screenshot: "",
-          status: "Pending (Review by Admin)"
-        });
-
-        updateStorage();
-        alert("Utility bill request submit ho gayi hai!");
-        document.getElementById("util-number").value = "";
-        document.getElementById("util-amount").value = "";
-        showPortal();
-      };
-
-      // 3. DOCUMENT SERVICE SUBMIT
-      document.getElementById("btn-doc").onclick = function() {
-        const docType = document.getElementById("doc-type").value;
-        const docNo = document.getElementById("doc-number").value;
-
-        if(!docNo) { alert("Reference number bharein!"); return; }
-
-        const fee = 10; // Nominal service fee
-        if(currentUser.balance < fee) { alert("Wallet balance kam hai!"); return; }
-
-        currentUser.balance -= fee;
-        if(!currentUser.history) currentUser.history = [];
-
-        const reqId = "REQ_" + Date.now();
-        currentUser.history.push({
-          id: reqId,
-          type: docType,
-          details: `Ref No: ${docNo}`,
-          amount: `₹${fee}`,
-          screenshot: "",
-          status: "Pending (Review by Admin)"
-        });
-
-        updateStorage();
-        alert("Document service request submit ho gayi hai!");
-        document.getElementById("doc-number").value = "";
-        showPortal();
-      };
-
-      // ADMIN ACTION: ACCEPT / REJECT
-      window.adminAction = function(userEmail, reqId, actionType) {
-        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        const uIndex = usersDB.findIndex(u => u.email === userEmail);
-        if(uIndex === -1) return;
-
-        const hIndex = usersDB[uIndex].history.findIndex(h => h.id === reqId);
-        if(hIndex === -1) return;
-
-        const item = usersDB[uIndex].history[hIndex];
-
-        if(actionType === 'success') {
-          item.status = "Success ✅";
-        } else if(actionType === 'reject') {
-          item.status = "Rejected ❌ (Refunded)";
-          const amtNum = parseFloat(item.amount.replace("₹", ""));
-          usersDB[uIndex].balance += amtNum;
-        }
-
-        localStorage.setItem("usersDB", JSON.stringify(usersDB));
-
-        if(currentUser && currentUser.email === userEmail) {
-          currentUser = usersDB[uIndex];
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
-          showPortal();
-        }
-
-        refreshAdminDashboard();
-        alert("Action successfully update kar diya gaya hai!");
-      };
-
-      function refreshAdminDashboard() {
-        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        
-        // 1. Users List
-        const userListTbody = document.getElementById("admin-users-list-body");
-        userListTbody.innerHTML = "";
-        if(usersDB.length === 0) {
-          userListTbody.innerHTML = `<tr><td colspan="5" style="color:#777;">Koi user registered nahi hai.</td></tr>`;
-        } else {
-          usersDB.forEach(usr => {
-            userListTbody.innerHTML += `
-              <tr>
-                <td><b>${usr.name}</b><br><span style="font-size:11px; color:#555;">Shop: ${usr.shop || 'N/A'}</span></td>
-                <td><code style="background:#eee; padding:2px 4px; border-radius:3px;">${usr.email}</code></td>
-                <td><code style="background:#ffeeba; padding:2px 4px; border-radius:3px;">${usr.password}</code></td>
-                <td><span style="color:#007bff; font-weight:bold;">${usr.ip || '192.168.1.10'}</span></td>
-                <td>₹${usr.balance.toFixed(2)}</td>
-              </tr>`;
-          });
-        }
-
-        // 2. All Service Requests
-        const tbody = document.getElementById("admin-all-requests-body");
-        tbody.innerHTML = "";
-
-        let hasData = false;
-        usersDB.forEach(usr => {
-          if(usr.history && usr.history.length > 0) {
-            usr.history.forEach(h => {
-              hasData = true;
-              const ssHtml = h.screenshot ? `<a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" title="Click to view"></a>` : 'No Image';
-              
-              tbody.innerHTML += `
-                <tr>
-                  <td><b>${usr.name}</b><br><span style="font-size:11px; color:#555;">${usr.email}</span></td>
-                  <td><b>${h.type}</b><br>${h.details}</td>
-                  <td>${h.amount}</td>
-                  <td>${ssHtml}</td>
-                  <td><b>${h.status}</b></td>
-                  <td>
-                    <button class="btn btn-success" onclick="adminAction('${usr.email}', '${h.id}', 'success')">Accept</button>
-                    <button class="btn btn-danger" onclick="adminAction('${usr.email}', '${h.id}', 'reject')">Reject</button>
-                  </td>
-                </tr>`;
-            });
-          }
-        });
-
-        if(!hasData) {
-          tbody.innerHTML = `<tr><td colspan="6" style="color:#777;">Abhi koi request nahi hai.</td></tr>`;
-        }
-      }
-
-      document.getElementById("btn-logout").onclick = document.getElementById("btn-admin-logout").onclick = function() {
-        localStorage.removeItem("currentUser");
-        location.reload();
-      };
-    });
-
-    function showPortal() {
-      document.getElementById("auth-section").style.display = "none";
-      document.getElementById("portal-section").style.display = "grid";
-      document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
-
-      const tbody = document.getElementById("user-history-body");
-      tbody.innerHTML = "";
-      if(!currentUser.history || currentUser.history.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="color:#777;">Abhi koi history nahi hai.</td></tr>`;
-      } else {
-        currentUser.history.forEach(h => {
-          const ssHtml = h.screenshot ? `<a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" style="width:35px; height:35px; border-radius:4px; object-fit:cover;"></a>` : '-';
-          tbody.innerHTML += `
-            <tr>
-              <td><b>${h.type}</b></td>
-              <td>${h.details}</td>
-              <td>${h.amount}</td>
-              <td>${ssHtml}</td>
-              <td><b>${h.status}</b></td>
-            </tr>`;
-        });
-      }
-    }
-
-    function updateStorage() {
-      usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-      const idx = usersDB.findIndex(u => u.email === currentUser.email);
-      if(idx !== -1) {
-        usersDB[idx] = currentUser;
-      } else {
-        usersDB.push(currentUser);
-      }
-      localStorage.setItem("usersDB", JSON.stringify(usersDB));
-      localStorage.setItem("currentUser", JSON.stringify(currentUser));
-      showPortal();
+    function handleAuth(event, type) {
+      event.preventDefault();
+      alert(type + " Successful!");
     }
   </script>
+
 </body>
 </html>
