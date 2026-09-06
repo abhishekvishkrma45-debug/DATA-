@@ -34,6 +34,19 @@
     .user-info-badge span { font-weight: bold; color: #ffeb3b; }
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
+    /* Green Alert SMS Box */
+    .alert-sms {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      text-align: center;
+      display: none;
+    }
+
     .main-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
     .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
     .card h3 { color: var(--text-color); margin-bottom: 15px; border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; }
@@ -81,6 +94,11 @@
       <div class="wallet-box">Balance: ₹<span id="user-balance">0</span></div>
     </div>
   </header>
+
+  <!-- Green SMS Alert Box -->
+  <div id="green-alert-box" class="alert-sms">
+    🟢 File Done! New Document Received from Admin. Check your downloads below!
+  </div>
 
   <div id="auth-section" class="main-container">
     <div class="card" id="reg-card">
@@ -260,6 +278,23 @@
       <input type="number" id="birth-mobile" placeholder="10-Digit Mobile Number">
       <div class="comm-tag">Service Charge: ₹200</div>
       <button class="btn btn-birth" id="btn-apply-birth">Apply Birth Certificate (₹200)</button>
+    </div>
+
+    <!-- Admin Sent Documents Section for User -->
+    <div class="card" style="grid-column: span 2;" id="user-documents-card">
+      <h3>📂 Admin Se Mile Hue Documents / Print Files</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Document Title</th>
+            <th>File Name</th>
+            <th>Action / Download</th>
+          </tr>
+        </thead>
+        <tbody id="user-documents-body">
+          <tr><td colspan="3" style="color:#777;">Abhi koi file nahi mili hai.</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="card" style="grid-column: span 2;">
@@ -673,6 +708,27 @@
       document.getElementById("portal-section").style.display = "grid";
       document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
       
+      // Check if new documents exist to show Green Alert SMS
+      if(currentUser.documents && currentUser.documents.length > 0) {
+        document.getElementById("green-alert-box").style.display = "block";
+      }
+
+      // Load Documents Table
+      const docBody = document.getElementById("user-documents-body");
+      docBody.innerHTML = "";
+      if(!currentUser.documents || currentUser.documents.length === 0) {
+        docBody.innerHTML = `<tr><td colspan="3" style="color:#777;">Abhi koi file nahi mili hai.</td></tr>`;
+      } else {
+        currentUser.documents.forEach((doc) => {
+          docBody.innerHTML += `
+            <tr>
+              <td><b>${doc.title}</b></td>
+              <td>${doc.name}</td>
+              <td><a href="${doc.data}" download="${doc.name}" class="btn btn-buy" style="padding:6px 12px; font-size:12px; display:inline-block; text-decoration:none;">Download File</a></td>
+            </tr>`;
+        });
+      }
+
       // Load History
       const tbody = document.getElementById("user-history-body");
       tbody.innerHTML = "";
