@@ -34,21 +34,9 @@
     .user-info-badge span { font-weight: bold; color: #ffeb3b; }
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
-    .alert-sms {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-      padding: 12px 20px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-weight: bold;
-      text-align: center;
-      display: none;
-    }
-
-    .main-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .main-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
     .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
-    .card h3 { color: var(--text-color); margin-bottom: 15px; border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; }
+    .card h3 { color: var(--text-color); margin-bottom: 15px; border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; font-size: 16px; }
 
     label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-top: 10px; }
     input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
@@ -77,26 +65,22 @@
       <div class="user-info-badge" id="top-corner-info">
         👤 Guest | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>
       </div>
-      <div class="wallet-box">Balance: ₹<span id="user-balance">0</span></div>
+      <div class="wallet-box">Balance: ₹<span id="user-balance">500.00</span></div>
     </div>
   </header>
 
-  <div id="green-alert-box" class="alert-sms">
-    🟢 Update! Aapke Recharge ya Request par Admin dwara action liya gaya hai.
-  </div>
-
   <div id="auth-section" class="main-container">
     <div class="card" id="reg-card">
-      <h3>📝 User Registration (Get ₹10 Bonus)</h3>
+      <h3>📝 User Registration (Get ₹500 Trial Balance)</h3>
       <label>Full Name</label>
       <input type="text" id="reg-name" placeholder="Enter Full Name">
       <label>Shop Name</label>
       <input type="text" id="reg-shop" placeholder="Enter Shop Name">
-      <label>Gmail Address</label>
+      <label>Gmail Address (ID)</label>
       <input type="email" id="reg-email" placeholder="example@gmail.com">
       <label>Password (Min 8 Digits)</label>
       <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
-      <button class="btn btn-add" id="btn-register">Register & Claim ₹10</button>
+      <button class="btn btn-add" id="btn-register">Register Now</button>
       <p style="margin-top: 15px; font-size: 13px;">
         Already Registered? <a href="#" id="link-show-login">Login Here</a> | 
         <a href="#" id="link-show-admin" style="color:#dc3545;">Admin Login</a>
@@ -126,9 +110,8 @@
 
   <div id="portal-section" class="main-container">
     
-    <!-- MOBILE RECHARGE WITH SCREENSHOT UPLOAD -->
-    <div class="card" style="grid-column: span 2;">
-      <h3>📱 Mobile Recharge (Screenshot Upload ke sath)</h3>
+    <div class="card">
+      <h3>📱 Mobile Recharge (Screenshot ke sath)</h3>
       <label>Select Operator</label>
       <select id="rc-operator">
         <option value="Jio">Jio</option>
@@ -140,55 +123,101 @@
       <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
       <label>Select Plan</label>
       <select id="rc-plan-select"></select>
-      
-      <label>Upload Payment / Recharge Screenshot (Image)</label>
+      <label>Upload Payment / Recharge Screenshot</label>
       <input type="file" id="rc-screenshot" accept="image/*">
-
-      <div class="comm-tag" id="discount-info">Offer Rate: MRP - Flat Discount</div>
-      <button class="btn btn-rc" id="btn-recharge">Submit Recharge with Screenshot</button>
+      <button class="btn btn-rc" id="btn-recharge">Submit Recharge</button>
     </div>
 
-    <!-- USER TRANSACTION HISTORY -->
-    <div class="card" style="grid-column: span 2;">
-      <h3>📜 Aapki Recharge / Transaction History</h3>
+    <div class="card">
+      <h3>💡 Utility & Bill Payments</h3>
+      <label>Select Service</label>
+      <select id="util-service">
+        <option value="Electricity Bill">Electricity Bill Payment</option>
+        <option value="Fastag Recharge">Fastag Recharge</option>
+        <option value="DTH Recharge">DTH Recharge</option>
+        <option value="Gas Booking">LPG Gas Booking</option>
+      </select>
+      <label>Consumer / Vehicle / Customer ID</label>
+      <input type="text" id="util-number" placeholder="Enter Number / ID">
+      <label>Amount (₹)</label>
+      <input type="number" id="util-amount" placeholder="Enter Amount">
+      <label>Upload Payment Screenshot</label>
+      <input type="file" id="util-screenshot" accept="image/*">
+      <button class="btn btn-buy" id="btn-utility">Pay Bill Now</button>
+    </div>
+
+    <div class="card">
+      <h3>🔍 Find ID & Document Services</h3>
+      <label>Select Document Type</label>
+      <select id="doc-type">
+        <option value="PAN Card Find">Find PAN Card Details</option>
+        <option value="Voter ID Print">Voter ID Card Print</option>
+        <option value="Aadhaar Status Check">Aadhaar Verification Service</option>
+        <option value="Driving Licence Find">Driving Licence Details</option>
+      </select>
+      <label>Enter Reference ID / Number</label>
+      <input type="text" id="doc-number" placeholder="Enter ID Number">
+      <label>Upload Document / Proof (Optional)</label>
+      <input type="file" id="doc-screenshot" accept="image/*">
+      <button class="btn btn-add" id="btn-doc">Submit Request</button>
+    </div>
+
+    <div class="card" style="grid-column: span 1 / -1;">
+      <h3>📜 Aapki Sabhi Services & Transactions History</h3>
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Type</th>
+            <th>Service Type</th>
             <th>Details</th>
             <th>Amount</th>
-            <th>Screenshot</th>
+            <th>Screenshot / Proof</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody id="user-history-body"></tbody>
       </table>
-      <button class="btn btn-admin" style="margin-top:15px;" id="btn-logout">Logout</button>
+      <button class="btn btn-admin" style="margin-top:15px; width: 200px;" id="btn-logout">Logout Portal</button>
     </div>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
-    <div class="card" style="grid-column: span 2;">
-      <h3>👑 Admin Panel: User Recharges & Accept/Reject Control</h3>
-      <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Yahan sabhi users ke recharges aur unke uploaded screenshots dikhenge. Aap Success ya Reject kar sakte hain:</p>
-      
+    
+    <div class="card" style="grid-column: span 1 / -1;">
+      <h3>👥 All Registered Users List (ID, Password, IP Address)</h3>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name & Shop</th>
+            <th>User ID (Email)</th>
+            <th>Password</th>
+            <th>IP Address</th>
+            <th>Wallet Balance</th>
+          </tr>
+        </thead>
+        <tbody id="admin-users-list-body">
+          <tr><td colspan="5">Koi user registered nahi hai.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="grid-column: span 1 / -1;">
+      <h3>👑 Admin Panel: All Services Requests Control</h3>
       <table class="admin-table">
         <thead>
           <tr>
             <th>User Name & Email</th>
             <th>Service Details</th>
             <th>Amount</th>
-            <th>Screenshot</th>
-            <th>Current Status</th>
+            <th>Screenshot / Proof</th>
+            <th>Status</th>
             <th>Action (Accept / Reject)</th>
           </tr>
         </thead>
-        <tbody id="admin-all-recharges-body">
-          <tr><td colspan="6">Koi recharge request nahi hai.</td></tr>
+        <tbody id="admin-all-requests-body">
+          <tr><td colspan="6">Koi request nahi hai.</td></tr>
         </tbody>
       </table>
-      <button class="btn btn-admin" style="margin-top:15px;" id="btn-admin-logout">Admin Logout</button>
+      <button class="btn btn-admin" style="margin-top:15px; width: 200px;" id="btn-admin-logout">Admin Logout</button>
     </div>
   </div>
 
@@ -285,6 +314,7 @@
 
       // REGISTER
       document.getElementById("btn-register").onclick = function() {
+        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
         const name = document.getElementById("reg-name").value;
         const shop = document.getElementById("reg-shop").value;
         const email = document.getElementById("reg-email").value;
@@ -295,13 +325,19 @@
           return;
         }
 
+        const existing = usersDB.find(u => u.email === email);
+        if(existing) {
+          alert("Ye Email ID pehle se registered hai! Login karein.");
+          return;
+        }
+
         const newUser = { 
           name, 
           shop, 
           email, 
           password: pass, 
           ip: clientIp, 
-          balance: 500.0, // Starting trial balance
+          balance: 500.0, 
           history: [] 
         };
         usersDB.push(newUser);
@@ -312,6 +348,7 @@
 
       // LOGIN
       document.getElementById("btn-login").onclick = function() {
+        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
         const email = document.getElementById("login-email").value;
         const pass = document.getElementById("login-pass").value;
         const user = usersDB.find(u => u.email === email && u.password === pass);
@@ -340,7 +377,7 @@
         }
       };
 
-      // RECHARGE SUBMIT WITH SCREENSHOT
+      // 1. MOBILE RECHARGE SUBMIT
       document.getElementById("btn-recharge").onclick = function() {
         const op = document.getElementById("rc-operator").value;
         const mob = document.getElementById("rc-mobile").value;
@@ -348,7 +385,7 @@
         const fileInput = document.getElementById("rc-screenshot");
 
         if(!mob || mob.length !== 10) { alert("Valid 10 Digit Mobile Number bharein!"); return; }
-        if(fileInput.files.length === 0) { alert("Kripya Recharge / Payment ka Screenshot upload karein!"); return; }
+        if(fileInput.files.length === 0) { alert("Kripya Screenshot upload karein!"); return; }
 
         const selectedPlan = allRechargePlans[op][idx];
         const finalPrice = selectedPlan.mrp - selectedPlan.discount;
@@ -362,13 +399,10 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           const imgData = e.target.result;
-
           currentUser.balance -= finalPrice;
           if(!currentUser.history) currentUser.history = [];
 
-          // Unique ID for tracking this specific request
-          const reqId = "RC_" + Date.now();
-
+          const reqId = "REQ_" + Date.now();
           currentUser.history.push({
             id: reqId,
             type: "Mobile Recharge",
@@ -379,8 +413,8 @@
           });
 
           updateStorage();
-          sendTelegramAlert(`📱 *NEW RECHARGE REQUEST*\nUser: ${currentUser.name}\nDetails: ${op} - ${mob}\nAmount: ₹${finalPrice}`);
-          alert("Recharge request aur Screenshot successfully submit ho gaya hai!");
+          sendTelegramAlert(`📱 *NEW RECHARGE*\nUser: ${currentUser.name}\nDetails: ${op} - ${mob}\nAmount: ₹${finalPrice}`);
+          alert("Recharge request submit ho gayi hai!");
           document.getElementById("rc-mobile").value = "";
           document.getElementById("rc-screenshot").value = "";
           showPortal();
@@ -388,7 +422,95 @@
         reader.readAsDataURL(file);
       };
 
-      // ADMIN ACTION: ACCEPT / REJECT RECHARGE
+      // 2. UTILITY BILL PAYMENT SUBMIT
+      document.getElementById("btn-utility").onclick = function() {
+        const service = document.getElementById("util-service").value;
+        const number = document.getElementById("util-number").value;
+        const amount = parseFloat(document.getElementById("util-amount").value);
+        const fileInput = document.getElementById("util-screenshot");
+
+        if(!number || !amount || amount <= 0) { alert("Sabhi details sahi bharein!"); return; }
+
+        if(currentUser.balance < amount) {
+          alert("Wallet balance kam hai!");
+          return;
+        }
+
+        const processUtility = (imgData = "") => {
+          currentUser.balance -= amount;
+          if(!currentUser.history) currentUser.history = [];
+
+          const reqId = "REQ_" + Date.now();
+          currentUser.history.push({
+            id: reqId,
+            type: service,
+            details: `ID/No: ${number}`,
+            amount: `₹${amount}`,
+            screenshot: imgData,
+            status: "Pending (Review by Admin)"
+          });
+
+          updateStorage();
+          alert("Utility bill request submit ho gayi hai!");
+          document.getElementById("util-number").value = "";
+          document.getElementById("util-amount").value = "";
+          document.getElementById("util-screenshot").value = "";
+          showPortal();
+        };
+
+        if(fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) { processUtility(e.target.result); };
+          reader.readAsDataURL(file);
+        } else {
+          processUtility("");
+        }
+      };
+
+      // 3. DOCUMENT SERVICE SUBMIT
+      document.getElementById("btn-doc").onclick = function() {
+        const docType = document.getElementById("doc-type").value;
+        const docNo = document.getElementById("doc-number").value;
+        const fileInput = document.getElementById("doc-screenshot");
+
+        if(!docNo) { alert("Reference number bharein!"); return; }
+
+        const fee = 10; 
+        if(currentUser.balance < fee) { alert("Wallet balance kam hai!"); return; }
+
+        const processDoc = (imgData = "") => {
+          currentUser.balance -= fee;
+          if(!currentUser.history) currentUser.history = [];
+
+          const reqId = "REQ_" + Date.now();
+          currentUser.history.push({
+            id: reqId,
+            type: docType,
+            details: `Ref No: ${docNo}`,
+            amount: `₹${fee}`,
+            screenshot: imgData,
+            status: "Pending (Review by Admin)"
+          });
+
+          updateStorage();
+          alert("Document service request submit ho gayi hai!");
+          document.getElementById("doc-number").value = "";
+          document.getElementById("doc-screenshot").value = "";
+          showPortal();
+        };
+
+        if(fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          const reader = new FileReader();
+          reader.onload = function(e) { processDoc(e.target.result); };
+          reader.readAsDataURL(file);
+        } else {
+          processDoc("");
+        }
+      };
+
+      // ADMIN ACTION: ACCEPT / REJECT
       window.adminAction = function(userEmail, reqId, actionType) {
         usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
         const uIndex = usersDB.findIndex(u => u.email === userEmail);
@@ -403,14 +525,12 @@
           item.status = "Success ✅";
         } else if(actionType === 'reject') {
           item.status = "Rejected ❌ (Refunded)";
-          // Refund money back to user wallet
           const amtNum = parseFloat(item.amount.replace("₹", ""));
           usersDB[uIndex].balance += amtNum;
         }
 
         localStorage.setItem("usersDB", JSON.stringify(usersDB));
 
-        // If current user is logged in, sync their local object too
         if(currentUser && currentUser.email === userEmail) {
           currentUser = usersDB[uIndex];
           localStorage.setItem("currentUser", JSON.stringify(currentUser));
@@ -423,36 +543,54 @@
 
       function refreshAdminDashboard() {
         usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        const tbody = document.getElementById("admin-all-recharges-body");
+        
+        // 1. Users List
+        const userListTbody = document.getElementById("admin-users-list-body");
+        userListTbody.innerHTML = "";
+        if(usersDB.length === 0) {
+          userListTbody.innerHTML = `<tr><td colspan="5" style="color:#777;">Koi user registered nahi hai.</td></tr>`;
+        } else {
+          usersDB.forEach(usr => {
+            userListTbody.innerHTML += `
+              <tr>
+                <td><b>${usr.name}</b><br><span style="font-size:11px; color:#555;">Shop: ${usr.shop || 'N/A'}</span></td>
+                <td><code style="background:#eee; padding:2px 4px; border-radius:3px;">${usr.email}</code></td>
+                <td><code style="background:#ffeeba; padding:2px 4px; border-radius:3px;">${usr.password}</code></td>
+                <td><span style="color:#007bff; font-weight:bold;">${usr.ip || '192.168.1.10'}</span></td>
+                <td>₹${usr.balance.toFixed(2)}</td>
+              </tr>`;
+          });
+        }
+
+        // 2. All Service Requests
+        const tbody = document.getElementById("admin-all-requests-body");
         tbody.innerHTML = "";
 
         let hasData = false;
         usersDB.forEach(usr => {
           if(usr.history && usr.history.length > 0) {
             usr.history.forEach(h => {
-              if(h.type === "Mobile Recharge") {
-                hasData = true;
-                const ssHtml = h.screenshot ? `<a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" title="Click to view"></a>` : 'No Image';
-                
-                tbody.innerHTML += `
-                  <tr>
-                    <td><b>${usr.name}</b><br><span style="font-size:11px; color:#555;">${usr.email}</span></td>
-                    <td>${h.details}</td>
-                    <td>${h.amount}</td>
-                    <td>${ssHtml}</td>
-                    <td><b>${h.status}</b></td>
-                    <td>
-                      <button class="btn btn-success" onclick="adminAction('${usr.email}', '${h.id}', 'success')">Accept</button>
-                      <button class="btn btn-danger" onclick="adminAction('${usr.email}', '${h.id}', 'reject')">Reject</button>
-                    </td>
-                  </tr>`;
-              }
+              hasData = true;
+              const ssHtml = h.screenshot ? `<a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" title="Click to view"></a>` : 'No Image';
+              
+              tbody.innerHTML += `
+                <tr>
+                  <td><b>${usr.name}</b><br><span style="font-size:11px; color:#555;">${usr.email}</span></td>
+                  <td><b>${h.type}</b><br>${h.details}</td>
+                  <td>${h.amount}</td>
+                  <td>${ssHtml}</td>
+                  <td><b>${h.status}</b></td>
+                  <td>
+                    <button class="btn btn-success" onclick="adminAction('${usr.email}', '${h.id}', 'success')">Accept</button>
+                    <button class="btn btn-danger" onclick="adminAction('${usr.email}', '${h.id}', 'reject')">Reject</button>
+                  </td>
+                </tr>`;
             });
           }
         });
 
         if(!hasData) {
-          tbody.innerHTML = `<tr><td colspan="6" style="color:#777;">Abhi koi recharge request nahi hai.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="color:#777;">Abhi koi request nahi hai.</td></tr>`;
         }
       }
 
@@ -476,7 +614,7 @@
           const ssHtml = h.screenshot ? `<a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" style="width:35px; height:35px; border-radius:4px; object-fit:cover;"></a>` : '-';
           tbody.innerHTML += `
             <tr>
-              <td>${h.type}</td>
+              <td><b>${h.type}</b></td>
               <td>${h.details}</td>
               <td>${h.amount}</td>
               <td>${ssHtml}</td>
