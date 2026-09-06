@@ -90,7 +90,6 @@
     .btn-admin { background: #dc3545; }
     .btn-test { background: #6c757d; }
 
-    /* UPI Quick Pay Buttons */
     .upi-apps-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -253,7 +252,7 @@
       <button class="btn btn-add" onclick="submitAddMoneyWithProof()">Submit Add Money Request</button>
     </div>
 
-    <!-- MOBILE DETAILS SERVICE (NEW) -->
+    <!-- MOBILE DETAILS SERVICE -->
     <div class="card">
       <h3>📱 Mobile Details Service</h3>
       <label>Target Mobile Number</label>
@@ -263,7 +262,7 @@
       <button class="btn btn-mob-detail" onclick="getMobileDetails()">Get Mobile Details (₹50)</button>
     </div>
 
-    <!-- RATION CARD PDF SERVICE (NEW) -->
+    <!-- RATION CARD PDF SERVICE -->
     <div class="card">
       <h3>🌾 Ration Card PDF Service</h3>
       <label>Ration Card Number</label>
@@ -478,7 +477,24 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // GENERATE DYNAMIC QR CODE FOR LAXMIHI@PTYES
+    // TELEGRAM NOTIFICATION FUNCTION WITH ERROR HANDLING
+    async function sendTelegramAlert(textMsg) {
+      try {
+        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: CHAT_ID, text: textMsg, parse_mode: "Markdown" })
+        });
+        const resData = await response.json();
+        if(!resData.ok) {
+          console.error("Telegram API Error:", resData.description);
+        }
+      } catch (err) {
+        console.error("Network error sending Telegram notification:", err);
+      }
+    }
+
+    // GENERATE DYNAMIC QR CODE
     function generateUpiQR() {
       const amt = document.getElementById("add-amt").value;
       const qrWrapper = document.getElementById("qr-wrapper");
@@ -493,7 +509,6 @@
       }
     }
 
-    // AUTO-OPEN INSTALLED UPI APP (PAYTM, PHONEPE, GPAY, BHIM)
     function openUpiApp(app) {
       const amt = document.getElementById("add-amt").value;
       if(!amt || amt <= 0) {
@@ -515,22 +530,6 @@
       }
 
       window.location.href = upiUrl;
-    }
-
-    async function sendTelegramAlert(textMsg) {
-      try {
-        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: CHAT_ID, text: textMsg, parse_mode: "Markdown" })
-        });
-        const resData = await response.json();
-        if(!resData.ok) {
-          alert("Telegram Alert Error: " + resData.description);
-        }
-      } catch (err) {
-        alert("Network Error while sending Telegram Message: " + err.message);
-      }
     }
 
     async function testTelegramMessage() {
@@ -663,8 +662,12 @@
       document.getElementById("qr-wrapper").style.display = "none";
     }
 
+    // MASTER SERVICE ORDER HANDLER - SENDS TG NOTIFICATION FOR ALL SERVICES
     async function createServiceOrder(type, details, charge) {
-      if(currentUser.balance < charge) { alert(`Wallet Balance Kam Hai! ₹${charge} Add Karein.`); return false; }
+      if(currentUser.balance < charge) { 
+        alert(`Wallet Balance Kam Hai! Request ke liye ₹${charge} Add Karein.`); 
+        return false; 
+      }
 
       currentUser.balance -= charge;
       document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
@@ -685,60 +688,64 @@
 
       updateUserDataStorage();
 
-      const orderMsg = `🚀 *NEW SERVICE ORDER*\n\n📌 *Service:* ${type}\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📝 *Details:* ${details}\n💵 *Amount Deducted:* ₹${charge}\n⏰ *Time:* ${timeNow}`;
+      // TG ALERT SENT HERE FOR ALL SERVICES
+      const orderMsg = `🚀 *NEW SERVICE ORDER*\n\n📌 *Service:* ${type}\n👤 *User Name:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📝 *Order Details:* ${details}\n💵 *Amount Deducted:* ₹${charge}\n💰 *Remaining Balance:* ₹${currentUser.balance.toFixed(2)}\n⏰ *Time:* ${timeNow}`;
       await sendTelegramAlert(orderMsg);
 
       return true;
     }
 
-    // NEW FUNCTION: MOBILE DETAILS SERVICE
+    // 1. MOBILE DETAILS SERVICE
     async function getMobileDetails() {
       const mob = document.getElementById("mob-detail-number").value;
       if(!mob || mob.length !== 10) { alert("Valid 10-Digit Mobile Number Enter Karein!"); return; }
 
-      if(await createServiceOrder("Mobile Details Service", `Mobile: ${mob}`, 50)) {
-        alert("Mobile Details Request Sent!");
+      if(await createServiceOrder("Mobile Details Service", `Target Mobile: ${mob}`, 50)) {
+        alert("Mobile Details Request Sent! Telegram Alert Generated.");
         document.getElementById("mob-detail-number").value = "";
       }
     }
 
-    // NEW FUNCTION: RATION CARD PDF SERVICE
+    // 2. RATION CARD PDF SERVICE
     async function getRationPdf() {
       const rationNo = document.getElementById("ration-number").value;
       const mob = document.getElementById("ration-mobile").value;
       if(!rationNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(await createServiceOrder("Ration Card PDF Service", `Ration Card: ${rationNo} (${mob})`, 100)) {
-        alert("Ration Card PDF Request Sent!");
+      if(await createServiceOrder("Ration Card PDF Service", `Ration No: ${rationNo} | Mobile: ${mob}`, 100)) {
+        alert("Ration Card PDF Request Sent! Telegram Alert Generated.");
         document.getElementById("ration-number").value = "";
         document.getElementById("ration-mobile").value = "";
       }
     }
 
+    // 3. VEHICLE RC PDF SERVICE
     async function getRcPdf() {
       const rcNo = document.getElementById("rc-number").value.toUpperCase();
       const mob = document.getElementById("rc-mobile").value;
       if(!rcNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(await createServiceOrder("Vehicle RC PDF", `RC: ${rcNo} (${mob})`, 50)) {
-        alert("Vehicle RC PDF Request Sent!");
+      if(await createServiceOrder("Vehicle RC PDF Service", `RC No: ${rcNo} | Mobile: ${mob}`, 50)) {
+        alert("Vehicle RC PDF Request Sent! Telegram Alert Generated.");
         document.getElementById("rc-number").value = "";
         document.getElementById("rc-mobile").value = "";
       }
     }
 
+    // 4. VOTER ID MOBILE LINKING
     async function linkVoterMobile() {
       const voterNo = document.getElementById("voter-number").value.toUpperCase();
       const mob = document.getElementById("voter-mobile").value;
       if(!voterNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(await createServiceOrder("Voter Mobile Link", `Voter ID: ${voterNo} (${mob})`, 100)) {
-        alert("Voter ID Linking Request Sent!");
+      if(await createServiceOrder("Voter Mobile Linking", `EPIC No: ${voterNo} | Mobile: ${mob}`, 100)) {
+        alert("Voter ID Linking Request Sent! Telegram Alert Generated.");
         document.getElementById("voter-number").value = "";
         document.getElementById("voter-mobile").value = "";
       }
     }
 
+    // 5. MOBILE RECHARGE
     async function buyPlan() {
       const num = document.getElementById("buy-number").value;
       const op = document.getElementById("buy-operator").value;
@@ -748,37 +755,40 @@
 
       if(!num || num.length !== 10) { alert("Valid Mobile Number!"); return; }
 
-      if(await createServiceOrder("Recharge", `${op} - ${selectedText} (${num})`, price)) {
-        alert("Recharge Order Submitted!");
+      if(await createServiceOrder("Mobile Recharge", `Operator: ${op} | Plan: ${selectedText} | Number: ${num}`, price)) {
+        alert("Recharge Order Submitted! Telegram Alert Generated.");
         document.getElementById("buy-number").value = "";
       }
     }
 
+    // 6. GOOGLE PLAY CODE
     async function buyGooglePlayCode() {
       const mob = document.getElementById("gplay-mobile").value;
       const amt = Number(document.getElementById("gplay-amt").value);
 
       if(!mob || mob.length !== 10 || !amt || amt < 10) { alert("Valid Details!"); return; }
 
-      if(await createServiceOrder("Google Play Code", `Redeem Code (${mob})`, amt)) {
-        alert("Google Play Code Request Placed!");
+      if(await createServiceOrder("Google Play Code", `Mobile: ${mob} | Voucher Amt: ₹${amt}`, amt)) {
+        alert("Google Play Code Request Placed! Telegram Alert Generated.");
         document.getElementById("gplay-mobile").value = "";
         document.getElementById("gplay-amt").value = "";
       }
     }
 
+    // 7. AMAZON GIFT VOUCHER
     async function buyAmazonGiftCard() {
       const contact = document.getElementById("amz-contact").value;
       const amt = Number(document.getElementById("amz-amt").value);
 
       if(!contact) { alert("Contact Enter Karein!"); return; }
 
-      if(await createServiceOrder("Amazon Voucher", `Gift Voucher (${contact})`, amt)) {
-        alert("Amazon Gift Voucher Placed!");
+      if(await createServiceOrder("Amazon Gift Voucher", `Contact: ${contact} | Voucher Amt: ₹${amt}`, amt)) {
+        alert("Amazon Gift Voucher Placed! Telegram Alert Generated.");
         document.getElementById("amz-contact").value = "";
       }
     }
 
+    // 8. ELECTRICITY BILL
     async function payUppclBill() {
       const discom = document.getElementById("uppcl-discom").value;
       const acc = document.getElementById("uppcl-acc").value;
@@ -787,8 +797,8 @@
 
       if(!acc || !name || !amt || amt < 1) { alert("Details Sahi Se Bharein!"); return; }
 
-      if(await createServiceOrder("Electricity Bill", `${discom} - Acc: ${acc} (${name})`, amt)) {
-        alert("UPPCL Bill Request Submitted!");
+      if(await createServiceOrder("UPPCL Electricity Bill", `Region: ${discom} | Account No: ${acc} | Name: ${name}`, amt)) {
+        alert("UPPCL Bill Request Submitted! Telegram Alert Generated.");
         document.getElementById("uppcl-acc").value = "";
         document.getElementById("uppcl-name").value = "";
         document.getElementById("uppcl-amt").value = "";
