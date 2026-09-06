@@ -96,6 +96,8 @@
     .btn-voter { background: #6f42c1; }
     .btn-mob-detail { background: #e83e8c; }
     .btn-ration { background: #fd7e14; }
+    .btn-pan { background: #009688; }
+    .btn-birth { background: #8e44ad; }
     .btn-admin { background: #dc3545; }
     .btn-test { background: #6c757d; }
 
@@ -140,6 +142,7 @@
     .btn-reject { background: #dc3545; }
 
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
+    .warn-tag { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
     .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
     #portal-section, #admin-dashboard { display: none; }
@@ -154,7 +157,6 @@
 </head>
 <body>
 
-  <!-- WELCOME POPUP OVERLAY -->
   <div id="welcome-modal">
     <div class="welcome-card">
       <div class="welcome-avatar">👋🏼</div>
@@ -176,7 +178,6 @@
     </div>
   </header>
 
-  <!-- 1. AUTHENTICATION SECTION -->
   <div id="auth-section" class="main-container">
     <div class="card">
       <h3>📝 User Registration (Get ₹10 Bonus)</h3>
@@ -212,7 +213,6 @@
       <button class="btn btn-buy" onclick="loginUser()">Login Portal</button>
     </div>
 
-    <!-- ADMIN LOGIN CARD -->
     <div class="card" id="admin-login-card" style="display:none;">
       <h3>⚙️ Admin Login Panel</h3>
       <label>Admin Username</label>
@@ -223,10 +223,8 @@
     </div>
   </div>
 
-  <!-- 2. MAIN USER PORTAL -->
   <div id="portal-section" class="main-container">
     
-    <!-- ADD BALANCE WITH AUTO-PAY & UPI QR CODE -->
     <div class="card">
       <h3>💳 Add Money To Wallet</h3>
       <div class="upi-badge">UPI ID: <b>laxmihi@ptyes</b></div>
@@ -237,13 +235,11 @@
       <label>Enter Amount Paid (₹)</label>
       <input type="number" id="add-amt" placeholder="e.g. 100, 200, 500" oninput="generateUpiQR()">
 
-      <!-- DYNAMIC QR CODE DISPLAY -->
       <div class="qr-container" id="qr-wrapper" style="display:none;">
         <p style="font-size:12px; font-weight:bold; margin-bottom:5px; color:#333;">Scan & Pay via Any UPI App:</p>
         <img id="upi-qr-code" src="" alt="UPI QR Code">
       </div>
 
-      <!-- AUTO PAY APP BUTTONS -->
       <label style="margin-top:15px; color:#007bff;">⚡ Direct Auto-Pay via Installed App:</label>
       <div class="upi-apps-container">
         <button type="button" class="btn-upi-app btn-phonepe" onclick="openUpiApp('phonepe')">🟣 PhonePe</button>
@@ -261,7 +257,78 @@
       <button class="btn btn-add" onclick="submitAddMoneyWithProof()">Submit Add Money Request</button>
     </div>
 
-    <!-- MOBILE DETAILS SERVICE -->
+    <div class="card">
+      <h3>💳 PAN Card Service (New & Correction)</h3>
+      <div class="warn-tag">⚠️ <b>ध्यान दें:</b> आवेदनकर्ता की आयु 18+ वर्ष होना अनिवार्य है।</div>
+
+      <label>Service Type</label>
+      <select id="pan-service-type">
+        <option value="New PAN Card">New PAN Card Apply</option>
+        <option value="PAN Correction (Name/DOB/Father)">PAN Correction / Update (Name, DOB, Father Name)</option>
+      </select>
+
+      <label>Full Applicant Name</label>
+      <input type="text" id="pan-name" placeholder="Full Name as per Aadhaar">
+
+      <label>Date of Birth (DOB)</label>
+      <input type="date" id="pan-dob">
+
+      <label>Father's Full Name</label>
+      <input type="text" id="pan-father" placeholder="Father's Full Name">
+
+      <label>Aadhaar Number</label>
+      <input type="number" id="pan-aadhaar" placeholder="12-Digit Aadhaar Number">
+
+      <label>Aadhaar Linked Mobile Number</label>
+      <input type="number" id="pan-mobile" placeholder="10-Digit Mobile Number">
+
+      <label>Upload Passport Size Photo</label>
+      <input type="file" id="pan-photo" accept="image/*">
+
+      <label>Upload Applicant Signature</label>
+      <input type="file" id="pan-sign" accept="image/*">
+
+      <label>Upload Aadhaar Card (PDF / Photo)</label>
+      <input type="file" id="pan-aadhaar-file" accept="image/*,application/pdf">
+
+      <div class="comm-tag">Service Charge: ₹180</div>
+      <button class="btn btn-pan" onclick="applyPanCard()">Submit PAN Application (₹180)</button>
+    </div>
+
+    <div class="card">
+      <h3>👶 Birth Certificate Service</h3>
+      <label>Child / Person Full Name</label>
+      <input type="text" id="birth-name" placeholder="Full Name">
+
+      <label>Date of Birth</label>
+      <input type="date" id="birth-dob">
+
+      <label>Gender</label>
+      <select id="birth-gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label>Father's Name</label>
+      <input type="text" id="birth-father" placeholder="Father's Full Name">
+
+      <label>Mother's Name</label>
+      <input type="text" id="birth-mother" placeholder="Mother's Full Name">
+
+      <label>Place of Birth (Hospital / Address)</label>
+      <input type="text" id="birth-place" placeholder="Village / Town / Hospital Name">
+
+      <label>Contact Mobile Number</label>
+      <input type="number" id="birth-mobile" placeholder="10-Digit Mobile Number">
+
+      <label>Upload Aadhaar / Hospital Discharge Paper</label>
+      <input type="file" id="birth-proof" accept="image/*,application/pdf">
+
+      <div class="comm-tag">Service Charge: ₹200</div>
+      <button class="btn btn-birth" onclick="applyBirthCertificate()">Apply Birth Certificate (₹200)</button>
+    </div>
+
     <div class="card">
       <h3>📱 Mobile Details Service</h3>
       <label>Target Mobile Number</label>
@@ -271,7 +338,6 @@
       <button class="btn btn-mob-detail" onclick="getMobileDetails()">Get Mobile Details (₹50)</button>
     </div>
 
-    <!-- RATION CARD PDF SERVICE -->
     <div class="card">
       <h3>🌾 Ration Card PDF Service</h3>
       <label>Ration Card Number</label>
@@ -284,7 +350,6 @@
       <button class="btn btn-ration" onclick="getRationPdf()">Get Ration PDF (₹100)</button>
     </div>
 
-    <!-- VEHICLE RC PDF SERVICE -->
     <div class="card">
       <h3>🚗 Vehicle RC PDF Download</h3>
       <label>Vehicle Number (RC No.)</label>
@@ -297,7 +362,6 @@
       <button class="btn btn-rc" onclick="getRcPdf()">Get RC PDF (₹50)</button>
     </div>
 
-    <!-- VOTER ID MOBILE LINKING -->
     <div class="card">
       <h3>🪪 Voter ID Mobile Linking</h3>
       <label>Voter ID Number (EPIC No.)</label>
@@ -310,7 +374,6 @@
       <button class="btn btn-voter" onclick="linkVoterMobile()">Link Mobile to Voter (₹100)</button>
     </div>
 
-    <!-- UPPCL LIGHT BILL PAYMENT -->
     <div class="card">
       <h3>💡 UPPCL Electricity Bill Pay</h3>
       <label>UPPCL Region</label>
@@ -331,7 +394,6 @@
       <button class="btn btn-bill" onclick="payUppclBill()">Pay Bill Now</button>
     </div>
 
-    <!-- ALL MOBILE RECHARGES -->
     <div class="card">
       <h3>📱 Mobile Recharge</h3>
       <label>Mobile Number</label>
@@ -351,7 +413,6 @@
       <button class="btn btn-buy" onclick="buyPlan()">Proceed Recharge</button>
     </div>
 
-    <!-- GOOGLE PLAY REDEEM CODE -->
     <div class="card">
       <h3>🎮 Google Play Redeem Code</h3>
       <label>Mobile Number (For Code Delivery)</label>
@@ -363,7 +424,6 @@
       <button class="btn btn-play" onclick="buyGooglePlayCode()">Buy Redeem Code</button>
     </div>
 
-    <!-- AMAZON GIFT CARD -->
     <div class="card">
       <h3>🛒 Amazon Gift Card</h3>
       <label>Mobile Number / Email</label>
@@ -382,7 +442,6 @@
       <button class="btn btn-admin" style="margin-top:15px;" onclick="logout()">Logout Portal</button>
     </div>
 
-    <!-- UNIFIED HISTORY LOG & DOWNLOAD -->
     <div class="card" style="grid-column: span 2;">
       <h3>📜 My All Services History & Download PDF</h3>
       <table class="admin-table">
@@ -401,7 +460,6 @@
 
   </div>
 
-  <!-- 3. ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
     
     <div class="card" style="grid-column: span 2;">
@@ -536,7 +594,7 @@
 
     function openUpiApp(app) {
       const amt = document.getElementById("add-amt").value;
-      if(!amt || amt <= 0) {
+      if(!amt || !amt <= 0) {
         alert("Pehle Amount bharein!");
         document.getElementById("add-amt").focus();
         return;
@@ -704,392 +762,11 @@
       return true;
     }
 
-    function getMobileDetails() {
-      const mob = document.getElementById("mob-detail-number").value;
-      if(!mob || mob.length !== 10) { alert("Valid 10-Digit Mobile Number Enter Karein!"); return; }
+    function applyPanCard() {
+      alert("ध्यान दें: आवेदनकर्ता की आयु 18+ होना जरूरी है!");
 
-      if(createServiceOrder("Mobile Details Service", `Target Mobile: ${mob}`, 50)) {
-        alert("Mobile Details Request Sent! Telegram Alert Generated.");
-        document.getElementById("mob-detail-number").value = "";
-      }
-    }
-
-    function getRationPdf() {
-      const rationNo = document.getElementById("ration-number").value;
-      const mob = document.getElementById("ration-mobile").value;
-      if(!rationNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
-
-      if(createServiceOrder("Ration Card PDF Service", `Ration No: ${rationNo} | Mobile: ${mob}`, 100)) {
-        alert("Ration Card PDF Request Sent! Telegram Alert Generated.");
-        document.getElementById("ration-number").value = "";
-        document.getElementById("ration-mobile").value = "";
-      }
-    }
-
-    function getRcPdf() {
-      const rcNo = document.getElementById("rc-number").value.toUpperCase();
-      const mob = document.getElementById("rc-mobile").value;
-      if(!rcNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
-
-      if(createServiceOrder("Vehicle RC PDF Service", `RC No: ${rcNo} | Mobile: ${mob}`, 50)) {
-        alert("Vehicle RC PDF Request Sent! Telegram Alert Generated.");
-        document.getElementById("rc-number").value = "";
-        document.getElementById("rc-mobile").value = "";
-      }
-    }
-
-    function linkVoterMobile() {
-      const voterNo = document.getElementById("voter-number").value.toUpperCase();
-      const mob = document.getElementById("voter-mobile").value;
-      if(!voterNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
-
-      if(createServiceOrder("Voter Mobile Linking", `EPIC No: ${voterNo} | Mobile: ${mob}`, 100)) {
-        alert("Voter ID Linking Request Sent! Telegram Alert Generated.");
-        document.getElementById("voter-number").value = "";
-        document.getElementById("voter-mobile").value = "";
-      }
-    }
-
-    function buyPlan() {
-      const num = document.getElementById("buy-number").value;
-      const op = document.getElementById("buy-operator").value;
-      const planSelect = document.getElementById("buy-plan");
-      const price = Number(planSelect.value);
-      const selectedText = planSelect.options[planSelect.selectedIndex].text;
-
-      if(!num || num.length !== 10) { alert("Valid Mobile Number!"); return; }
-
-      if(createServiceOrder("Mobile Recharge", `Operator: ${op} | Plan: ${selectedText} | Number: ${num}`, price)) {
-        alert("Recharge Order Submitted! Telegram Alert Generated.");
-        document.getElementById("buy-number").value = "";
-      }
-    }
-
-    function buyGooglePlayCode() {
-      const mob = document.getElementById("gplay-mobile").value;
-      const amt = Number(document.getElementById("gplay-amt").value);
-
-      if(!mob || mob.length !== 10 || !amt || amt < 10) { alert("Valid Details!"); return; }
-
-      if(createServiceOrder("Google Play Code", `Mobile: ${mob} | Voucher Amt: ₹${amt}`, amt)) {
-        alert("Google Play Code Request Placed! Telegram Alert Generated.");
-        document.getElementById("gplay-mobile").value = "";
-        document.getElementById("gplay-amt").value = "";
-      }
-    }
-
-    function buyAmazonGiftCard() {
-      const contact = document.getElementById("amz-contact").value;
-      const amt = Number(document.getElementById("amz-amt").value);
-
-      if(!contact) { alert("Contact Enter Karein!"); return; }
-
-      if(createServiceOrder("Amazon Gift Voucher", `Contact: ${contact} | Voucher Amt: ₹${amt}`, amt)) {
-        alert("Amazon Gift Voucher Placed! Telegram Alert Generated.");
-        document.getElementById("amz-contact").value = "";
-      }
-    }
-
-    function payUppclBill() {
-      const discom = document.getElementById("uppcl-discom").value;
-      const acc = document.getElementById("uppcl-acc").value;
-      const name = document.getElementById("uppcl-name").value;
-      const amt = Number(document.getElementById("uppcl-amt").value);
-
-      if(!acc || !name || !amt || amt < 1) { alert("Details Sahi Se Bharein!"); return; }
-
-      if(createServiceOrder("UPPCL Electricity Bill", `Region: ${discom} | Account No: ${acc} | Name: ${name}`, amt)) {
-        alert("UPPCL Bill Request Submitted! Telegram Alert Generated.");
-        document.getElementById("uppcl-acc").value = "";
-        document.getElementById("uppcl-name").value = "";
-        document.getElementById("uppcl-amt").value = "";
-      }
-    }
-
-    function loginAdmin() {
-      const u = document.getElementById("admin-user").value;
-      const p = document.getElementById("admin-pass").value;
-
-      if(u === "admin" && p === "adminpassword123") {
-        document.getElementById("auth-section").style.display = "none";
-        document.getElementById("portal-section").style.display = "none";
-        document.getElementById("admin-dashboard").style.display = "grid";
-        
-        triggerWelcomeModal("Admin");
-        document.getElementById("top-corner-info").innerHTML = `👑 <span>Admin</span> | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>`;
-
-        loadAdminDashboard();
-      } else { alert("Wrong Admin Credentials!"); }
-    }
-
-    function loadAdminDashboard() {
-      loadUserTable();
-      loadPendingAddMoneyTable();
-      loadPendingWorkTable();
-    }
-
-    function loadUserTable() {
-      const tbody = document.getElementById("user-table-body");
-      tbody.innerHTML = "";
-      usersDB.forEach((usr, index) => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${usr.name}</td>
-            <td>${usr.email}</td>
-            <td>${usr.shop}</td>
-            <td>₹${usr.balance.toFixed(2)}</td>
-            <td><button onclick="addBalanceAdmin(${index})" class="btn-sm btn-approve">+ Add/Deduct</button></td>
-          </tr>
-        `;
-      });
-    }
-
-    function loadPendingAddMoneyTable() {
-      const tbody = document.getElementById("admin-add-money-body");
-      tbody.innerHTML = "";
-      let count = 0;
-
-      usersDB.forEach(user => {
-        if(user.history) {
-          user.history.forEach(item => {
-            if(item.type === "Add Money Req" && item.status === "Pending Approval") {
-              count++;
-              tbody.innerHTML += `
-                <tr>
-                  <td>${user.name}<br><small>${user.email}</small></td>
-                  <td>${item.mobile}</td>
-                  <td><b>₹${item.amount}</b></td>
-                  <td><code>${item.utr}</code></td>
-                  <td><a href="${item.proof}" target="_blank" style="color:#007bff; font-weight:bold;">View Proof</a></td>
-                  <td>${item.time}</td>
-                  <td>
-                    <button class="btn-sm btn-approve" onclick="approveAddMoney('${user.email}', ${item.id})">Approve (+₹${item.amount})</button>
-                    <button class="btn-sm btn-reject" onclick="rejectAddMoney('${user.email}', ${item.id})">Reject / Cancel</button>
-                  </td>
-                </tr>
-              `;
-            }
-          });
-        }
-      });
-
-      if(count === 0) {
-        tbody.innerHTML = `<tr><td colspan="7">Koi Pending Add Money Request nahi hai.</td></tr>`;
-      }
-    }
-
-    function loadPendingWorkTable() {
-      const tbody = document.getElementById("admin-pending-work-body");
-      tbody.innerHTML = "";
-      let count = 0;
-
-      usersDB.forEach(user => {
-        if(user.history) {
-          user.history.forEach(item => {
-            if(item.status === "Pending Work") {
-              count++;
-              tbody.innerHTML += `
-                <tr>
-                  <td>${user.email}</td>
-                  <td><b>${item.type}</b></td>
-                  <td>${item.details}</td>
-                  <td>₹${item.amount}</td>
-                  <td>
-                    <input type="file" id="file-${item.id}" accept="application/pdf,image/*" style="font-size:11px;">
-                  </td>
-                  <td>
-                    <button class="btn-sm btn-approve" onclick="uploadAndCompleteWork('${user.email}', ${item.id})">Upload PDF & Complete</button>
-                    <button class="btn-sm btn-reject" onclick="rejectAndRefundWork('${user.email}', ${item.id})">Cancel & Refund</button>
-                  </td>
-                </tr>
-              `;
-            }
-          });
-        }
-      });
-
-      if(count === 0) {
-        tbody.innerHTML = `<tr><td colspan="6">Koi Pending Service/Work nahi hai.</td></tr>`;
-      }
-    }
-
-    function uploadAndCompleteWork(userEmail, itemId) {
-      const user = usersDB.find(u => u.email === userEmail);
-      if(user) {
-        const item = user.history.find(h => h.id === itemId);
-        if(item) {
-          const fileInput = document.getElementById(`file-${itemId}`);
-          const file = fileInput.files[0];
-
-          if(file) {
-            const fileUrl = URL.createObjectURL(file);
-            item.pdfUrl = fileUrl;
-            item.pdfName = file.name;
-          }
-
-          item.status = "Completed";
-          saveAndRefreshAdmin();
-
-          sendTelegramAlert(`✅ *ORDER COMPLETED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n📝 Details: ${item.details}\nStatus: Delivered / Completed`);
-          alert("Document uploaded aur Order Completed Mark ho gaya hai!");
-        }
-      }
-    }
-
-    function approveAddMoney(userEmail, itemId) {
-      const user = usersDB.find(u => u.email === userEmail);
-      if(user) {
-        const item = user.history.find(h => h.id === itemId);
-        if(item) {
-          user.balance += parseFloat(item.amount);
-          item.status = "Approved & Added";
-          saveAndRefreshAdmin();
-          
-          sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance.toFixed(2)}`);
-          alert(`₹${item.amount} User Wallet me add kar diya gaya!`);
-        }
-      }
-    }
-
-    function rejectAddMoney(userEmail, itemId) {
-      const user = usersDB.find(u => u.email === userEmail);
-      if(user) {
-        const item = user.history.find(h => h.id === itemId);
-        if(item) {
-          item.status = "Rejected By Admin";
-          saveAndRefreshAdmin();
-
-          sendTelegramAlert(`❌ *ADD MONEY REJECTED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount: ₹${item.amount}\nUTR: ${item.utr}`);
-          alert("Request Cancel/Reject kar di gayi!");
-        }
-      }
-    }
-
-    function rejectAndRefundWork(userEmail, itemId) {
-      const user = usersDB.find(u => u.email === userEmail);
-      if(user) {
-        const item = user.history.find(h => h.id === itemId);
-        if(item) {
-          user.balance += parseFloat(item.amount);
-          item.status = "Cancelled & Refunded";
-          saveAndRefreshAdmin();
-
-          sendTelegramAlert(`⚠️ *ORDER CANCELLED & REFUNDED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n💵 Refunded: ₹${item.amount}`);
-          alert(`Order Cancel ho gaya aur ₹${item.amount} user ke wallet me Refund kar diya gaya!`);
-        }
-      }
-    }
-
-    function addBalanceAdmin(index) {
-      let amt = prompt("Kitna Balance Add/Subtract karna hai?:");
-      if(amt && !isNaN(amt)) {
-        usersDB[index].balance += parseFloat(amt);
-        const timeNow = new Date().toLocaleString();
-        if(!usersDB[index].history) usersDB[index].history = [];
-        usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow, pdfUrl: null });
-        saveAndRefreshAdmin();
-
-        sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance.toFixed(2)}`);
-        alert("Balance Updated!");
-      }
-    }
-
-    function saveAndRefreshAdmin() {
-      localStorage.setItem("usersDB", JSON.stringify(usersDB));
-      if(currentUser) {
-        const updatedSelf = usersDB.find(u => u.email === currentUser.email);
-        if(updatedSelf) {
-          currentUser = updatedSelf;
-          localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        }
-      }
-      loadAdminDashboard();
-    }
-
-    function showPortal() {
-      document.getElementById("auth-section").style.display = "none";
-      document.getElementById("admin-dashboard").style.display = "none";
-      document.getElementById("portal-section").style.display = "grid";
-      document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
-      
-      document.getElementById("top-corner-info").innerHTML = `👤 <span>${currentUser.name}</span> | 📅 <span id="live-date">--</span> | ⏰ <span id="live-time">--</span>`;
-      
-      loadUserHistoryTable();
-      updatePlans();
-    }
-
-    function loadUserHistoryTable() {
-      const tbody = document.getElementById("user-history-body");
-      tbody.innerHTML = "";
-      if(!currentUser.history || currentUser.history.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5">Koi transaction history nahi hai.</td></tr>`;
-        return;
-      }
-      currentUser.history.forEach(item => {
-        let isAdd = item.type === "Add Money Req" || item.type === "Bonus" || item.status.includes("Refunded");
-        let amtColor = isAdd ? "green" : "red";
-        let sign = isAdd ? "+" : "-";
-
-        let downloadAction = `<span style="color:#aaa;">N/A</span>`;
-        if(item.pdfUrl) {
-          downloadAction = `<a href="${item.pdfUrl}" download="${item.pdfName || 'Document.pdf'}" class="pdf-download-link">📥 Download PDF</a>`;
-        } else if(item.status === "Pending Work") {
-          downloadAction = `<span style="color:#ff9800; font-size:12px;">⏳ In Process</span>`;
-        }
-
-        tbody.innerHTML += `
-          <tr>
-            <td><b>${item.type}</b></td>
-            <td>${item.details}</td>
-            <td style="color:${amtColor}; font-weight:bold;">${sign}₹${Math.abs(item.amount)}</td>
-            <td><small><b>${item.status}</b><br>${item.time}</small></td>
-            <td>${downloadAction}</td>
-          </tr>
-        `;
-      });
-    }
-
-    function updateUserDataStorage() {
-      const userIndex = usersDB.findIndex(u => u.email === currentUser.email);
-      if(userIndex !== -1) { usersDB[userIndex] = currentUser; }
-      localStorage.setItem("usersDB", JSON.stringify(usersDB));
-      localStorage.setItem("currentUser", JSON.stringify(currentUser));
-      loadUserHistoryTable();
-    }
-
-    function showLogin() {
-      document.getElementById("login-card").style.display = "block";
-      document.getElementById("admin-login-card").style.display = "none";
-    }
-
-    function showAdminLogin() {
-      document.getElementById("admin-login-card").style.display = "block";
-      document.getElementById("login-card").style.display = "none";
-    }
-
-    function logout() {
-      localStorage.removeItem("currentUser");
-      location.reload();
-    }
-
-    function updatePlans() {
-      const op = document.getElementById("buy-operator").value;
-      const planSelect = document.getElementById("buy-plan");
-      planSelect.innerHTML = "";
-      operatorPlans[op].forEach(item => {
-        planSelect.innerHTML += `<option value="${item.price}">${item.label}</option>`;
-      });
-      calcCommission();
-    }
-
-    function calcCommission() {
-      const op = document.getElementById("buy-operator").value;
-      const planSelect = document.getElementById("buy-plan");
-      const price = Number(planSelect.value) || 0;
-      const commPercent = commissionRates[op] || 0;
-      const commAmount = (price * commPercent / 100).toFixed(2);
-      document.getElementById("commission-info").innerText = `MRP: ₹${price} | Cashback Earned: ₹${commAmount}`;
-    }
-  </script>
-</body>
-</html>
+      const serviceType = document.getElementById("pan-service-type").value;
+      const name = document.getElementById("pan-name").value;
+      const dob = document.getElementById("pan-dob").value;
+      const father = document.getElementById("pan-father").value;
+      const
