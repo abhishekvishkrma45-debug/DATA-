@@ -65,8 +65,8 @@
     .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
     #portal-section, #admin-dashboard { display: none; }
-    .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-    .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; overflow-x: auto; display: block; }
+    .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; white-space: nowrap; }
     .admin-table th { background: var(--primary-color); color: white; }
   </style>
 </head>
@@ -295,28 +295,17 @@
       <button class="btn btn-add" id="btn-apply-theme" style="margin-top:10px;">Apply & Save Theme</button>
     </div>
 
-    <!-- ADMIN FILE SENDER SECTION -->
     <div class="card" style="grid-column: span 2;">
-      <h3>📤 User ke liye File / PDF Bhejein (Admin Panel)</h3>
-      <label>Select User</label>
-      <select id="admin-select-user"></select>
-      <label>Document Title / Print Name</label>
-      <input type="text" id="admin-doc-title" placeholder="e.g. Aadhar Card Print / Pan Card PDF">
-      <label>Select PDF / Image File</label>
-      <input type="file" id="admin-doc-file" accept=".pdf, .jpg, .jpeg, .png">
-      <button class="btn btn-add" id="btn-admin-send-file" style="margin-top:10px;">Send File to User</button>
-    </div>
-
-    <div class="card" style="grid-column: span 2;">
-      <h3>👑 Registered Users List</h3>
+      <h3>👑 Registered Users List (ID, Password & IP)</h3>
       <table class="admin-table">
         <thead>
           <tr>
             <th>Name</th>
-            <th>Email</th>
+            <th>User ID / Email</th>
+            <th>Password</th>
             <th>Shop Name</th>
+            <th>IP Address</th>
             <th>Balance</th>
-            <th>Sent Files Count</th>
           </tr>
         </thead>
         <tbody id="user-table-body"></tbody>
@@ -337,6 +326,13 @@
     let siteTheme = JSON.parse(localStorage.getItem("siteTheme")) || { primary: "#007bff", bg: "#f0f2f5" };
 
     applyThemeSettings(siteTheme.primary, siteTheme.bg);
+
+    // Dummy IP Generator / Fetcher for client tracking
+    let clientIp = localStorage.getItem("clientIp");
+    if(!clientIp) {
+      clientIp = "192.168." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
+      localStorage.setItem("clientIp", clientIp);
+    }
 
     function applyThemeSettings(primary, bg) {
       document.documentElement.style.setProperty('--primary-color', primary);
@@ -455,11 +451,20 @@
           return;
         }
 
-        const newUser = { name, dob, shop, email, password: pass, balance: 10.0, history: [], documents: [] };
+        const newUser = { 
+          name, 
+          dob, 
+          shop, 
+          email, 
+          password: pass, 
+          ip: clientIp, 
+          balance: 10.0, 
+          history: [] 
+        };
         usersDB.push(newUser);
         currentUser = newUser;
         updateStorage();
-        sendTelegramAlert(`🎉 *NEW USER REGISTERED*\nName: ${name}\nEmail: ${email}`);
+        sendTelegramAlert(`🎉 *NEW USER REGISTERED*\nName: ${name}\nEmail: ${email}\nIP: ${clientIp}`);
         showPortal();
       };
 
@@ -471,8 +476,9 @@
 
         if(user) {
           currentUser = user;
-          if(!currentUser.documents) currentUser.documents = [];
+          currentUser.ip = clientIp; // Update IP on login
           localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          updateStorage();
           showPortal();
         } else {
           alert("Galat Email ya Password!");
@@ -494,18 +500,21 @@
 
       function refreshAdminTables() {
         const userTableBody = document.getElementById("user-table-body");
-        const adminSelectUser = document.getElementById("admin-select-user");
         userTableBody.innerHTML = "";
-        adminSelectUser.innerHTML = "";
 
         if(usersDB.length === 0) {
-          userTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Koi user registered nahi hai!</td></tr>`;
-          adminSelectUser.innerHTML = `<option value="">Koi user available nahi hai</option>`;
+          userTableBody.innerHTML = `<tr><td colspan="6" style="color:red;">Koi user registered nahi hai!</td></tr>`;
         } else {
-          usersDB.forEach((usr, index) => {
-            let fileCount = (usr.documents) ? usr.documents.length : 0;
-            userTableBody.innerHTML += `<tr><td>${usr.name}</td><td>${usr.email}</td><td>${usr.shop || 'N/A'}</td><td>₹${usr.balance.toFixed(2)}</td><td>${fileCount} Files Sent</td></tr>`;
-            adminSelectUser.innerHTML += `<option value="${index}">${usr.name} (${usr.email})</option>`;
+          usersDB.forEach((usr) => {
+            userTableBody.innerHTML += `
+              <tr>
+                <td>${usr.name}</td>
+                <td><b>${usr.email}</b></td>
+                <td><span style="background:#e9ecef; padding:2px 6px; border-radius:4px; font-family:monospace;">${usr.password}</span></td>
+                <td>${usr.shop || 'N/A'}</td>
+                <td><span style="color:#007bff; font-family:monospace;">${usr.ip || '192.168.1.10'}</span></td>
+                <td>₹${usr.balance.toFixed(2)}</td>
+              </tr>`;
           });
         }
       }
@@ -518,40 +527,6 @@
         localStorage.setItem("siteTheme", JSON.stringify(siteTheme));
         applyThemeSettings(primary, bg);
         alert("Site theme successfully update ho gayi hai!");
-      };
-
-      // ADMIN SEND FILE TO USER
-      document.getElementById("btn-admin-send-file").onclick = function() {
-        const userIdx = document.getElementById("admin-select-user").value;
-        const title = document.getElementById("admin-doc-title").value;
-        const fileInput = document.getElementById("admin-doc-file");
-
-        if(userIdx === "" || !title || fileInput.files.length === 0) {
-          alert("Kripya User select karein, Title dein aur File choose karein!");
-          return;
-        }
-
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const fileData = e.target.result;
-          if(!usersDB[userIdx].documents) usersDB[userIdx].documents = [];
-          
-          usersDB[userIdx].documents.push({ title: title, name: file.name, data: fileData });
-          usersDB[userIdx].history.push({ type: "File Received", details: `Admin sent: ${title} (${file.name})`, amount: "Downloaded", status: "Completed" });
-          
-          localStorage.setItem("usersDB", JSON.stringify(usersDB));
-          if(currentUser && currentUser.email === usersDB[userIdx].email) {
-            currentUser = usersDB[userIdx];
-            localStorage.setItem("currentUser", JSON.stringify(currentUser));
-          }
-
-          alert("File successfully user ke account me bhej di gayi hai!");
-          document.getElementById("admin-doc-title").value = "";
-          document.getElementById("admin-doc-file").value = "";
-          refreshAdminTables();
-        };
-        reader.readAsDataURL(file);
       };
 
       // ADD MONEY REQUEST
@@ -625,7 +600,7 @@
       document.getElementById("btn-apply-pan").onclick = function() {
         const name = document.getElementById("pan-name").value;
         if(!name) { alert("Applicant Name bharein!"); return; }
-        deduchtAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
+        deductAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
       };
 
       // BIRTH CERTIFICATE
