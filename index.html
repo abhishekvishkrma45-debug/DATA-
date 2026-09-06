@@ -97,7 +97,6 @@
       <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
 
       <button class="btn btn-add" id="btn-register">Register & Claim ₹10</button>
-      <button class="btn btn-test" id="btn-test-tg">🧪 Test Telegram Bots</button>
       <p style="margin-top: 15px; font-size: 13px;">
         Already Registered? <a href="#" id="link-show-login">Login Here</a> | 
         <a href="#" id="link-show-admin" style="color:#dc3545;">Admin Login</a>
@@ -227,7 +226,6 @@
 
     <div class="card">
       <h3>💳 PAN Card Service (New & Correction)</h3>
-      <div class="warn-tag">⚠️ <b>ध्यान दें:</b> 18+ वर्ष होना अनिवार्य है।</div>
       <label>Service Type</label>
       <select id="pan-service-type">
         <option value="New PAN Card">New PAN Card Apply</option>
@@ -289,12 +287,13 @@
 
   <div id="admin-dashboard" class="main-container">
     <div class="card" style="grid-column: span 2;">
-      <h3>👑 Admin Panel</h3>
+      <h3>👑 Admin Panel - Registered Users</h3>
       <table class="admin-table">
         <thead>
           <tr>
             <th>Name</th>
             <th>Email</th>
+            <th>Shop Name</th>
             <th>Balance</th>
           </tr>
         </thead>
@@ -314,7 +313,6 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // ALL RECHARGE PLANS DATABASE
     const allRechargePlans = {
       Jio: [
         { mrp: 19, discount: 1, desc: "₹19 - 1GB Data Booster" },
@@ -469,13 +467,25 @@
         }
       };
 
-      // ADMIN LOGIN
+      // ADMIN LOGIN & LOAD USERS FIXED
       document.getElementById("btn-admin-login").onclick = function() {
         const u = document.getElementById("admin-user").value;
         const p = document.getElementById("admin-pass").value;
         if(u === "admin" && p === "adminpassword123") {
           document.getElementById("auth-section").style.display = "none";
           document.getElementById("admin-dashboard").style.display = "grid";
+          
+          // Load Users into Admin Table
+          const userTableBody = document.getElementById("user-table-body");
+          userTableBody.innerHTML = "";
+          
+          if(usersDB.length === 0) {
+            userTableBody.innerHTML = `<tr><td colspan="4" style="color:red;">Koi user registered nahi hai!</td></tr>`;
+          } else {
+            usersDB.forEach(usr => {
+              userTableBody.innerHTML += `<tr><td>${usr.name}</td><td>${usr.email}</td><td>${usr.shop || 'N/A'}</td><td>₹${usr.balance.toFixed(2)}</td></tr>`;
+            });
+          }
         } else {
           alert("Invalid Admin!");
         }
@@ -490,7 +500,7 @@
         alert("Add Money request bhej di gayi hai! Admin verification ke baad balance add hoga.");
       };
 
-      // RECHARGE WITH AUTOMATED PLANS & DISCOUNT
+      // RECHARGE
       document.getElementById("btn-recharge").onclick = function() {
         const op = document.getElementById("rc-operator").value;
         const mob = document.getElementById("rc-mobile").value;
@@ -505,7 +515,7 @@
         deductAndExecute(finalPayablePrice, "Mobile Recharge", detailsText);
       };
 
-      // ELECTRICITY BILL
+      // BILL
       document.getElementById("btn-pay-bill").onclick = function() {
         const board = document.getElementById("bill-board").value;
         const cons = document.getElementById("bill-consumer").value;
@@ -514,7 +524,7 @@
         deductAndExecute(amt, "Electricity Bill", `${board} - ${cons}`);
       };
 
-      // GOOGLE PLAY
+      // PLAY
       document.getElementById("btn-play-code").onclick = function() {
         const amt = parseFloat(document.getElementById("play-amt").value);
         const mob = document.getElementById("play-mobile").value;
@@ -530,7 +540,7 @@
         deductAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
       };
 
-      // VOTER ID
+      // VOTER
       document.getElementById("btn-voter").onclick = function() {
         const id = document.getElementById("voter-id").value;
         if(!id) { alert("EPIC Number bharein!"); return; }
@@ -544,21 +554,21 @@
         deductAndExecute(20, "Vehicle RC Info", `Vehicle: ${rc}`);
       };
 
-      // RATION CARD
+      // RATION
       document.getElementById("btn-ration-fetch").onclick = function() {
         const rno = document.getElementById("ration-no").value;
         if(!rno) { alert("Ration Card No bharein!"); return; }
         deductAndExecute(30, "Ration Card Info", `Ration No: ${rno}`);
       };
 
-      // PAN CARD
+      // PAN
       document.getElementById("btn-apply-pan").onclick = function() {
         const name = document.getElementById("pan-name").value;
         if(!name) { alert("Applicant Name bharein!"); return; }
         deductAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
       };
 
-      // BIRTH CERTIFICATE
+      // BIRTH
       document.getElementById("btn-apply-birth").onclick = function() {
         const name = document.getElementById("birth-name").value;
         if(!name) { alert("Child Name bharein!"); return; }
