@@ -21,53 +21,11 @@
       gap: 10px;
     }
 
-    .brand-title {
-      font-size: 22px;
-      font-weight: 900;
-      color: #ffffff;
-      letter-spacing: 1px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .user-info-badge {
-      background: rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      color: #fff;
-    }
+    .brand-title { font-size: 22px; font-weight: 900; color: #ffffff; letter-spacing: 1px; }
+    .header-right { display: flex; align-items: center; gap: 15px; }
+    .user-info-badge { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); padding: 6px 14px; border-radius: 20px; font-size: 13px; color: #fff; }
     .user-info-badge span { font-weight: bold; color: #ffeb3b; }
-
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
-
-    #welcome-modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-    }
-    .welcome-card {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      max-width: 380px;
-      width: 90%;
-    }
-    .welcome-card h2 { color: #007bff; margin-bottom: 10px; font-size: 24px; }
-    .welcome-card p { color: #555; font-size: 15px; margin-bottom: 15px; }
 
     .main-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
     .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
@@ -98,33 +56,17 @@
     .btn-gpay { background: #4285f4; }
     .btn-generic-upi { background: #28a745; }
 
-    .qr-container { text-align: center; margin: 15px 0; padding: 10px; background: #f8f9fa; border: 1px dashed #007bff; border-radius: 8px; }
-    .qr-container img { max-width: 180px; height: auto; border-radius: 5px; }
-
-    .btn-sm { width: auto; padding: 5px 10px; font-size: 12px; margin: 2px; display: inline-block; cursor: pointer; border: none; border-radius: 4px; color: white; }
-    .btn-approve { background: #28a745; }
-    .btn-reject { background: #dc3545; }
-
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
     .warn-tag { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
     .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
     #portal-section, #admin-dashboard { display: none; }
-
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
     .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
     .admin-table th { background: #007bff; color: white; }
   </style>
 </head>
 <body>
-
-  <div id="welcome-modal">
-    <div class="welcome-card">
-      <div style="font-size:40px;">👋🏼</div>
-      <h2>Welcome Back!</h2>
-      <p id="welcome-user-name">User</p>
-    </div>
-  </div>
 
   <header>
     <div class="brand-title">Abhishek Service Store</div>
@@ -156,7 +98,7 @@
       <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
 
       <button class="btn btn-add" id="btn-register">Register & Claim ₹10</button>
-      <button class="btn btn-test" id="btn-test-tg">🧪 Test Both Telegram Bots</button>
+      <button class="btn btn-test" id="btn-test-tg">🧪 Test Telegram Bots</button>
       <p style="margin-top: 15px; font-size: 13px;">
         Already Registered? <a href="#" id="link-show-login">Login Here</a> | 
         <a href="#" id="link-show-admin" style="color:#dc3545;">Admin Login</a>
@@ -186,20 +128,15 @@
 
   <!-- MAIN PORTAL -->
   <div id="portal-section" class="main-container">
+    
+    <!-- 1. ADD MONEY -->
     <div class="card">
       <h3>💳 Add Money To Wallet</h3>
       <div class="upi-badge">UPI ID: <b>laxmihi@ptyes</b></div>
-
       <label>Mobile Number</label>
       <input type="number" id="add-mobile" placeholder="10 Digit Number">
-
       <label>Enter Amount Paid (₹)</label>
       <input type="number" id="add-amt" placeholder="e.g. 100, 200, 500">
-
-      <div class="qr-container" id="qr-wrapper" style="display:none;">
-        <p style="font-size:12px; font-weight:bold; margin-bottom:5px;">Scan & Pay via Any UPI App:</p>
-        <img id="upi-qr-code" src="" alt="UPI QR Code">
-      </div>
 
       <div class="upi-apps-container">
         <button type="button" class="btn-upi-app btn-phonepe" onclick="openUpiApp('phonepe')">PhonePe</button>
@@ -210,83 +147,138 @@
 
       <label style="margin-top:15px;">12-Digit UTR / Ref Number</label>
       <input type="text" id="add-utr" placeholder="Enter 12 Digit UTR Number">
-
-      <label>Payment Screenshot</label>
-      <input type="file" id="add-proof" accept="image/*">
-
       <button class="btn btn-add" id="btn-submit-add-money">Submit Add Money Request</button>
     </div>
 
-    <!-- PAN CARD SERVICE -->
+    <!-- 2. MOBILE RECHARGE -->
+    <div class="card">
+      <h3>📱 Mobile Recharge</h3>
+      <label>Select Operator</label>
+      <select id="rc-operator">
+        <option value="Jio">Jio</option>
+        <option value="Airtel">Airtel</option>
+        <option value="Vi">Vi (Vodafone Idea)</option>
+        <option value="BSNL">BSNL</option>
+      </select>
+      <label>Mobile Number</label>
+      <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
+      <label>Recharge Amount (₹)</label>
+      <input type="number" id="rc-amount" placeholder="e.g. 239, 299">
+      <button class="btn btn-rc" id="btn-recharge">Process Recharge</button>
+    </div>
+
+    <!-- 3. ELECTRICITY BILL -->
+    <div class="card">
+      <h3>💡 Electricity Bill Payment</h3>
+      <label>State / Board</label>
+      <input type="text" id="bill-board" placeholder="e.g. UPVCL / Electricity Board">
+      <label>Consumer Number / CA Number</label>
+      <input type="text" id="bill-consumer" placeholder="Enter Account ID / Consumer No">
+      <label>Bill Amount (₹)</label>
+      <input type="number" id="bill-amount" placeholder="Enter Amount">
+      <button class="btn btn-bill" id="btn-pay-bill">Pay Electricity Bill</button>
+    </div>
+
+    <!-- 4. GOOGLE PLAY REDEEM CODE -->
+    <div class="card">
+      <h3>🎮 Google Play Gift Card</h3>
+      <label>Amount (₹)</label>
+      <input type="number" id="play-amt" placeholder="Minimum ₹10">
+      <label>Mobile Number</label>
+      <input type="number" id="play-mobile" placeholder="10 Digit Number">
+      <button class="btn btn-play" id="btn-play-code">Buy Gift Voucher</button>
+    </div>
+
+    <!-- 5. AMAZON / FLIPKART GIFT VOUCHER -->
+    <div class="card">
+      <h3>🛍️ E-Commerce Voucher</h3>
+      <label>Select Platform</label>
+      <select id="voucher-type">
+        <option value="Amazon Shopping">Amazon Shopping Voucher</option>
+        <option value="Flipkart Gift Card">Flipkart Gift Card</option>
+      </select>
+      <label>Voucher Amount (₹)</label>
+      <input type="number" id="voucher-amt" placeholder="e.g. 500, 1000">
+      <button class="btn btn-amazon" id="btn-voucher">Purchase Voucher</button>
+    </div>
+
+    <!-- 6. VOTER ID SERVICE -->
+    <div class="card">
+      <h3>🗳️ Voter ID Print / Service</h3>
+      <label>Epic Number / Name</label>
+      <input type="text" id="voter-id" placeholder="Enter EPIC Number">
+      <label>Mobile Number</label>
+      <input type="number" id="voter-mobile" placeholder="Contact Number">
+      <div class="comm-tag">Service Charge: ₹50</div>
+      <button class="btn btn-voter" id="btn-voter">Apply Voter Card Service</button>
+    </div>
+
+    <!-- 7. VEHICLE RC DETAILS -->
+    <div class="card">
+      <h3>🚗 Vehicle RC Details Search</h3>
+      <label>Vehicle Registration Number</label>
+      <input type="text" id="rc-num" placeholder="e.g. UP32XX1234">
+      <div class="comm-tag">Search Fee: ₹20</div>
+      <button class="btn btn-rc" id="btn-rc-search">Fetch Vehicle Info</button>
+    </div>
+
+    <!-- 8. RATION CARD SERVICE -->
+    <div class="card">
+      <h3>🌾 Ration Card Details</h3>
+      <label>Ration Card Number / Aadhaar</label>
+      <input type="text" id="ration-no" placeholder="Enter Ration Card No">
+      <div class="comm-tag">Fee: ₹30</div>
+      <button class="btn btn-ration" id="btn-ration-fetch">Get Ration Info</button>
+    </div>
+
+    <!-- 9. PAN CARD SERVICE -->
     <div class="card">
       <h3>💳 PAN Card Service (New & Correction)</h3>
       <div class="warn-tag">⚠️ <b>ध्यान दें:</b> 18+ वर्ष होना अनिवार्य है।</div>
-
       <label>Service Type</label>
       <select id="pan-service-type">
         <option value="New PAN Card">New PAN Card Apply</option>
         <option value="PAN Correction">PAN Correction / Update</option>
       </select>
-
       <label>Full Applicant Name</label>
       <input type="text" id="pan-name" placeholder="Full Name as per Aadhaar">
-
       <label>Date of Birth (DOB)</label>
       <input type="date" id="pan-dob">
-
       <label>Father's Full Name</label>
       <input type="text" id="pan-father" placeholder="Father's Full Name">
-
       <label>Aadhaar Number</label>
       <input type="number" id="pan-aadhaar" placeholder="12-Digit Aadhaar Number">
-
       <label>Mobile Number</label>
       <input type="number" id="pan-mobile" placeholder="10-Digit Mobile Number">
-
-      <label>Passport Size Photo</label>
-      <input type="file" id="pan-photo" accept="image/*">
-
-      <label>Applicant Signature</label>
-      <input type="file" id="pan-sign" accept="image/*">
-
-      <label>Aadhaar Card File</label>
-      <input type="file" id="pan-aadhaar-file" accept="image/*,application/pdf">
-
       <div class="comm-tag">Service Charge: ₹180</div>
       <button class="btn btn-pan" id="btn-apply-pan">Submit PAN Application (₹180)</button>
     </div>
 
-    <!-- BIRTH CERTIFICATE -->
+    <!-- 10. BIRTH CERTIFICATE -->
     <div class="card">
       <h3>👶 Birth Certificate Service</h3>
       <label>Child / Person Full Name</label>
       <input type="text" id="birth-name" placeholder="Full Name">
-
       <label>Date of Birth</label>
       <input type="date" id="birth-dob">
-
       <label>Gender</label>
       <select id="birth-gender">
         <option value="Male">Male</option>
         <option value="Female">Female</option>
       </select>
-
       <label>Father's Name</label>
       <input type="text" id="birth-father" placeholder="Father's Full Name">
-
       <label>Mother's Name</label>
       <input type="text" id="birth-mother" placeholder="Mother's Full Name">
-
       <label>Place of Birth</label>
       <input type="text" id="birth-place" placeholder="Hospital / Address">
-
       <label>Contact Mobile Number</label>
       <input type="number" id="birth-mobile" placeholder="10-Digit Mobile Number">
-
       <div class="comm-tag">Service Charge: ₹200</div>
       <button class="btn btn-birth" id="btn-apply-birth">Apply Birth Certificate (₹200)</button>
     </div>
 
+    <!-- TRANSACTION HISTORY -->
     <div class="card" style="grid-column: span 2;">
       <h3>📜 Transaction History</h3>
       <table class="admin-table">
@@ -349,19 +341,28 @@
       window.location.href = upiUrl;
     }
 
-    // EVENT LISTENERS SETUP
+    function deductAndExecute(cost, serviceName, detailText) {
+      if(currentUser.balance < cost) {
+        alert(`Aapke Wallet me paryapt balance nahi hai! Is service ke liye ₹${cost} chahiye.`);
+        return false;
+      }
+      currentUser.balance -= cost;
+      currentUser.history.push({ type: serviceName, details: detailText, amount: cost, status: "Processing" });
+      updateStorage();
+      sendTelegramAlert(`🔔 *NEW REQUEST: ${serviceName}*\nUser: ${currentUser.name}\nDetails: ${detailText}\nAmount: ₹${cost}`);
+      alert(`${serviceName} request successfully submit ho gayi hai!`);
+      return true;
+    }
+
     document.addEventListener("DOMContentLoaded", function() {
-      // Clock
       setInterval(() => {
         const now = new Date();
         document.getElementById("live-date").innerText = now.toLocaleDateString();
         document.getElementById("live-time").innerText = now.toLocaleTimeString();
       }, 1000);
 
-      // Auto Session Restore
       if(currentUser) { showPortal(); }
 
-      // UI Navigation Actions
       document.getElementById("link-show-login").onclick = (e) => {
         e.preventDefault();
         document.getElementById("reg-card").style.display = "none";
@@ -381,7 +382,7 @@
         document.getElementById("reg-card").style.display = "block";
       };
 
-      // Register Button Click
+      // REGISTER
       document.getElementById("btn-register").onclick = function() {
         const name = document.getElementById("reg-name").value;
         const dob = document.getElementById("reg-dob").value;
@@ -396,15 +397,13 @@
 
         const newUser = { name, dob, shop, email, password: pass, balance: 10.0, history: [] };
         usersDB.push(newUser);
-        localStorage.setItem("usersDB", JSON.stringify(usersDB));
         currentUser = newUser;
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
-
+        updateStorage();
         sendTelegramAlert(`🎉 *NEW USER REGISTERED*\nName: ${name}\nEmail: ${email}`);
         showPortal();
       };
 
-      // Login Button Click
+      // LOGIN
       document.getElementById("btn-login").onclick = function() {
         const email = document.getElementById("login-email").value;
         const pass = document.getElementById("login-pass").value;
@@ -419,7 +418,7 @@
         }
       };
 
-      // Admin Login
+      // ADMIN LOGIN
       document.getElementById("btn-admin-login").onclick = function() {
         const u = document.getElementById("admin-user").value;
         const p = document.getElementById("admin-pass").value;
@@ -431,32 +430,85 @@
         }
       };
 
-      // Test Telegram Button
-      document.getElementById("btn-test-tg").onclick = function() {
-        sendTelegramAlert("🧪 Test Bot Working!");
-        alert("Test alert sent to Telegram!");
+      // ADD MONEY SUBMIT
+      document.getElementById("btn-submit-add-money").onclick = function() {
+        const amt = document.getElementById("add-amt").value;
+        const utr = document.getElementById("add-utr").value;
+        if(!amt || !utr) { alert("Amount aur UTR number enter karein!"); return; }
+        sendTelegramAlert(`💰 *ADD MONEY REQUEST*\nUser: ${currentUser.name}\nAmount: ₹${amt}\nUTR: ${utr}`);
+        alert("Add Money request bhej di gayi hai! Admin verification ke baad balance add hoga.");
       };
 
-      // PAN Card Click
+      // RECHARGE
+      document.getElementById("btn-recharge").onclick = function() {
+        const op = document.getElementById("rc-operator").value;
+        const mob = document.getElementById("rc-mobile").value;
+        const amt = parseFloat(document.getElementById("rc-amount").value);
+        if(!mob || !amt) { alert("Mobile aur Amount bharein!"); return; }
+        deductAndExecute(amt, "Mobile Recharge", `${op} - ${mob}`);
+      };
+
+      // ELECTRICITY BILL
+      document.getElementById("btn-pay-bill").onclick = function() {
+        const board = document.getElementById("bill-board").value;
+        const cons = document.getElementById("bill-consumer").value;
+        const amt = parseFloat(document.getElementById("bill-amount").value);
+        if(!cons || !amt) { alert("Details bharein!"); return; }
+        deductAndExecute(amt, "Electricity Bill", `${board} - ${cons}`);
+      };
+
+      // GOOGLE PLAY
+      document.getElementById("btn-play-code").onclick = function() {
+        const amt = parseFloat(document.getElementById("play-amt").value);
+        const mob = document.getElementById("play-mobile").value;
+        if(!mob || !amt) { alert("Details bharein!"); return; }
+        deductAndExecute(amt, "Google Play Voucher", `Mobile: ${mob}`);
+      };
+
+      // VOUCHER
+      document.getElementById("btn-voucher").onclick = function() {
+        const type = document.getElementById("voucher-type").value;
+        const amt = parseFloat(document.getElementById("voucher-amt").value);
+        if(!amt) { alert("Amount bharein!"); return; }
+        deductAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
+      };
+
+      // VOTER ID
+      document.getElementById("btn-voter").onclick = function() {
+        const id = document.getElementById("voter-id").value;
+        if(!id) { alert("EPIC Number bharein!"); return; }
+        deductAndExecute(50, "Voter ID Service", `EPIC: ${id}`);
+      };
+
+      // RC SEARCH
+      document.getElementById("btn-rc-search").onclick = function() {
+        const rc = document.getElementById("rc-num").value;
+        if(!rc) { alert("Vehicle Number bharein!"); return; }
+        deductAndExecute(20, "Vehicle RC Info", `Vehicle: ${rc}`);
+      };
+
+      // RATION CARD
+      document.getElementById("btn-ration-fetch").onclick = function() {
+        const rno = document.getElementById("ration-no").value;
+        if(!rno) { alert("Ration Card No bharein!"); return; }
+        deductAndExecute(30, "Ration Card Info", `Ration No: ${rno}`);
+      };
+
+      // PAN CARD
       document.getElementById("btn-apply-pan").onclick = function() {
-        alert("18+ Age verification check passed.");
         const name = document.getElementById("pan-name").value;
-        if(!name) { alert("Name enter karein!"); return; }
-
-        if(currentUser.balance < 180) {
-          alert("Wallet balance kam hai! Pehle Add Money Karein.");
-          return;
-        }
-
-        currentUser.balance -= 180;
-        currentUser.history.push({ type: "PAN Card Service", details: `Applicant: ${name}`, amount: 180, status: "Submitted" });
-        updateStorage();
-
-        sendTelegramAlert(`💳 *NEW PAN REQUEST*\nUser: ${currentUser.name}\nApplicant: ${name}`);
-        alert("PAN Request Submitted Successfully!");
+        if(!name) { alert("Applicant Name bharein!"); return; }
+        deductAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
       };
 
-      // Logout Actions
+      // BIRTH CERTIFICATE
+      document.getElementById("btn-apply-birth").onclick = function() {
+        const name = document.getElementById("birth-name").value;
+        if(!name) { alert("Child Name bharein!"); return; }
+        deductAndExecute(200, "Birth Certificate", `Name: ${name}`);
+      };
+
+      // LOGOUT
       document.getElementById("btn-logout").onclick = document.getElementById("btn-admin-logout").onclick = function() {
         localStorage.removeItem("currentUser");
         location.reload();
