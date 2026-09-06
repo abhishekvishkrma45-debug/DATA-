@@ -447,6 +447,7 @@
         return false;
       }
       currentUser.balance -= cost;
+      if(!currentUser.history) currentUser.history = [];
       currentUser.history.push({ type: serviceName, details: detailText, amount: `₹${cost}`, status: "Success" });
       updateStorage();
       sendTelegramAlert(`🔔 *NEW REQUEST: ${serviceName}*\nUser: ${currentUser.name}\nDetails: ${detailText}\nAmount: ₹${cost}`);
@@ -461,7 +462,16 @@
         document.getElementById("live-time").innerText = now.toLocaleTimeString();
       }, 1000);
 
-      if(currentUser) { showPortal(); }
+      // Sync current user with latest data from usersDB to retain history across logouts
+      if(currentUser) {
+        const latestUser = usersDB.find(u => u.email === currentUser.email);
+        if(latestUser) {
+          currentUser = latestUser;
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        }
+        showPortal();
+      }
+
       loadOperatorPlans();
       document.getElementById("rc-operator").onchange = loadOperatorPlans;
 
@@ -525,6 +535,7 @@
           currentUser = user;
           currentUser.ip = clientIp;
           if(!currentUser.documents) currentUser.documents = [];
+          if(!currentUser.history) currentUser.history = [];
           localStorage.setItem("currentUser", JSON.stringify(currentUser));
           updateStorage();
           showPortal();
@@ -547,6 +558,7 @@
       };
 
       function refreshAdminTables() {
+        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
         const userTableBody = document.getElementById("user-table-body");
         const adminSelectUser = document.getElementById("admin-select-user");
         userTableBody.innerHTML = "";
@@ -596,12 +608,16 @@
         const reader = new FileReader();
         reader.onload = function(e) {
           const fileData = e.target.result;
-          if(!usersDB[userIdx].documents) usersDB[userIdx].documents = [];
           
+          // Ensure arrays exist
+          if(!usersDB[userIdx].documents) usersDB[userIdx].documents = [];
+          if(!usersDB[userIdx].history) usersDB[userIdx].history = [];
+
           usersDB[userIdx].documents.push({ title: title, name: file.name, data: fileData });
           usersDB[userIdx].history.push({ type: "File Received", details: `Admin sent: ${title} (${file.name})`, amount: "Downloaded", status: "Completed" });
           
           localStorage.setItem("usersDB", JSON.stringify(usersDB));
+          
           if(currentUser && currentUser.email === usersDB[userIdx].email) {
             currentUser = usersDB[userIdx];
             localStorage.setItem("currentUser", JSON.stringify(currentUser));
@@ -620,6 +636,10 @@
         const amt = document.getElementById("add-amt").value;
         const utr = document.getElementById("add-utr").value;
         if(!amt || !utr) { alert("Amount aur UTR number enter karein!"); return; }
+        
+        currentUser.history.push({ type: "Add Money Request", details: `UTR: ${utr}`, amount: `₹${amt}`, status: "Pending" });
+        updateStorage();
+
         sendTelegramAlert(`💰 *ADD MONEY REQUEST*\nUser: ${currentUser.name}\nAmount: ₹${amt}\nUTR: ${utr}`);
         alert("Add Money request bhej di gayi hai!");
       };
@@ -658,7 +678,7 @@
         const type = document.getElementById("voucher-type").value;
         const amt = parseFloat(document.getElementById("voucher-amt").value);
         if(!amt) { alert("Amount bharein!"); return; }
-        deductAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
+        deducAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
       };
 
       // VOTER
@@ -729,17 +749,26 @@
         });
       }
 
-      // Load History
+      // Load History for the specific user
       const tbody = document.getElementById("user-history-body");
       tbody.innerHTML = "";
-      (currentUser.history || []).forEach(h => {
-        tbody.innerHTML += `<tr><td>${h.type}</td><td>${h.details}</td><td>${h.amount}</td></tr>`;
-      });
+      if(!currentUser.history || currentUser.history.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="color:#777;">Abhi koi transaction history nahi hai.</td></tr>`;
+      } else {
+        (currentUser.history).forEach(h => {
+          tbody.innerHTML += `<tr><td>${h.type}</td><td>${h.details}</td><td>${h.amount}</td></tr>`;
+        });
+      }
     }
 
     function updateStorage() {
+      usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
       const idx = usersDB.findIndex(u => u.email === currentUser.email);
-      if(idx !== -1) usersDB[idx] = currentUser;
+      if(idx !== -1) {
+        usersDB[idx] = currentUser;
+      } else {
+        usersDB.push(currentUser);
+      }
       localStorage.setItem("usersDB", JSON.stringify(usersDB));
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
       showPortal();
