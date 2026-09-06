@@ -6332,64 +6332,86 @@ Automated Recharge & Discounts: Jio, Airtel, Vi, BSNL ऑपरेटर सि�
 HTML icon
 index
  HTML 
+isme fir akash ane lga aksh nhi mera matlb admin penal pahle ke jaisa krna hai
+
+Aapke dashboard ya app interface me agar admin panel ka layout/view badal gaya hai, toh usko pehle jaisa restored ya default view par lane ke liye ye tarike try kar sakte hain:
+
+Browser Cache Clear Karein: Kaafi baar purani files store hone ki wajah se interface galat dikhta hai. Ctrl + Shift + R (ya Cmd + Shift + R) daba kar page ko hard refresh karein.
+
+Layout / Theme Settings Reset Karein: Admin panel ke Profile ya System Settings me jaakar Reset to Default Layout ya Theme Settings ka option dekhein.
+
+User Role & Permissions Check Karein: Agar aapka login account ya role change hua hai, toh views badal sakte hain. Admin account se dubara login karke check karein.
+
+Developer Options / Version Toggle: Agar panel update hua hai, toh aksar top ya bottom bar me "Switch to Classic View" ya "Legacy Version" ka toggle button hota hai.
+
+Agar aap kisi specific script (jaise WordPress, Laravel, PHP script, ya kisi app) ka admin panel use kar rahe hain, toh uska naam batayein taaki exact step-by-step solution mil sake!
+
+code bhejo
+
+Aap kis script, project, ya functionality ke liye code chahte hain?
+
+Kripya thoda detail batayein (jaise: PHP/WordPress admin panel layout reset ka code, kisi specific HTML/CSS dashboard ka code, ya kisi aur feature ka code), taaki main aapko exact working code de sakoon.
+
+jo abhishek name ki site thi usi me
+
+Aapke GitHub repository (abhishekvishkrma45-debug) me agar code ya layout ki dikkat aa rahi hai, toh usko fix karke purane panel par lana hoga.
+
+Aapko kaunsa exact code chahiye, pehle ye select kar lijiye:
+
+1. PHP/HTML Admin Panel Layout Reset Code
+Agar dashboard ka CSS/HTML distort ho raha hai ya galat view load ho raha hai, toh base template aur CSS reset link:
+
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Default View</title>
+    <!-- Reset CSS -->
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { display: flex; min-height: 100vh; background: #f4f6f9; }
+        .sidebar { width: 250px; background: #343a40; color: #fff; padding: 20px; }
+        .sidebar a { color: #c2c7d0; display: block; padding: 10px 0; text-decoration: none; }
+        .content { flex: 1; padding: 20px; }
+        .header { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3>Admin Panel</h3>
+        <a href="#">Dashboard</a>
+        <a href="#">Users</a>
+        <a href="#">Settings</a>
+    </div>
+    <div class="content">
+        <div class="header"><h2>Dashboard Overview</h2></div>
+        <p>Aapka default admin panel layout yahan active hai.</p>
+    </div>
+</body>
+</html>
+2. LocalStorage / Session View Reset Script (JS)
+Agar browser me layout ka data save hone ki wajah se view change ho gaya hai, toh ye JavaScript snippet apne file me add karke layout reset kar sakte hain:
+
+JavaScript
+// Admin panel view settings ko reset karne ke liye
+function resetAdminPanelLayout() {
+    localStorage.removeItem('admin_theme');
+    localStorage.removeItem('admin_sidebar_state');
+    localStorage.removeItem('admin_layout_config');
+    alert('Admin Panel view restore ho gaya hai. Page refresh karein.');
+    location.reload();
+}
+Security Alert: Aapke GitHub repositories (abhishekvishkrma45-debug/DATA- aur abhishekvishkrma45-debug/UPI) me Telegram Bot Tokens expose hue hain. Apne code ko push karne se pehle bot tokens aur API keys ko revoke karke rotate zaroor kar lein.
+
+Aap ye bataiye ki aapka Admin Panel Node.js, PHP, React, ya Python me bana hua hai?
 
 
+yr 
 
 Gemini is AI and can make mistakes.
 
-h  10444    
-w   1086    
-10444
-
-1086
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
- 
-
-Analyzing
 <!DOCTYPE html>
 <html lang="hi">
 <head>
