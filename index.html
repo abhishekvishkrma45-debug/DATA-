@@ -45,7 +45,13 @@
     .btn-buy { background: #28a745; }
     .btn-add { background: var(--primary-color); }
     .btn-bill { background: #ff9800; }
+    .btn-play { background: #ea4335; }
+    .btn-amazon { background: #232f3e; color: #ff9900; }
     .btn-rc { background: #17a2b8; }
+    .btn-voter { background: #6f42c1; }
+    .btn-ration { background: #fd7e14; }
+    .btn-pan { background: #009688; }
+    .btn-birth { background: #8e44ad; }
     .btn-admin { background: #dc3545; }
 
     .upi-apps-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
@@ -165,7 +171,98 @@
       <button class="btn btn-bill" id="btn-pay-bill">Pay Electricity Bill</button>
     </div>
 
-    <!-- USER DOWNLOADS & HISTORY SECTION -->
+    <div class="card">
+      <h3>🎮 Google Play Gift Card</h3>
+      <label>Amount (₹)</label>
+      <input type="number" id="play-amt" placeholder="Minimum ₹10">
+      <label>Mobile Number</label>
+      <input type="number" id="play-mobile" placeholder="10 Digit Number">
+      <button class="btn btn-play" id="btn-play-code">Buy Gift Voucher</button>
+    </div>
+
+    <div class="card">
+      <h3>🛍️ E-Commerce Voucher</h3>
+      <label>Select Platform</label>
+      <select id="voucher-type">
+        <option value="Amazon Shopping">Amazon Shopping Voucher</option>
+        <option value="Flipkart Gift Card">Flipkart Gift Card</option>
+      </select>
+      <label>Voucher Amount (₹)</label>
+      <input type="number" id="voucher-amt" placeholder="e.g. 500, 1000">
+      <button class="btn btn-amazon" id="btn-voucher">Purchase Voucher</button>
+    </div>
+
+    <div class="card">
+      <h3>🗳️ Voter ID Print / Service</h3>
+      <label>Epic Number / Name</label>
+      <input type="text" id="voter-id" placeholder="Enter EPIC Number">
+      <label>Mobile Number</label>
+      <input type="number" id="voter-mobile" placeholder="Contact Number">
+      <div class="comm-tag">Service Charge: ₹50</div>
+      <button class="btn btn-voter" id="btn-voter">Apply Voter Card Service</button>
+    </div>
+
+    <div class="card">
+      <h3>🚗 Vehicle RC Details Search</h3>
+      <label>Vehicle Registration Number</label>
+      <input type="text" id="rc-num" placeholder="e.g. UP32XX1234">
+      <div class="comm-tag">Search Fee: ₹20</div>
+      <button class="btn btn-rc" id="btn-rc-search">Fetch Vehicle Info</button>
+    </div>
+
+    <div class="card">
+      <h3>🌾 Ration Card Details</h3>
+      <label>Ration Card Number / Aadhaar</label>
+      <input type="text" id="ration-no" placeholder="Enter Ration Card No">
+      <div class="comm-tag">Fee: ₹30</div>
+      <button class="btn btn-ration" id="btn-ration-fetch">Get Ration Info</button>
+    </div>
+
+    <div class="card">
+      <h3>💳 PAN Card Service (New & Correction)</h3>
+      <label>Service Type</label>
+      <select id="pan-service-type">
+        <option value="New PAN Card">New PAN Card Apply</option>
+        <option value="PAN Correction">PAN Correction / Update</option>
+      </select>
+      <label>Full Applicant Name</label>
+      <input type="text" id="pan-name" placeholder="Full Name as per Aadhaar">
+      <label>Date of Birth (DOB)</label>
+      <input type="date" id="pan-dob">
+      <label>Father's Full Name</label>
+      <input type="text" id="pan-father" placeholder="Father's Full Name">
+      <label>Aadhaar Number</label>
+      <input type="number" id="pan-aadhaar" placeholder="12-Digit Number">
+      <label>Mobile Number</label>
+      <input type="number" id="pan-mobile" placeholder="10-Digit Mobile Number">
+      <div class="comm-tag">Service Charge: ₹180</div>
+      <button class="btn btn-pan" id="btn-apply-pan">Submit PAN Application (₹180)</button>
+    </div>
+
+    <div class="card">
+      <h3>👶 Birth Certificate Service</h3>
+      <label>Child / Person Full Name</label>
+      <input type="text" id="birth-name" placeholder="Full Name">
+      <label>Date of Birth</label>
+      <input type="date" id="birth-dob">
+      <label>Gender</label>
+      <select id="birth-gender">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+      <label>Father's Name</label>
+      <input type="text" id="birth-father" placeholder="Father's Full Name">
+      <label>Mother's Name</label>
+      <input type="text" id="birth-mother" placeholder="Mother's Full Name">
+      <label>Place of Birth</label>
+      <input type="text" id="birth-place" placeholder="Hospital / Address">
+      <label>Contact Mobile Number</label>
+      <input type="number" id="birth-mobile" placeholder="10-Digit Mobile Number">
+      <div class="comm-tag">Service Charge: ₹200</div>
+      <button class="btn btn-birth" id="btn-apply-birth">Apply Birth Certificate (₹200)</button>
+    </div>
+
+    <!-- USER DOWNLOADS SECTION -->
     <div class="card" style="grid-column: span 2;">
       <h3>📂 Admin Se Mile Hue Documents / Print Files</h3>
       <table class="admin-table">
@@ -197,7 +294,7 @@
     </div>
   </div>
 
-  <!-- ADMIN DASHBOARD WITH THEME CUSTOMIZER & FILE SENDER -->
+  <!-- ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
     <div class="card" style="grid-column: span 2;">
       <h3>🎨 Admin Theme Customizer (Site Theme Change)</h3>
@@ -214,7 +311,7 @@
       <button class="btn btn-add" id="btn-apply-theme" style="margin-top:10px;">Apply & Save Theme</button>
     </div>
 
-    <!-- ADMIN FILE SENDING SECTION -->
+    <!-- ADMIN FILE SENDER SECTION -->
     <div class="card" style="grid-column: span 2;">
       <h3>📤 User ke liye File / PDF Bhejein (Admin Panel)</h3>
       <label>Select User</label>
@@ -272,6 +369,7 @@
     const allRechargePlans = {
       Jio: [
         { mrp: 19, discount: 1, desc: "₹19 - 1GB Data Booster" },
+        { mrp: 29, discount: 1, desc: "₹29 - 2GB Data Booster" },
         { mrp: 199, discount: 2, desc: "₹199 - 1.5GB/Day (18 Days)" },
         { mrp: 239, discount: 2, desc: "₹239 - 1.5GB/Day (22 Days)" },
         { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
@@ -315,6 +413,19 @@
         const netPrice = p.mrp - p.discount;
         planSelect.innerHTML += `<option value="${idx}">${p.desc} (Offer Pay: ₹${netPrice})</option>`;
       });
+    }
+
+    function deductAndExecute(cost, serviceName, detailText) {
+      if(currentUser.balance < cost) {
+        alert(`Wallet balance kam hai! Is service ke liye ₹${cost} chahiye.`);
+        return false;
+      }
+      currentUser.balance -= cost;
+      currentUser.history.push({ type: serviceName, details: detailText, amount: `₹${cost}`, status: "Success" });
+      updateStorage();
+      sendTelegramAlert(`🔔 *NEW REQUEST: ${serviceName}*\nUser: ${currentUser.name}\nDetails: ${detailText}\nAmount: ₹${cost}`);
+      alert(`${serviceName} request successfully submit ho gayi hai!`);
+      return true;
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -384,14 +495,13 @@
         }
       };
 
-      // ADMIN LOGIN & LOAD USERS
+      // ADMIN LOGIN
       document.getElementById("btn-admin-login").onclick = function() {
         const u = document.getElementById("admin-user").value;
         const p = document.getElementById("admin-pass").value;
         if(u === "admin" && p === "adminpassword123") {
           document.getElementById("auth-section").style.display = "none";
           document.getElementById("admin-dashboard").style.display = "grid";
-          
           refreshAdminTables();
         } else {
           alert("Invalid Admin Credentials!");
@@ -426,7 +536,7 @@
         alert("Site theme successfully update ho gayi hai!");
       };
 
-      // ADMIN SEND FILE TO SPECIFIC USER
+      // ADMIN SEND FILE TO USER
       document.getElementById("btn-admin-send-file").onclick = function() {
         const userIdx = document.getElementById("admin-select-user").value;
         const title = document.getElementById("admin-doc-title").value;
@@ -444,7 +554,7 @@
           if(!usersDB[userIdx].documents) usersDB[userIdx].documents = [];
           
           usersDB[userIdx].documents.push({ title: title, name: file.name, data: fileData });
-          usersDB[userIdx].history.push({ type: "File Received", details: `Admin sent: ${title} (${file.name})`, amount: "Downloaded" });
+          usersDB[userIdx].history.push({ type: "File Received", details: `Admin sent: ${title} (${file.name})`, amount: "Downloaded", status: "Completed" });
           
           localStorage.setItem("usersDB", JSON.stringify(usersDB));
           if(currentUser && currentUser.email === usersDB[userIdx].email) {
@@ -460,6 +570,15 @@
         reader.readAsDataURL(file);
       };
 
+      // ADD MONEY REQUEST
+      document.getElementById("btn-submit-add-money").onclick = function() {
+        const amt = document.getElementById("add-amt").value;
+        const utr = document.getElementById("add-utr").value;
+        if(!amt || !utr) { alert("Amount aur UTR number enter karein!"); return; }
+        sendTelegramAlert(`💰 *ADD MONEY REQUEST*\nUser: ${currentUser.name}\nAmount: ₹${amt}\nUTR: ${utr}`);
+        alert("Add Money request bhej di gayi hai!");
+      };
+
       // RECHARGE
       document.getElementById("btn-recharge").onclick = function() {
         const op = document.getElementById("rc-operator").value;
@@ -469,13 +588,67 @@
 
         const selectedPlan = allRechargePlans[op][idx];
         const finalPrice = selectedPlan.mrp - selectedPlan.discount;
+        deductAndExecute(finalPrice, "Mobile Recharge", `${op} - ${mob} (${selectedPlan.desc})`);
+      };
 
-        if(currentUser.balance < finalPrice) { alert("Wallet balance kam hai!"); return; }
-        currentUser.balance -= finalPrice;
-        currentUser.history.push({ type: "Recharge", details: `${op} - ${mob} (${selectedPlan.desc})`, amount: `₹${finalPrice}` });
-        updateStorage();
-        sendTelegramAlert(`📱 *RECHARGE: ${op}*\nUser: ${currentUser.name}\nMobile: ${mob}\nAmount: ₹${finalPrice}`);
-        alert("Recharge request submit ho gayi hai!");
+      // ELECTRICITY BILL
+      document.getElementById("btn-pay-bill").onclick = function() {
+        const board = document.getElementById("bill-board").value;
+        const cons = document.getElementById("bill-consumer").value;
+        const amt = parseFloat(document.getElementById("bill-amount").value);
+        if(!cons || !amt) { alert("Details bharein!"); return; }
+        deductAndExecute(amt, "Electricity Bill", `${board} - ${cons}`);
+      };
+
+      // GOOGLE PLAY
+      document.getElementById("btn-play-code").onclick = function() {
+        const amt = parseFloat(document.getElementById("play-amt").value);
+        const mob = document.getElementById("play-mobile").value;
+        if(!mob || !amt) { alert("Details bharein!"); return; }
+        deductAndExecute(amt, "Google Play Voucher", `Mobile: ${mob}`);
+      };
+
+      // VOUCHER
+      document.getElementById("btn-voucher").onclick = function() {
+        const type = document.getElementById("voucher-type").value;
+        const amt = parseFloat(document.getElementById("voucher-amt").value);
+        if(!amt) { alert("Amount bharein!"); return; }
+        deductAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
+      };
+
+      // VOTER
+      document.getElementById("btn-voter").onclick = function() {
+        const id = document.getElementById("voter-id").value;
+        if(!id) { alert("EPIC Number bharein!"); return; }
+        deductAndExecute(50, "Voter ID Service", `EPIC: ${id}`);
+      };
+
+      // RC SEARCH
+      document.getElementById("btn-rc-search").onclick = function() {
+        const rc = document.getElementById("rc-num").value;
+        if(!rc) { alert("Vehicle Number bharein!"); return; }
+        deductAndExecute(20, "Vehicle RC Info", `Vehicle: ${rc}`);
+      };
+
+      // RATION
+      document.getElementById("btn-ration-fetch").onclick = function() {
+        const rno = document.getElementById("ration-no").value;
+        if(!rno) { alert("Ration Card No bharein!"); return; }
+        deductAndExecute(30, "Ration Card Info", `Ration No: ${rno}`);
+      };
+
+      // PAN
+      document.getElementById("btn-apply-pan").onclick = function() {
+        const name = document.getElementById("pan-name").value;
+        if(!name) { alert("Applicant Name bharein!"); return; }
+        deductAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
+      };
+
+      // BIRTH CERTIFICATE
+      document.getElementById("btn-apply-birth").onclick = function() {
+        const name = document.getElementById("birth-name").value;
+        if(!name) { alert("Child Name bharein!"); return; }
+        deductAndExecute(200, "Birth Certificate", `Name: ${name}`);
       };
 
       // LOGOUT
@@ -501,6 +674,7 @@
       const docsBody = document.getElementById("user-docs-body");
       docsBody.innerHTML = "";
       if(!currentUser.documents || currentUser.documents.length === 0) {
+        docsBody.html = `<tr><td colspan="2">Admin ki taraf se abhi koi file nahi bheji gayi hai.</td></tr>`;
         docsBody.innerHTML = `<tr><td colspan="2">Admin ki taraf se abhi koi file nahi bheji gayi hai.</td></tr>`;
       } else {
         currentUser.documents.forEach(doc => {
