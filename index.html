@@ -262,22 +262,6 @@
       <button class="btn btn-birth" id="btn-apply-birth">Apply Birth Certificate (₹200)</button>
     </div>
 
-    <!-- USER DOWNLOADS SECTION -->
-    <div class="card" style="grid-column: span 2;">
-      <h3>📂 Admin Se Mile Hue Documents / Print Files</h3>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Document Title</th>
-            <th>Download Link</th>
-          </tr>
-        </thead>
-        <tbody id="user-docs-body">
-          <tr><td colspan="2">Koi file available nahi hai.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
     <div class="card" style="grid-column: span 2;">
       <h3>📜 Transaction History</h3>
       <table class="admin-table">
@@ -641,7 +625,7 @@
       document.getElementById("btn-apply-pan").onclick = function() {
         const name = document.getElementById("pan-name").value;
         if(!name) { alert("Applicant Name bharein!"); return; }
-        deductAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
+        deduchtAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
       };
 
       // BIRTH CERTIFICATE
@@ -669,18 +653,6 @@
       (currentUser.history || []).forEach(h => {
         tbody.innerHTML += `<tr><td>${h.type}</td><td>${h.details}</td><td>${h.amount}</td></tr>`;
       });
-
-      // Load Received Documents from Admin
-      const docsBody = document.getElementById("user-docs-body");
-      docsBody.innerHTML = "";
-      if(!currentUser.documents || currentUser.documents.length === 0) {
-        docsBody.html = `<tr><td colspan="2">Admin ki taraf se abhi koi file nahi bheji gayi hai.</td></tr>`;
-        docsBody.innerHTML = `<tr><td colspan="2">Admin ki taraf se abhi koi file nahi bheji gayi hai.</td></tr>`;
-      } else {
-        currentUser.documents.forEach(doc => {
-          docsBody.innerHTML += `<tr><td><b>${doc.title}</b><br><small>${doc.name}</small></td><td><a href="${doc.data}" target="_blank" download="${doc.name}" class="btn btn-add" style="display:inline-block; padding:6px 12px; margin:0; text-decoration:none; text-align:center;">📥 Download File</a></td></tr>`;
-        });
-      }
     }
 
     function updateStorage() {
