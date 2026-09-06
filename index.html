@@ -78,7 +78,6 @@
     </div>
   </header>
 
-  <!-- AUTH SECTION -->
   <div id="auth-section" class="main-container">
     <div class="card" id="reg-card">
       <h3>📝 User Registration (Get ₹10 Bonus)</h3>
@@ -126,10 +125,8 @@
     </div>
   </div>
 
-  <!-- MAIN PORTAL -->
   <div id="portal-section" class="main-container">
     
-    <!-- 1. ADD MONEY -->
     <div class="card">
       <h3>💳 Add Money To Wallet</h3>
       <div class="upi-badge">UPI ID: <b>laxmihi@ptyes</b></div>
@@ -150,9 +147,8 @@
       <button class="btn btn-add" id="btn-submit-add-money">Submit Add Money Request</button>
     </div>
 
-    <!-- 2. MOBILE RECHARGE -->
     <div class="card">
-      <h3>📱 Mobile Recharge</h3>
+      <h3>📱 Mobile Recharge (Instant Discount)</h3>
       <label>Select Operator</label>
       <select id="rc-operator">
         <option value="Jio">Jio</option>
@@ -160,14 +156,17 @@
         <option value="Vi">Vi (Vodafone Idea)</option>
         <option value="BSNL">BSNL</option>
       </select>
+
       <label>Mobile Number</label>
       <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
-      <label>Recharge Amount (₹)</label>
-      <input type="number" id="rc-amount" placeholder="e.g. 239, 299">
+
+      <label>Select Plan</label>
+      <select id="rc-plan-select"></select>
+
+      <div class="comm-tag" id="discount-info">Offer Rate: MRP - Flat Discount</div>
       <button class="btn btn-rc" id="btn-recharge">Process Recharge</button>
     </div>
 
-    <!-- 3. ELECTRICITY BILL -->
     <div class="card">
       <h3>💡 Electricity Bill Payment</h3>
       <label>State / Board</label>
@@ -179,7 +178,6 @@
       <button class="btn btn-bill" id="btn-pay-bill">Pay Electricity Bill</button>
     </div>
 
-    <!-- 4. GOOGLE PLAY REDEEM CODE -->
     <div class="card">
       <h3>🎮 Google Play Gift Card</h3>
       <label>Amount (₹)</label>
@@ -189,7 +187,6 @@
       <button class="btn btn-play" id="btn-play-code">Buy Gift Voucher</button>
     </div>
 
-    <!-- 5. AMAZON / FLIPKART GIFT VOUCHER -->
     <div class="card">
       <h3>🛍️ E-Commerce Voucher</h3>
       <label>Select Platform</label>
@@ -202,7 +199,6 @@
       <button class="btn btn-amazon" id="btn-voucher">Purchase Voucher</button>
     </div>
 
-    <!-- 6. VOTER ID SERVICE -->
     <div class="card">
       <h3>🗳️ Voter ID Print / Service</h3>
       <label>Epic Number / Name</label>
@@ -213,7 +209,6 @@
       <button class="btn btn-voter" id="btn-voter">Apply Voter Card Service</button>
     </div>
 
-    <!-- 7. VEHICLE RC DETAILS -->
     <div class="card">
       <h3>🚗 Vehicle RC Details Search</h3>
       <label>Vehicle Registration Number</label>
@@ -222,7 +217,6 @@
       <button class="btn btn-rc" id="btn-rc-search">Fetch Vehicle Info</button>
     </div>
 
-    <!-- 8. RATION CARD SERVICE -->
     <div class="card">
       <h3>🌾 Ration Card Details</h3>
       <label>Ration Card Number / Aadhaar</label>
@@ -231,7 +225,6 @@
       <button class="btn btn-ration" id="btn-ration-fetch">Get Ration Info</button>
     </div>
 
-    <!-- 9. PAN CARD SERVICE -->
     <div class="card">
       <h3>💳 PAN Card Service (New & Correction)</h3>
       <div class="warn-tag">⚠️ <b>ध्यान दें:</b> 18+ वर्ष होना अनिवार्य है।</div>
@@ -254,7 +247,6 @@
       <button class="btn btn-pan" id="btn-apply-pan">Submit PAN Application (₹180)</button>
     </div>
 
-    <!-- 10. BIRTH CERTIFICATE -->
     <div class="card">
       <h3>👶 Birth Certificate Service</h3>
       <label>Child / Person Full Name</label>
@@ -278,7 +270,6 @@
       <button class="btn btn-birth" id="btn-apply-birth">Apply Birth Certificate (₹200)</button>
     </div>
 
-    <!-- TRANSACTION HISTORY -->
     <div class="card" style="grid-column: span 2;">
       <h3>📜 Transaction History</h3>
       <table class="admin-table">
@@ -296,7 +287,6 @@
     </div>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
     <div class="card" style="grid-column: span 2;">
       <h3>👑 Admin Panel</h3>
@@ -324,6 +314,38 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
+    // ALL RECHARGE PLANS DATABASE
+    const allRechargePlans = {
+      Jio: [
+        { mrp: 19, discount: 1, desc: "₹19 - 1GB Data Booster" },
+        { mrp: 29, discount: 1, desc: "₹29 - 2GB Data Booster" },
+        { mrp: 199, discount: 2, desc: "₹199 - 1.5GB/Day (18 Days)" },
+        { mrp: 239, discount: 2, desc: "₹239 - 1.5GB/Day (22 Days)" },
+        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" },
+        { mrp: 666, discount: 2, desc: "₹666 - 1.5GB/Day (84 Days)" }
+      ],
+      Airtel: [
+        { mrp: 22, discount: 1, desc: "₹22 - 1GB Data Booster" },
+        { mrp: 33, discount: 1, desc: "₹33 - 2GB Data Booster" },
+        { mrp: 199, discount: 2, desc: "₹199 - 1GB/Day (24 Days)" },
+        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" },
+        { mrp: 479, discount: 2, desc: "₹479 - 1.5GB/Day (56 Days)" },
+        { mrp: 719, discount: 2, desc: "₹719 - 1.5GB/Day (84 Days)" }
+      ],
+      Vi: [
+        { mrp: 19, discount: 1, desc: "₹19 - 1GB Data (1 Day)" },
+        { mrp: 199, discount: 2, desc: "₹199 - 1GB/Day (18 Days)" },
+        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" },
+        { mrp: 479, discount: 2, desc: "₹479 - 1.5GB/Day (56 Days)" }
+      ],
+      BSNL: [
+        { mrp: 16, discount: 1, desc: "₹16 - 2GB Data Booster" },
+        { mrp: 99, discount: 1, desc: "₹99 - Unlimited Calls (18 Days)" },
+        { mrp: 199, discount: 2, desc: "₹199 - 2GB/Day (30 Days)" },
+        { mrp: 397, discount: 2, desc: "₹397 - Long Validity Pack" }
+      ]
+    };
+
     function sendTelegramAlert(textMsg) {
       telegramBots.forEach(bot => {
         fetch(`https://api.telegram.org/bot${bot.token}/sendMessage`, {
@@ -341,15 +363,40 @@
       window.location.href = upiUrl;
     }
 
+    function loadOperatorPlans() {
+      const op = document.getElementById("rc-operator").value;
+      const planSelect = document.getElementById("rc-plan-select");
+      planSelect.innerHTML = "";
+
+      const plans = allRechargePlans[op] || [];
+      plans.forEach((p, idx) => {
+        const netPrice = p.mrp - p.discount;
+        planSelect.innerHTML += `<option value="${idx}">${p.desc} (Offer Pay: ₹${netPrice})</option>`;
+      });
+
+      updateDiscountTag();
+    }
+
+    function updateDiscountTag() {
+      const op = document.getElementById("rc-operator").value;
+      const planSelect = document.getElementById("rc-plan-select");
+      const idx = planSelect.value;
+      if(idx !== null && allRechargePlans[op][idx]) {
+        const p = allRechargePlans[op][idx];
+        const payPrice = p.mrp - p.discount;
+        document.getElementById("discount-info").innerHTML = `<b>MRP:</b> ₹${p.mrp} | <b>Discount:</b> ₹${p.discount} Off | <b>Your Price:</b> <span style="color:#28a745; font-size:14px;">₹${payPrice}</span>`;
+      }
+    }
+
     function deductAndExecute(cost, serviceName, detailText) {
       if(currentUser.balance < cost) {
-        alert(`Aapke Wallet me paryapt balance nahi hai! Is service ke liye ₹${cost} chahiye.`);
+        alert(`Wallet balance kam hai! Is service ke liye ₹${cost} chahiye.`);
         return false;
       }
       currentUser.balance -= cost;
       currentUser.history.push({ type: serviceName, details: detailText, amount: cost, status: "Processing" });
       updateStorage();
-      sendTelegramAlert(`🔔 *NEW REQUEST: ${serviceName}*\nUser: ${currentUser.name}\nDetails: ${detailText}\nAmount: ₹${cost}`);
+      sendTelegramAlert(`🔔 *NEW REQUEST: ${serviceName}*\nUser: ${currentUser.name}\nDetails: ${detailText}\nAmount Charged: ₹${cost}`);
       alert(`${serviceName} request successfully submit ho gayi hai!`);
       return true;
     }
@@ -362,6 +409,10 @@
       }, 1000);
 
       if(currentUser) { showPortal(); }
+
+      loadOperatorPlans();
+      document.getElementById("rc-operator").onchange = loadOperatorPlans;
+      document.getElementById("rc-plan-select").onchange = updateDiscountTag;
 
       document.getElementById("link-show-login").onclick = (e) => {
         e.preventDefault();
@@ -439,13 +490,19 @@
         alert("Add Money request bhej di gayi hai! Admin verification ke baad balance add hoga.");
       };
 
-      // RECHARGE
+      // RECHARGE WITH AUTOMATED PLANS & DISCOUNT
       document.getElementById("btn-recharge").onclick = function() {
         const op = document.getElementById("rc-operator").value;
         const mob = document.getElementById("rc-mobile").value;
-        const amt = parseFloat(document.getElementById("rc-amount").value);
-        if(!mob || !amt) { alert("Mobile aur Amount bharein!"); return; }
-        deductAndExecute(amt, "Mobile Recharge", `${op} - ${mob}`);
+        const idx = document.getElementById("rc-plan-select").value;
+
+        if(!mob || mob.length !== 10) { alert("Valid 10 Digit Mobile Number bharein!"); return; }
+
+        const selectedPlan = allRechargePlans[op][idx];
+        const finalPayablePrice = selectedPlan.mrp - selectedPlan.discount;
+
+        const detailsText = `${op} - ${mob} | Plan: ${selectedPlan.desc} | Discounted Paid: ₹${finalPayablePrice}`;
+        deductAndExecute(finalPayablePrice, "Mobile Recharge", detailsText);
       };
 
       // ELECTRICITY BILL
