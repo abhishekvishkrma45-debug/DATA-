@@ -109,10 +109,10 @@
     </div>
   </div>
 
-  <!-- MAIN USER PORTAL (ALL SERVICES AVAILABLE) -->
+  <!-- MAIN USER PORTAL (ALL SERVICES) -->
   <div id="portal-section" class="main-container">
     
-    <!-- 1. MOBILE RECHARGE SERVICE WITH SCREENSHOT -->
+    <!-- 1. MOBILE RECHARGE SERVICE -->
     <div class="card">
       <h3>📱 Mobile Recharge (Screenshot ke sath)</h3>
       <label>Select Operator</label>
@@ -126,7 +126,7 @@
       <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
       <label>Select Plan</label>
       <select id="rc-plan-select"></select>
-      <label>Upload Payment / Recharge Screenshot</label>
+      <label>Upload Payment Screenshot</label>
       <input type="file" id="rc-screenshot" accept="image/*">
       <button class="btn btn-rc" id="btn-recharge">Submit Recharge</button>
     </div>
@@ -145,8 +145,6 @@
       <input type="text" id="util-number" placeholder="Enter Number / ID">
       <label>Amount (₹)</label>
       <input type="number" id="util-amount" placeholder="Enter Amount">
-      <label>Upload Payment Screenshot (Optional)</label>
-      <input type="file" id="util-screenshot" accept="image/*">
       <button class="btn btn-buy" id="btn-utility">Pay Bill Now</button>
     </div>
 
@@ -162,8 +160,6 @@
       </select>
       <label>Enter Reference ID / Number</label>
       <input type="text" id="doc-number" placeholder="Enter ID Number">
-      <label>Upload Document / Proof (Optional)</label>
-      <input type="file" id="doc-screenshot" accept="image/*">
       <button class="btn btn-add" id="btn-doc">Submit Request</button>
     </div>
 
@@ -210,7 +206,7 @@
 
     <!-- RECHARGE & SERVICE REQUESTS CONTROL -->
     <div class="card" style="grid-column: span 1 / -1;">
-      <h3>👑 Admin Panel: All Services Requests Control</h3>
+      <h3>👑 Admin Panel: Service & Recharge Requests Control</h3>
       <table class="admin-table">
         <thead>
           <tr>
@@ -436,7 +432,6 @@
         const service = document.getElementById("util-service").value;
         const number = document.getElementById("util-number").value;
         const amount = parseFloat(document.getElementById("util-amount").value);
-        const fileInput = document.getElementById("util-screenshot");
 
         if(!number || !amount || amount <= 0) { alert("Sabhi details sahi bharein!"); return; }
 
@@ -445,78 +440,53 @@
           return;
         }
 
-        const processUtility = (imgData = "") => {
-          currentUser.balance -= amount;
-          if(!currentUser.history) currentUser.history = [];
+        currentUser.balance -= amount;
+        if(!currentUser.history) currentUser.history = [];
 
-          const reqId = "REQ_" + Date.now();
-          currentUser.history.push({
-            id: reqId,
-            type: service,
-            details: `ID/No: ${number}`,
-            amount: `₹${amount}`,
-            screenshot: imgData,
-            status: "Pending (Review by Admin)"
-          });
+        const reqId = "REQ_" + Date.now();
+        currentUser.history.push({
+          id: reqId,
+          type: service,
+          details: `ID/No: ${number}`,
+          amount: `₹${amount}`,
+          screenshot: "",
+          status: "Pending (Review by Admin)"
+        });
 
-          updateStorage();
-          alert("Utility bill request submit ho gayi hai!");
-          document.getElementById("util-number").value = "";
-          document.getElementById("util-amount").value = "";
-          document.getElementById("util-screenshot").value = "";
-          showPortal();
-        };
-
-        if(fileInput.files.length > 0) {
-          const file = fileInput.files[0];
-          const reader = new FileReader();
-          reader.onload = function(e) { processUtility(e.target.result); };
-          reader.readAsDataURL(file);
-        } else {
-          processUtility("");
-        }
+        updateStorage();
+        alert("Utility bill request submit ho gayi hai!");
+        document.getElementById("util-number").value = "";
+        document.getElementById("util-amount").value = "";
+        showPortal();
       };
 
       // 3. DOCUMENT SERVICE SUBMIT
       document.getElementById("btn-doc").onclick = function() {
         const docType = document.getElementById("doc-type").value;
         const docNo = document.getElementById("doc-number").value;
-        const fileInput = document.getElementById("doc-screenshot");
 
         if(!docNo) { alert("Reference number bharein!"); return; }
 
-        const fee = 10; 
+        const fee = 10; // Nominal service fee
         if(currentUser.balance < fee) { alert("Wallet balance kam hai!"); return; }
 
-        const processDoc = (imgData = "") => {
-          currentUser.balance -= fee;
-          if(!currentUser.history) currentUser.history = [];
+        currentUser.balance -= fee;
+        if(!currentUser.history) currentUser.history = [];
 
-          const reqId = "REQ_" + Date.now();
-          currentUser.history.push({
-            id: reqId,
-            type: docType,
-            details: `Ref No: ${docNo}`,
-            amount: `₹${fee}`,
-            screenshot: imgData,
-            status: "Pending (Review by Admin)"
-          });
+        const reqId = "REQ_" + Date.now();
+        currentUser.history.push({
+          id: reqId,
+          type: docType,
+          details: `Ref No: ${docNo}`,
+          amount: `₹${fee}`,
+          screenshot: "",
+          status: "Pending (Review by Admin)"
+        });
 
-          updateStorage();
-          alert("Document service request submit ho gayi hai!");
-          document.getElementById("doc-number").value = "";
-          document.getElementById("doc-screenshot").value = "";
-          showPortal();
-        };
-
-        if(fileInput.files.length > 0) {
-          const file = fileInput.files[0];
-          const reader = new FileReader();
-          reader.onload = function(e) { processDoc(e.target.result); };
-          reader.readAsDataURL(file);
-        } else {
-          processDoc("");
-        }
+        updateStorage();
+        alert("Document service request submit ho gayi hai!");
+        document.getElementById("doc-number").value = "";
+        showPortal();
       };
 
       // ADMIN ACTION: ACCEPT / REJECT
