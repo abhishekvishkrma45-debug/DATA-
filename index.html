@@ -69,6 +69,7 @@
     </div>
   </header>
 
+  <!-- AUTH SECTION -->
   <div id="auth-section" class="main-container">
     <div class="card" id="reg-card">
       <h3>📝 User Registration (Get ₹500 Trial Balance)</h3>
@@ -108,8 +109,10 @@
     </div>
   </div>
 
+  <!-- MAIN USER PORTAL (ALL SERVICES AVAILABLE) -->
   <div id="portal-section" class="main-container">
     
+    <!-- 1. MOBILE RECHARGE SERVICE WITH SCREENSHOT -->
     <div class="card">
       <h3>📱 Mobile Recharge (Screenshot ke sath)</h3>
       <label>Select Operator</label>
@@ -128,6 +131,7 @@
       <button class="btn btn-rc" id="btn-recharge">Submit Recharge</button>
     </div>
 
+    <!-- 2. UTILITY & BILL PAYMENTS -->
     <div class="card">
       <h3>💡 Utility & Bill Payments</h3>
       <label>Select Service</label>
@@ -141,11 +145,12 @@
       <input type="text" id="util-number" placeholder="Enter Number / ID">
       <label>Amount (₹)</label>
       <input type="number" id="util-amount" placeholder="Enter Amount">
-      <label>Upload Payment Screenshot</label>
+      <label>Upload Payment Screenshot (Optional)</label>
       <input type="file" id="util-screenshot" accept="image/*">
       <button class="btn btn-buy" id="btn-utility">Pay Bill Now</button>
     </div>
 
+    <!-- 3. FIND ID & DOCUMENT SERVICES -->
     <div class="card">
       <h3>🔍 Find ID & Document Services</h3>
       <label>Select Document Type</label>
@@ -162,6 +167,7 @@
       <button class="btn btn-add" id="btn-doc">Submit Request</button>
     </div>
 
+    <!-- 4. USER TRANSACTION HISTORY -->
     <div class="card" style="grid-column: span 1 / -1;">
       <h3>📜 Aapki Sabhi Services & Transactions History</h3>
       <table class="admin-table">
@@ -180,8 +186,10 @@
     </div>
   </div>
 
+  <!-- ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
     
+    <!-- REGISTERED USERS LIST (ID, PASSWORD, IP) -->
     <div class="card" style="grid-column: span 1 / -1;">
       <h3>👥 All Registered Users List (ID, Password, IP Address)</h3>
       <table class="admin-table">
@@ -200,6 +208,7 @@
       </table>
     </div>
 
+    <!-- RECHARGE & SERVICE REQUESTS CONTROL -->
     <div class="card" style="grid-column: span 1 / -1;">
       <h3>👑 Admin Panel: All Services Requests Control</h3>
       <table class="admin-table">
