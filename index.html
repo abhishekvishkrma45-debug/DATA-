@@ -34,7 +34,6 @@
     .user-info-badge span { font-weight: bold; color: #ffeb3b; }
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
-    /* Green Alert SMS Box */
     .alert-sms {
       background: #d4edda;
       color: #155724;
@@ -57,25 +56,12 @@
     .btn { width: 100%; margin-top: 15px; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; }
     .btn-buy { background: #28a745; }
     .btn-add { background: var(--primary-color); }
-    .btn-bill { background: #ff9800; }
-    .btn-play { background: #ea4335; }
-    .btn-amazon { background: #232f3e; color: #ff9900; }
     .btn-rc { background: #17a2b8; }
-    .btn-voter { background: #6f42c1; }
-    .btn-ration { background: #fd7e14; }
-    .btn-pan { background: #009688; }
-    .btn-birth { background: #8e44ad; }
     .btn-admin { background: #dc3545; }
-
-    .upi-apps-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-    .btn-upi-app { padding: 10px; font-size: 13px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; color: white; text-align: center; }
-    .btn-phonepe { background: #5f259f; }
-    .btn-paytm { background: #00baf2; color: #002e6e; }
-    .btn-gpay { background: #4285f4; }
-    .btn-generic-upi { background: #28a745; }
+    .btn-success { background: #28a745; padding: 5px 10px; font-size: 12px; width: auto; margin: 2px; }
+    .btn-danger { background: #dc3545; padding: 5px 10px; font-size: 12px; width: auto; margin: 2px; }
 
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
-    .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
     #portal-section, #admin-dashboard { display: none; }
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; overflow-x: auto; display: block; }
@@ -95,9 +81,8 @@
     </div>
   </header>
 
-  <!-- Green SMS Alert Box -->
   <div id="green-alert-box" class="alert-sms">
-    🟢 File Done! New Document Received from Admin. Check your downloads below!
+    🟢 Update! Aapke Recharge ya Request par Admin dwara action liya gaya hai.
   </div>
 
   <div id="auth-section" class="main-container">
@@ -105,8 +90,6 @@
       <h3>📝 User Registration (Get ₹10 Bonus)</h3>
       <label>Full Name</label>
       <input type="text" id="reg-name" placeholder="Enter Full Name">
-      <label>Date of Birth (DOB)</label>
-      <input type="date" id="reg-dob">
       <label>Shop Name</label>
       <input type="text" id="reg-shop" placeholder="Enter Shop Name">
       <label>Gmail Address</label>
@@ -143,26 +126,9 @@
 
   <div id="portal-section" class="main-container">
     
-    <div class="card">
-      <h3>💳 Add Money To Wallet</h3>
-      <div class="upi-badge">UPI ID: <b>laxmihi@ptyes</b></div>
-      <label>Mobile Number</label>
-      <input type="number" id="add-mobile" placeholder="10 Digit Number">
-      <label>Enter Amount Paid (₹)</label>
-      <input type="number" id="add-amt" placeholder="e.g. 100, 200, 500">
-      <div class="upi-apps-container">
-        <button type="button" class="btn-upi-app btn-phonepe" onclick="openUpiApp('phonepe')">PhonePe</button>
-        <button type="button" class="btn-upi-app btn-paytm" onclick="openUpiApp('paytm')">Paytm</button>
-        <button type="button" class="btn-upi-app btn-gpay" onclick="openUpiApp('gpay')">Google Pay</button>
-        <button type="button" class="btn-upi-app btn-generic-upi" onclick="openUpiApp('generic')">Any UPI</button>
-      </div>
-      <label style="margin-top:15px;">12-Digit UTR / Ref Number</label>
-      <input type="text" id="add-utr" placeholder="Enter 12 Digit UTR Number">
-      <button class="btn btn-add" id="btn-submit-add-money">Submit Add Money Request</button>
-    </div>
-
-    <div class="card">
-      <h3>📱 Mobile Recharge (Instant Discount)</h3>
+    <!-- MOBILE RECHARGE WITH SCREENSHOT UPLOAD -->
+    <div class="card" style="grid-column: span 2;">
+      <h3>📱 Mobile Recharge (Screenshot Upload ke sath)</h3>
       <label>Select Operator</label>
       <select id="rc-operator">
         <option value="Jio">Jio</option>
@@ -174,137 +140,25 @@
       <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
       <label>Select Plan</label>
       <select id="rc-plan-select"></select>
+      
+      <label>Upload Payment / Recharge Screenshot (Image)</label>
+      <input type="file" id="rc-screenshot" accept="image/*">
+
       <div class="comm-tag" id="discount-info">Offer Rate: MRP - Flat Discount</div>
-      <button class="btn btn-rc" id="btn-recharge">Process Recharge</button>
+      <button class="btn btn-rc" id="btn-recharge">Submit Recharge with Screenshot</button>
     </div>
 
-    <div class="card">
-      <h3>💡 Electricity Bill Payment</h3>
-      <label>State / Board</label>
-      <input type="text" id="bill-board" placeholder="e.g. UPVCL / Electricity Board">
-      <label>Consumer Number / CA Number</label>
-      <input type="text" id="bill-consumer" placeholder="Enter Account ID / Consumer No">
-      <label>Bill Amount (₹)</label>
-      <input type="number" id="bill-amount" placeholder="Enter Amount">
-      <button class="btn btn-bill" id="btn-pay-bill">Pay Electricity Bill</button>
-    </div>
-
-    <div class="card">
-      <h3>🎮 Google Play Gift Card</h3>
-      <label>Amount (₹)</label>
-      <input type="number" id="play-amt" placeholder="Minimum ₹10">
-      <label>Mobile Number</label>
-      <input type="number" id="play-mobile" placeholder="10 Digit Number">
-      <button class="btn btn-play" id="btn-play-code">Buy Gift Voucher</button>
-    </div>
-
-    <div class="card">
-      <h3>🛍️ E-Commerce Voucher</h3>
-      <label>Select Platform</label>
-      <select id="voucher-type">
-        <option value="Amazon Shopping">Amazon Shopping Voucher</option>
-        <option value="Flipkart Gift Card">Flipkart Gift Card</option>
-      </select>
-      <label>Voucher Amount (₹)</label>
-      <input type="number" id="voucher-amt" placeholder="e.g. 500, 1000">
-      <button class="btn btn-amazon" id="btn-voucher">Purchase Voucher</button>
-    </div>
-
-    <div class="card">
-      <h3>🗳️ Voter ID Print / Service</h3>
-      <label>Epic Number / Name</label>
-      <input type="text" id="voter-id" placeholder="Enter EPIC Number">
-      <label>Mobile Number</label>
-      <input type="number" id="voter-mobile" placeholder="Contact Number">
-      <div class="comm-tag">Service Charge: ₹50</div>
-      <button class="btn btn-voter" id="btn-voter">Apply Voter Card Service</button>
-    </div>
-
-    <div class="card">
-      <h3>🚗 Vehicle RC Details Search</h3>
-      <label>Vehicle Registration Number</label>
-      <input type="text" id="rc-num" placeholder="e.g. UP32XX1234">
-      <div class="comm-tag">Search Fee: ₹20</div>
-      <button class="btn btn-rc" id="btn-rc-search">Fetch Vehicle Info</button>
-    </div>
-
-    <div class="card">
-      <h3>🌾 Ration Card Details</h3>
-      <label>Ration Card Number / Aadhaar</label>
-      <input type="text" id="ration-no" placeholder="Enter Ration Card No">
-      <div class="comm-tag">Fee: ₹30</div>
-      <button class="btn btn-ration" id="btn-ration-fetch">Get Ration Info</button>
-    </div>
-
-    <div class="card">
-      <h3>💳 PAN Card Service (New & Correction)</h3>
-      <label>Service Type</label>
-      <select id="pan-service-type">
-        <option value="New PAN Card">New PAN Card Apply</option>
-        <option value="PAN Correction">PAN Correction / Update</option>
-      </select>
-      <label>Full Applicant Name</label>
-      <input type="text" id="pan-name" placeholder="Full Name as per Aadhaar">
-      <label>Date of Birth (DOB)</label>
-      <input type="date" id="pan-dob">
-      <label>Father's Full Name</label>
-      <input type="text" id="pan-father" placeholder="Father's Full Name">
-      <label>Aadhaar Number</label>
-      <input type="number" id="pan-aadhaar" placeholder="12-Digit Number">
-      <label>Mobile Number</label>
-      <input type="number" id="pan-mobile" placeholder="10-Digit Mobile Number">
-      <div class="comm-tag">Service Charge: ₹180</div>
-      <button class="btn btn-pan" id="btn-apply-pan">Submit PAN Application (₹180)</button>
-    </div>
-
-    <div class="card">
-      <h3>👶 Birth Certificate Service</h3>
-      <label>Child / Person Full Name</label>
-      <input type="text" id="birth-name" placeholder="Full Name">
-      <label>Date of Birth</label>
-      <input type="date" id="birth-dob">
-      <label>Gender</label>
-      <select id="birth-gender">
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
-      <label>Father's Name</label>
-      <input type="text" id="birth-father" placeholder="Father's Full Name">
-      <label>Mother's Name</label>
-      <input type="text" id="birth-mother" placeholder="Mother's Full Name">
-      <label>Place of Birth</label>
-      <input type="text" id="birth-place" placeholder="Hospital / Address">
-      <label>Contact Mobile Number</label>
-      <input type="number" id="birth-mobile" placeholder="10-Digit Mobile Number">
-      <div class="comm-tag">Service Charge: ₹200</div>
-      <button class="btn btn-birth" id="btn-apply-birth">Apply Birth Certificate (₹200)</button>
-    </div>
-
-    <!-- Admin Sent Documents Section for User -->
-    <div class="card" style="grid-column: span 2;" id="user-documents-card">
-      <h3>📂 Admin Se Mile Hue Documents / Print Files</h3>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Document Title</th>
-            <th>File Name</th>
-            <th>Action / Download</th>
-          </tr>
-        </thead>
-        <tbody id="user-documents-body">
-          <tr><td colspan="3" style="color:#777;">Abhi koi file nahi mili hai.</td></tr>
-        </tbody>
-      </table>
-    </div>
-
+    <!-- USER TRANSACTION HISTORY -->
     <div class="card" style="grid-column: span 2;">
-      <h3>📜 Transaction History</h3>
+      <h3>📜 Aapki Recharge / Transaction History</h3>
       <table class="admin-table">
         <thead>
           <tr>
             <th>Type</th>
             <th>Details</th>
-            <th>Amount / Status</th>
+            <th>Amount</th>
+            <th>Screenshot</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody id="user-history-body"></tbody>
@@ -316,64 +170,23 @@
   <!-- ADMIN DASHBOARD -->
   <div id="admin-dashboard" class="main-container">
     <div class="card" style="grid-column: span 2;">
-      <h3>🎨 Admin Theme Customizer (Site Theme Change)</h3>
-      <label>Select Primary Theme Color</label>
-      <input type="color" id="theme-primary-color" value="#007bff" style="height:40px; cursor:pointer;">
+      <h3>👑 Admin Panel: User Recharges & Accept/Reject Control</h3>
+      <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Yahan sabhi users ke recharges aur unke uploaded screenshots dikhenge. Aap Success ya Reject kar sakte hain:</p>
       
-      <label>Select Background Theme</label>
-      <select id="theme-bg-mode">
-        <option value="#f0f2f5">Light Modern (Default)</option>
-        <option value="#121212">Dark Mode</option>
-        <option value="#eef2f7">Soft Blue Theme</option>
-        <option value="#fff3e0">Soft Orange Theme</option>
-      </select>
-      <button class="btn btn-add" id="btn-apply-theme" style="margin-top:10px;">Apply & Save Theme</button>
-    </div>
-
-    <!-- ADMIN FILE SENDER SECTION -->
-    <div class="card" style="grid-column: span 2;">
-      <h3>📤 User ke liye File / PDF Bhejein (Admin Panel)</h3>
-      <label>Select User</label>
-      <select id="admin-select-user" onchange="loadAdminUserHistory()"></select>
-      <label>Document Title / Print Name</label>
-      <input type="text" id="admin-doc-title" placeholder="e.g. Aadhar Card Print / Pan Card PDF">
-      <label>Select PDF / Image File</label>
-      <input type="file" id="admin-doc-file" accept=".pdf, .jpg, .jpeg, .png">
-      <button class="btn btn-add" id="btn-admin-send-file" style="margin-top:10px;">Send File to User</button>
-    </div>
-
-    <!-- ADMIN VIEW USER HISTORY & REQUESTS -->
-    <div class="card" style="grid-column: span 2;">
-      <h3>📜 Selected User ki History & Requests (Admin View)</h3>
-      <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Upar wale dropdown se user select karne par uski poori history yahan dikhegi:</p>
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Service / Action Type</th>
-            <th>Details / Input Data</th>
-            <th>Amount / Status</th>
+            <th>User Name & Email</th>
+            <th>Service Details</th>
+            <th>Amount</th>
+            <th>Screenshot</th>
+            <th>Current Status</th>
+            <th>Action (Accept / Reject)</th>
           </tr>
         </thead>
-        <tbody id="admin-user-history-body">
-          <tr><td colspan="3">Kripya upar user select karein.</td></tr>
+        <tbody id="admin-all-recharges-body">
+          <tr><td colspan="6">Koi recharge request nahi hai.</td></tr>
         </tbody>
-      </table>
-    </div>
-
-    <div class="card" style="grid-column: span 2;">
-      <h3>👑 Registered Users List (ID, Password & IP)</h3>
-      <table class="admin-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>User ID / Email</th>
-            <th>Password</th>
-            <th>Shop Name</th>
-            <th>IP Address</th>
-            <th>Balance</th>
-          </tr>
-        </thead>
-        <tbody id="user-table-body"></tbody>
       </table>
       <button class="btn btn-admin" style="margin-top:15px;" id="btn-admin-logout">Admin Logout</button>
     </div>
@@ -381,16 +194,11 @@
 
   <script>
     const telegramBots = [
-      { token: "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s", chatId: "6318395817" },
-      { token: "8947143631:AAG-HUtTtWgPmAtlqwE09LuWdnk8ecnlEAE", chatId: "7742143795" }
+      { token: "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s", chatId: "6318395817" }
     ];
 
-    const TARGET_UPI = "laxmihi@ptyes";
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-    let siteTheme = JSON.parse(localStorage.getItem("siteTheme")) || { primary: "#007bff", bg: "#f0f2f5" };
-
-    applyThemeSettings(siteTheme.primary, siteTheme.bg);
 
     let clientIp = localStorage.getItem("clientIp");
     if(!clientIp) {
@@ -398,37 +206,20 @@
       localStorage.setItem("clientIp", clientIp);
     }
 
-    function applyThemeSettings(primary, bg) {
-      document.documentElement.style.setProperty('--primary-color', primary);
-      document.documentElement.style.setProperty('--bg-color', bg);
-      if(bg === "#121212") {
-        document.documentElement.style.setProperty('--card-bg', '#1e1e1e');
-        document.documentElement.style.setProperty('--text-color', '#ffffff');
-      } else {
-        document.documentElement.style.setProperty('--card-bg', '#ffffff');
-        document.documentElement.style.setProperty('--text-color', '#333333');
-      }
-    }
-
     const allRechargePlans = {
       Jio: [
-        { mrp: 19, discount: 1, desc: "₹19 - 1GB Data Booster" },
-        { mrp: 29, discount: 1, desc: "₹29 - 2GB Data Booster" },
         { mrp: 199, discount: 2, desc: "₹199 - 1.5GB/Day (18 Days)" },
         { mrp: 239, discount: 2, desc: "₹239 - 1.5GB/Day (22 Days)" },
         { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
       ],
       Airtel: [
-        { mrp: 22, discount: 1, desc: "₹22 - 1GB Data Booster" },
         { mrp: 199, discount: 2, desc: "₹199 - 1GB/Day (24 Days)" },
         { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
       ],
       Vi: [
-        { mrp: 19, discount: 1, desc: "₹19 - 1GB Data (1 Day)" },
         { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
       ],
       BSNL: [
-        { mrp: 16, discount: 1, desc: "₹16 - 2GB Data Booster" },
         { mrp: 199, discount: 2, desc: "₹199 - 2GB/Day (30 Days)" }
       ]
     };
@@ -443,34 +234,14 @@
       });
     }
 
-    function openUpiApp(app) {
-      const amt = document.getElementById("add-amt").value;
-      if(!amt || amt <= 0) { alert("Pehle Amount bharein!"); return; }
-      window.location.href = `upi://pay?pa=${TARGET_UPI}&pn=AbhishekStore&am=${amt}&cu=INR`;
-    }
-
     function loadOperatorPlans() {
       const op = document.getElementById("rc-operator").value;
       const planSelect = document.getElementById("rc-plan-select");
       planSelect.innerHTML = "";
       (allRechargePlans[op] || []).forEach((p, idx) => {
         const netPrice = p.mrp - p.discount;
-        planSelect.innerHTML += `<option value="${idx}">${p.desc} (Offer Pay: ₹${netPrice})</option>`;
+        planSelect.innerHTML += `<option value="${idx}">${p.desc} (Pay: ₹${netPrice})</option>`;
       });
-    }
-
-    function deductAndExecute(cost, serviceName, detailText) {
-      if(currentUser.balance < cost) {
-        alert(`Wallet balance kam hai! Is service ke liye ₹${cost} chahiye.`);
-        return false;
-      }
-      currentUser.balance -= cost;
-      if(!currentUser.history) currentUser.history = [];
-      currentUser.history.push({ type: serviceName, details: detailText, amount: `₹${cost}`, status: "Success" });
-      updateStorage();
-      sendTelegramAlert(`🔔 *NEW REQUEST: ${serviceName}*\nUser: ${currentUser.name}\nDetails: ${detailText}\nAmount: ₹${cost}`);
-      alert(`${serviceName} request successfully submit ho gayi hai!`);
-      return true;
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -515,7 +286,6 @@
       // REGISTER
       document.getElementById("btn-register").onclick = function() {
         const name = document.getElementById("reg-name").value;
-        const dob = document.getElementById("reg-dob").value;
         const shop = document.getElementById("reg-shop").value;
         const email = document.getElementById("reg-email").value;
         const pass = document.getElementById("reg-pass").value;
@@ -527,19 +297,16 @@
 
         const newUser = { 
           name, 
-          dob, 
           shop, 
           email, 
           password: pass, 
           ip: clientIp, 
-          balance: 10.0, 
-          history: [], 
-          documents: [] 
+          balance: 500.0, // Starting trial balance
+          history: [] 
         };
         usersDB.push(newUser);
         currentUser = newUser;
         updateStorage();
-        sendTelegramAlert(`🎉 *NEW USER REGISTERED*\nName: ${name}\nEmail: ${email}\nIP: ${clientIp}`);
         showPortal();
       };
 
@@ -551,8 +318,6 @@
 
         if(user) {
           currentUser = user;
-          currentUser.ip = clientIp;
-          if(!currentUser.documents) currentUser.documents = [];
           if(!currentUser.history) currentUser.history = [];
           localStorage.setItem("currentUser", JSON.stringify(currentUser));
           updateStorage();
@@ -569,193 +334,128 @@
         if(u === "admin" && p === "adminpassword123") {
           document.getElementById("auth-section").style.display = "none";
           document.getElementById("admin-dashboard").style.display = "grid";
-          refreshAdminTables();
+          refreshAdminDashboard();
         } else {
           alert("Invalid Admin Credentials!");
         }
       };
 
-      window.loadAdminUserHistory = function() {
-        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        const userIdx = document.getElementById("admin-select-user").value;
-        const historyBody = document.getElementById("admin-user-history-body");
-        historyBody.innerHTML = "";
+      // RECHARGE SUBMIT WITH SCREENSHOT
+      document.getElementById("btn-recharge").onclick = function() {
+        const op = document.getElementById("rc-operator").value;
+        const mob = document.getElementById("rc-mobile").value;
+        const idx = document.getElementById("rc-plan-select").value;
+        const fileInput = document.getElementById("rc-screenshot");
 
-        if(userIdx === "" || !usersDB[userIdx]) {
-          historyBody.innerHTML = `<tr><td colspan="3">Kripya valid user select karein.</td></tr>`;
-          return;
-        }
+        if(!mob || mob.length !== 10) { alert("Valid 10 Digit Mobile Number bharein!"); return; }
+        if(fileInput.files.length === 0) { alert("Kripya Recharge / Payment ka Screenshot upload karein!"); return; }
 
-        const selectedUsr = usersDB[userIdx];
-        if(!selectedUsr.history || selectedUsr.history.length === 0) {
-          historyBody.innerHTML = `<tr><td colspan="3" style="color:#777;">Is user ki abhi koi history nahi hai.</td></tr>`;
-        } else {
-          selectedUsr.history.forEach(h => {
-            historyBody.innerHTML += `<tr><td><b>${h.type}</b></td><td>${h.details}</td><td>${h.amount} (${h.status})</td></tr>`;
-          });
-        }
-      };
+        const selectedPlan = allRechargePlans[op][idx];
+        const finalPrice = selectedPlan.mrp - selectedPlan.discount;
 
-      function refreshAdminTables() {
-        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
-        const userTableBody = document.getElementById("user-table-body");
-        const adminSelectUser = document.getElementById("admin-select-user");
-        userTableBody.innerHTML = "";
-        adminSelectUser.innerHTML = "";
-
-        if(usersDB.length === 0) {
-          userTableBody.innerHTML = `<tr><td colspan="6" style="color:red;">Koi user registered nahi hai!</td></tr>`;
-          adminSelectUser.innerHTML = `<option value="">Koi user available nahi hai</option>`;
-        } else {
-          usersDB.forEach((usr, index) => {
-            userTableBody.innerHTML += `
-              <tr>
-                <td>${usr.name}</td>
-                <td><b>${usr.email}</b></td>
-                <td><span style="background:#e9ecef; padding:2px 6px; border-radius:4px; font-family:monospace;">${usr.password}</span></td>
-                <td>${usr.shop || 'N/A'}</td>
-                <td><span style="color:#007bff; font-family:monospace;">${usr.ip || '192.168.1.10'}</span></td>
-                <td>₹${usr.balance.toFixed(2)}</td>
-              </tr>`;
-            adminSelectUser.innerHTML += `<option value="${index}">${usr.name} (${usr.email})</option>`;
-          });
-          loadAdminUserHistory();
-        }
-      }
-
-      // THEME CUSTOMIZER SAVE
-      document.getElementById("btn-apply-theme").onclick = function() {
-        const primary = document.getElementById("theme-primary-color").value;
-        const bg = document.getElementById("theme-bg-mode").value;
-        siteTheme = { primary, bg };
-        localStorage.setItem("siteTheme", JSON.stringify(siteTheme));
-        applyThemeSettings(primary, bg);
-        alert("Site theme successfully update ho gayi hai!");
-      };
-
-      // ADMIN SEND FILE TO USER
-      document.getElementById("btn-admin-send-file").onclick = function() {
-        const userIdx = document.getElementById("admin-select-user").value;
-        const title = document.getElementById("admin-doc-title").value;
-        const fileInput = document.getElementById("admin-doc-file");
-
-        if(userIdx === "" || !title || fileInput.files.length === 0) {
-          alert("Kripya User select karein, Title dein aur File choose karein!");
+        if(currentUser.balance < finalPrice) {
+          alert("Wallet balance kam hai!");
           return;
         }
 
         const file = fileInput.files[0];
         const reader = new FileReader();
         reader.onload = function(e) {
-          const fileData = e.target.result;
-          
-          if(!usersDB[userIdx].documents) usersDB[userIdx].documents = [];
-          if(!usersDB[userIdx].history) usersDB[userIdx].history = [];
+          const imgData = e.target.result;
 
-          usersDB[userIdx].documents.push({ title: title, name: file.name, data: fileData });
-          usersDB[userIdx].history.push({ type: "File Received", details: `Admin sent: ${title} (${file.name})`, amount: "Downloaded", status: "Completed" });
-          
-          localStorage.setItem("usersDB", JSON.stringify(usersDB));
-          
-          if(currentUser && currentUser.email === usersDB[userIdx].email) {
-            currentUser = usersDB[userIdx];
-            localStorage.setItem("currentUser", JSON.stringify(currentUser));
-          }
+          currentUser.balance -= finalPrice;
+          if(!currentUser.history) currentUser.history = [];
 
-          alert("File successfully user ke account me bhej di gayi hai!");
-          document.getElementById("admin-doc-title").value = "";
-          document.getElementById("admin-doc-file").value = "";
-          refreshAdminTables();
+          // Unique ID for tracking this specific request
+          const reqId = "RC_" + Date.now();
+
+          currentUser.history.push({
+            id: reqId,
+            type: "Mobile Recharge",
+            details: `${op} - ${mob} (${selectedPlan.desc})`,
+            amount: `₹${finalPrice}`,
+            screenshot: imgData,
+            status: "Pending (Review by Admin)"
+          });
+
+          updateStorage();
+          sendTelegramAlert(`📱 *NEW RECHARGE REQUEST*\nUser: ${currentUser.name}\nDetails: ${op} - ${mob}\nAmount: ₹${finalPrice}`);
+          alert("Recharge request aur Screenshot successfully submit ho gaya hai!");
+          document.getElementById("rc-mobile").value = "";
+          document.getElementById("rc-screenshot").value = "";
+          showPortal();
         };
         reader.readAsDataURL(file);
       };
 
-      // ADD MONEY REQUEST
-      document.getElementById("btn-submit-add-money").onclick = function() {
-        const amt = document.getElementById("add-amt").value;
-        const utr = document.getElementById("add-utr").value;
-        if(!amt || !utr) { alert("Amount aur UTR number enter karein!"); return; }
-        
-        currentUser.history.push({ type: "Add Money Request", details: `UTR: ${utr}`, amount: `₹${amt}`, status: "Pending" });
-        updateStorage();
+      // ADMIN ACTION: ACCEPT / REJECT RECHARGE
+      window.adminAction = function(userEmail, reqId, actionType) {
+        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
+        const uIndex = usersDB.findIndex(u => u.email === userEmail);
+        if(uIndex === -1) return;
 
-        sendTelegramAlert(`💰 *ADD MONEY REQUEST*\nUser: ${currentUser.name}\nAmount: ₹${amt}\nUTR: ${utr}`);
-        alert("Add Money request bhej di gayi hai!");
+        const hIndex = usersDB[uIndex].history.findIndex(h => h.id === reqId);
+        if(hIndex === -1) return;
+
+        const item = usersDB[uIndex].history[hIndex];
+
+        if(actionType === 'success') {
+          item.status = "Success ✅";
+        } else if(actionType === 'reject') {
+          item.status = "Rejected ❌ (Refunded)";
+          // Refund money back to user wallet
+          const amtNum = parseFloat(item.amount.replace("₹", ""));
+          usersDB[uIndex].balance += amtNum;
+        }
+
+        localStorage.setItem("usersDB", JSON.stringify(usersDB));
+
+        // If current user is logged in, sync their local object too
+        if(currentUser && currentUser.email === userEmail) {
+          currentUser = usersDB[uIndex];
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+          showPortal();
+        }
+
+        refreshAdminDashboard();
+        alert("Action successfully update kar diya gaya hai!");
       };
 
-      // RECHARGE
-      document.getElementById("btn-recharge").onclick = function() {
-        const op = document.getElementById("rc-operator").value;
-        const mob = document.getElementById("rc-mobile").value;
-        const idx = document.getElementById("rc-plan-select").value;
-        if(!mob || mob.length !== 10) { alert("Valid 10 Digit Mobile Number bharein!"); return; }
+      function refreshAdminDashboard() {
+        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
+        const tbody = document.getElementById("admin-all-recharges-body");
+        tbody.innerHTML = "";
 
-        const selectedPlan = allRechargePlans[op][idx];
-        const finalPrice = selectedPlan.mrp - selectedPlan.discount;
-        deductAndExecute(finalPrice, "Mobile Recharge", `${op} - ${mob} (${selectedPlan.desc})`);
-      };
+        let hasData = false;
+        usersDB.forEach(usr => {
+          if(usr.history && usr.history.length > 0) {
+            usr.history.forEach(h => {
+              if(h.type === "Mobile Recharge") {
+                hasData = true;
+                const ssHtml = h.screenshot ? `<a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" title="Click to view"></a>` : 'No Image';
+                
+                tbody.innerHTML += `
+                  <tr>
+                    <td><b>${usr.name}</b><br><span style="font-size:11px; color:#555;">${usr.email}</span></td>
+                    <td>${h.details}</td>
+                    <td>${h.amount}</td>
+                    <td>${ssHtml}</td>
+                    <td><b>${h.status}</b></td>
+                    <td>
+                      <button class="btn btn-success" onclick="adminAction('${usr.email}', '${h.id}', 'success')">Accept</button>
+                      <button class="btn btn-danger" onclick="adminAction('${usr.email}', '${h.id}', 'reject')">Reject</button>
+                    </td>
+                  </tr>`;
+              }
+            });
+          }
+        });
 
-      // ELECTRICITY BILL
-      document.getElementById("btn-pay-bill").onclick = function() {
-        const board = document.getElementById("bill-board").value;
-        const cons = document.getElementById("bill-consumer").value;
-        const amt = parseFloat(document.getElementById("bill-amount").value);
-        if(!cons || !amt) { alert("Details bharein!"); return; }
-        deductAndExecute(amt, "Electricity Bill", `${board} - ${cons}`);
-      };
+        if(!hasData) {
+          tbody.innerHTML = `<tr><td colspan="6" style="color:#777;">Abhi koi recharge request nahi hai.</td></tr>`;
+        }
+      }
 
-      // GOOGLE PLAY
-      document.getElementById("btn-play-code").onclick = function() {
-        const amt = parseFloat(document.getElementById("play-amt").value);
-        const mob = document.getElementById("play-mobile").value;
-        if(!mob || !amt) { alert("Details bharein!"); return; }
-        deductAndExecute(amt, "Google Play Voucher", `Mobile: ${mob}`);
-      };
-
-      // VOUCHER
-      document.getElementById("btn-voucher").onclick = function() {
-        const type = document.getElementById("voucher-type").value;
-        const amt = parseFloat(document.getElementById("voucher-amt").value);
-        if(!amt) { alert("Amount bharein!"); return; }
-        deductAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
-      };
-
-      // VOTER
-      document.getElementById("btn-voter").onclick = function() {
-        const id = document.getElementById("voter-id").value;
-        if(!id) { alert("EPIC Number bharein!"); return; }
-        deductAndExecute(50, "Voter ID Service", `EPIC: ${id}`);
-      };
-
-      // RC SEARCH
-      document.getElementById("btn-rc-search").onclick = function() {
-        const rc = document.getElementById("rc-num").value;
-        if(!rc) { alert("Vehicle Number bharein!"); return; }
-        deductAndExecute(20, "Vehicle RC Info", `Vehicle: ${rc}`);
-      };
-
-      // RATION
-      document.getElementById("btn-ration-fetch").onclick = function() {
-        const rno = document.getElementById("ration-no").value;
-        if(!rno) { alert("Ration Card No bharein!"); return; }
-        deductAndExecute(30, "Ration Card Info", `Ration No: ${rno}`);
-      };
-
-      // PAN
-      document.getElementById("btn-apply-pan").onclick = function() {
-        const name = document.getElementById("pan-name").value;
-        if(!name) { alert("Applicant Name bharein!"); return; }
-        deductAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
-      };
-
-      // BIRTH CERTIFICATE
-      document.getElementById("btn-apply-birth").onclick = function() {
-        const name = document.getElementById("birth-name").value;
-        if(!name) { alert("Child Name bharein!"); return; }
-        deductAndExecute(200, "Birth Certificate", `Name: ${name}`);
-      };
-
-      // LOGOUT
       document.getElementById("btn-logout").onclick = document.getElementById("btn-admin-logout").onclick = function() {
         localStorage.removeItem("currentUser");
         location.reload();
@@ -766,33 +466,22 @@
       document.getElementById("auth-section").style.display = "none";
       document.getElementById("portal-section").style.display = "grid";
       document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
-      
-      if(currentUser.documents && currentUser.documents.length > 0) {
-        document.getElementById("green-alert-box").style.display = "block";
-      }
-
-      const docBody = document.getElementById("user-documents-body");
-      docBody.innerHTML = "";
-      if(!currentUser.documents || currentUser.documents.length === 0) {
-        docBody.innerHTML = `<tr><td colspan="3" style="color:#777;">Abhi koi file nahi mili hai.</td></tr>`;
-      } else {
-        currentUser.documents.forEach((doc) => {
-          docBody.innerHTML += `
-            <tr>
-              <td><b>${doc.title}</b></td>
-              <td>${doc.name}</td>
-              <td><a href="${doc.data}" download="${doc.name}" class="btn btn-buy" style="padding:6px 12px; font-size:12px; display:inline-block; text-decoration:none;">Download File</a></td>
-            </tr>`;
-        });
-      }
 
       const tbody = document.getElementById("user-history-body");
       tbody.innerHTML = "";
       if(!currentUser.history || currentUser.history.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" style="color:#777;">Abhi koi transaction history nahi hai.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="color:#777;">Abhi koi history nahi hai.</td></tr>`;
       } else {
-        (currentUser.history).forEach(h => {
-          tbody.innerHTML += `<tr><td>${h.type}</td><td>${h.details}</td><td>${h.amount}</td></tr>`;
+        currentUser.history.forEach(h => {
+          const ssHtml = h.screenshot ? `<a href="${h.screenshot}" target="_blank"><img src="${h.screenshot}" style="width:35px; height:35px; border-radius:4px; object-fit:cover;"></a>` : '-';
+          tbody.innerHTML += `
+            <tr>
+              <td>${h.type}</td>
+              <td>${h.details}</td>
+              <td>${h.amount}</td>
+              <td>${ssHtml}</td>
+              <td><b>${h.status}</b></td>
+            </tr>`;
         });
       }
     }
