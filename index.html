@@ -5,11 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Abhishek All-In-One Multi Service Portal</title>
   <style>
+    :root {
+      --primary-color: #007bff;
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
-    body { background: #f0f2f5; padding: 15px; }
+    body { background: var(--bg-color); color: var(--text-color); padding: 15px; transition: 0.3s; }
 
     header { 
-      background: #007bff; 
+      background: var(--primary-color); 
       color: white; 
       padding: 15px 20px; 
       border-radius: 10px; 
@@ -28,15 +35,15 @@
     .wallet-box { background: #138496; padding: 8px 15px; border-radius: 20px; font-weight: bold; }
 
     .main-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
-    .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
-    .card h3 { color: #333; margin-bottom: 15px; border-bottom: 2px solid #007bff; padding-bottom: 5px; }
+    .card { background: var(--card-bg); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); text-align: left; }
+    .card h3 { color: var(--text-color); margin-bottom: 15px; border-bottom: 2px solid var(--primary-color); padding-bottom: 5px; }
 
     label { display: block; font-size: 13px; font-weight: bold; color: #555; margin-top: 10px; }
     input, select { width: 100%; padding: 10px; margin-top: 5px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
 
     .btn { width: 100%; margin-top: 15px; padding: 12px; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; color: white; }
     .btn-buy { background: #28a745; }
-    .btn-add { background: #007bff; }
+    .btn-add { background: var(--primary-color); }
     .btn-bill { background: #ff9800; }
     .btn-play { background: #ea4335; }
     .btn-amazon { background: #232f3e; color: #ff9900; }
@@ -47,7 +54,6 @@
     .btn-pan { background: #009688; }
     .btn-birth { background: #8e44ad; }
     .btn-admin { background: #dc3545; }
-    .btn-test { background: #6c757d; }
 
     .upi-apps-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
     .btn-upi-app { padding: 10px; font-size: 13px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; color: white; text-align: center; }
@@ -57,13 +63,12 @@
     .btn-generic-upi { background: #28a745; }
 
     .comm-tag { background: #e8f5e9; color: #2e7d32; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
-    .warn-tag { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 8px; border-radius: 4px; font-size: 12px; font-weight: bold; margin-top: 8px; }
     .upi-badge { background: #e9ecef; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #333; text-align: center; }
     
     #portal-section, #admin-dashboard { display: none; }
     .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
     .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    .admin-table th { background: #007bff; color: white; }
+    .admin-table th { background: var(--primary-color); color: white; }
   </style>
 </head>
 <body>
@@ -83,19 +88,14 @@
       <h3>📝 User Registration (Get ₹10 Bonus)</h3>
       <label>Full Name</label>
       <input type="text" id="reg-name" placeholder="Enter Full Name">
-
       <label>Date of Birth (DOB)</label>
       <input type="date" id="reg-dob">
-
       <label>Shop Name</label>
       <input type="text" id="reg-shop" placeholder="Enter Shop Name">
-
       <label>Gmail Address</label>
       <input type="email" id="reg-email" placeholder="example@gmail.com">
-
       <label>Password (Min 8 Digits)</label>
       <input type="password" id="reg-pass" placeholder="Minimum 8 characters">
-
       <button class="btn btn-add" id="btn-register">Register & Claim ₹10</button>
       <p style="margin-top: 15px; font-size: 13px;">
         Already Registered? <a href="#" id="link-show-login">Login Here</a> | 
@@ -126,6 +126,17 @@
 
   <div id="portal-section" class="main-container">
     
+    <!-- PDF / DOCUMENT UPLOAD SECTION FOR USERS -->
+    <div class="card">
+      <h3>📁 Upload PDF / Document</h3>
+      <label>Document Title / Purpose</label>
+      <input type="text" id="doc-title" placeholder="e.g. Aadhar / PAN / Document">
+      <label>Select PDF or Image File</label>
+      <input type="file" id="doc-file" accept=".pdf, .jpg, .jpeg, .png">
+      <button class="btn btn-add" id="btn-upload-doc">Upload Document</button>
+      <div class="comm-tag" style="margin-top:10px;">Aapka file secure tareeqe se upload ho jayega.</div>
+    </div>
+
     <div class="card">
       <h3>💳 Add Money To Wallet</h3>
       <div class="upi-badge">UPI ID: <b>laxmihi@ptyes</b></div>
@@ -133,14 +144,12 @@
       <input type="number" id="add-mobile" placeholder="10 Digit Number">
       <label>Enter Amount Paid (₹)</label>
       <input type="number" id="add-amt" placeholder="e.g. 100, 200, 500">
-
       <div class="upi-apps-container">
         <button type="button" class="btn-upi-app btn-phonepe" onclick="openUpiApp('phonepe')">PhonePe</button>
         <button type="button" class="btn-upi-app btn-paytm" onclick="openUpiApp('paytm')">Paytm</button>
         <button type="button" class="btn-upi-app btn-gpay" onclick="openUpiApp('gpay')">Google Pay</button>
         <button type="button" class="btn-upi-app btn-generic-upi" onclick="openUpiApp('generic')">Any UPI</button>
       </div>
-
       <label style="margin-top:15px;">12-Digit UTR / Ref Number</label>
       <input type="text" id="add-utr" placeholder="Enter 12 Digit UTR Number">
       <button class="btn btn-add" id="btn-submit-add-money">Submit Add Money Request</button>
@@ -155,13 +164,10 @@
         <option value="Vi">Vi (Vodafone Idea)</option>
         <option value="BSNL">BSNL</option>
       </select>
-
       <label>Mobile Number</label>
       <input type="number" id="rc-mobile" placeholder="10 Digit Mobile Number">
-
       <label>Select Plan</label>
       <select id="rc-plan-select"></select>
-
       <div class="comm-tag" id="discount-info">Offer Rate: MRP - Flat Discount</div>
       <button class="btn btn-rc" id="btn-recharge">Process Recharge</button>
     </div>
@@ -177,106 +183,14 @@
       <button class="btn btn-bill" id="btn-pay-bill">Pay Electricity Bill</button>
     </div>
 
-    <div class="card">
-      <h3>🎮 Google Play Gift Card</h3>
-      <label>Amount (₹)</label>
-      <input type="number" id="play-amt" placeholder="Minimum ₹10">
-      <label>Mobile Number</label>
-      <input type="number" id="play-mobile" placeholder="10 Digit Number">
-      <button class="btn btn-play" id="btn-play-code">Buy Gift Voucher</button>
-    </div>
-
-    <div class="card">
-      <h3>🛍️ E-Commerce Voucher</h3>
-      <label>Select Platform</label>
-      <select id="voucher-type">
-        <option value="Amazon Shopping">Amazon Shopping Voucher</option>
-        <option value="Flipkart Gift Card">Flipkart Gift Card</option>
-      </select>
-      <label>Voucher Amount (₹)</label>
-      <input type="number" id="voucher-amt" placeholder="e.g. 500, 1000">
-      <button class="btn btn-amazon" id="btn-voucher">Purchase Voucher</button>
-    </div>
-
-    <div class="card">
-      <h3>🗳️ Voter ID Print / Service</h3>
-      <label>Epic Number / Name</label>
-      <input type="text" id="voter-id" placeholder="Enter EPIC Number">
-      <label>Mobile Number</label>
-      <input type="number" id="voter-mobile" placeholder="Contact Number">
-      <div class="comm-tag">Service Charge: ₹50</div>
-      <button class="btn btn-voter" id="btn-voter">Apply Voter Card Service</button>
-    </div>
-
-    <div class="card">
-      <h3>🚗 Vehicle RC Details Search</h3>
-      <label>Vehicle Registration Number</label>
-      <input type="text" id="rc-num" placeholder="e.g. UP32XX1234">
-      <div class="comm-tag">Search Fee: ₹20</div>
-      <button class="btn btn-rc" id="btn-rc-search">Fetch Vehicle Info</button>
-    </div>
-
-    <div class="card">
-      <h3>🌾 Ration Card Details</h3>
-      <label>Ration Card Number / Aadhaar</label>
-      <input type="text" id="ration-no" placeholder="Enter Ration Card No">
-      <div class="comm-tag">Fee: ₹30</div>
-      <button class="btn btn-ration" id="btn-ration-fetch">Get Ration Info</button>
-    </div>
-
-    <div class="card">
-      <h3>💳 PAN Card Service (New & Correction)</h3>
-      <label>Service Type</label>
-      <select id="pan-service-type">
-        <option value="New PAN Card">New PAN Card Apply</option>
-        <option value="PAN Correction">PAN Correction / Update</option>
-      </select>
-      <label>Full Applicant Name</label>
-      <input type="text" id="pan-name" placeholder="Full Name as per Aadhaar">
-      <label>Date of Birth (DOB)</label>
-      <input type="date" id="pan-dob">
-      <label>Father's Full Name</label>
-      <input type="text" id="pan-father" placeholder="Father's Full Name">
-      <label>Aadhaar Number</label>
-      <input type="number" id="pan-aadhaar" placeholder="12-Digit Aadhaar Number">
-      <label>Mobile Number</label>
-      <input type="number" id="pan-mobile" placeholder="10-Digit Mobile Number">
-      <div class="comm-tag">Service Charge: ₹180</div>
-      <button class="btn btn-pan" id="btn-apply-pan">Submit PAN Application (₹180)</button>
-    </div>
-
-    <div class="card">
-      <h3>👶 Birth Certificate Service</h3>
-      <label>Child / Person Full Name</label>
-      <input type="text" id="birth-name" placeholder="Full Name">
-      <label>Date of Birth</label>
-      <input type="date" id="birth-dob">
-      <label>Gender</label>
-      <select id="birth-gender">
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
-      <label>Father's Name</label>
-      <input type="text" id="birth-father" placeholder="Father's Full Name">
-      <label>Mother's Name</label>
-      <input type="text" id="birth-mother" placeholder="Mother's Full Name">
-      <label>Place of Birth</label>
-      <input type="text" id="birth-place" placeholder="Hospital / Address">
-      <label>Contact Mobile Number</label>
-      <input type="number" id="birth-mobile" placeholder="10-Digit Mobile Number">
-      <div class="comm-tag">Service Charge: ₹200</div>
-      <button class="btn btn-birth" id="btn-apply-birth">Apply Birth Certificate (₹200)</button>
-    </div>
-
     <div class="card" style="grid-column: span 2;">
-      <h3>📜 Transaction History</h3>
+      <h3>📜 Transaction & Upload History</h3>
       <table class="admin-table">
         <thead>
           <tr>
-            <th>Service</th>
-            <th>Details</th>
-            <th>Amount</th>
-            <th>Status</th>
+            <th>Type</th>
+            <th>Details / File Name</th>
+            <th>Amount / Status</th>
           </tr>
         </thead>
         <tbody id="user-history-body"></tbody>
@@ -285,9 +199,25 @@
     </div>
   </div>
 
+  <!-- ADMIN DASHBOARD WITH THEME CUSTOMIZER -->
   <div id="admin-dashboard" class="main-container">
     <div class="card" style="grid-column: span 2;">
-      <h3>👑 Admin Panel - Registered Users</h3>
+      <h3>🎨 Admin Theme Customizer (Site Theme Change)</h3>
+      <label>Select Primary Theme Color</label>
+      <input type="color" id="theme-primary-color" value="#007bff" style="height:40px; cursor:pointer;">
+      
+      <label>Select Background Theme</label>
+      <select id="theme-bg-mode">
+        <option value="#f0f2f5">Light Modern (Default)</option>
+        <option value="#121212">Dark Mode</option>
+        <option value="#eef2f7">Soft Blue Theme</option>
+        <option value="#fff3e0">Soft Orange Theme</option>
+      </select>
+      <button class="btn btn-add" id="btn-apply-theme" style="margin-top:10px;">Apply & Save Theme</button>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <h3>👑 Admin Panel - Registered Users & Uploaded Documents</h3>
       <table class="admin-table">
         <thead>
           <tr>
@@ -295,6 +225,7 @@
             <th>Email</th>
             <th>Shop Name</th>
             <th>Balance</th>
+            <th>Uploaded Files</th>
           </tr>
         </thead>
         <tbody id="user-table-body"></tbody>
@@ -312,35 +243,42 @@
     const TARGET_UPI = "laxmihi@ptyes";
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+    let siteTheme = JSON.parse(localStorage.getItem("siteTheme")) || { primary: "#007bff", bg: "#f0f2f5" };
+
+    // Apply Saved Theme on Load
+    applyThemeSettings(siteTheme.primary, siteTheme.bg);
+
+    function applyThemeSettings(primary, bg) {
+      document.documentElement.style.setProperty('--primary-color', primary);
+      document.documentElement.style.setProperty('--bg-color', bg);
+      if(bg === "#121212") {
+        document.documentElement.style.setProperty('--card-bg', '#1e1e1e');
+        document.documentElement.style.setProperty('--text-color', '#ffffff');
+      } else {
+        document.documentElement.style.setProperty('--card-bg', '#ffffff');
+        document.documentElement.style.setProperty('--text-color', '#333333');
+      }
+    }
 
     const allRechargePlans = {
       Jio: [
         { mrp: 19, discount: 1, desc: "₹19 - 1GB Data Booster" },
-        { mrp: 29, discount: 1, desc: "₹29 - 2GB Data Booster" },
         { mrp: 199, discount: 2, desc: "₹199 - 1.5GB/Day (18 Days)" },
         { mrp: 239, discount: 2, desc: "₹239 - 1.5GB/Day (22 Days)" },
-        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" },
-        { mrp: 666, discount: 2, desc: "₹666 - 1.5GB/Day (84 Days)" }
+        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
       ],
       Airtel: [
         { mrp: 22, discount: 1, desc: "₹22 - 1GB Data Booster" },
-        { mrp: 33, discount: 1, desc: "₹33 - 2GB Data Booster" },
         { mrp: 199, discount: 2, desc: "₹199 - 1GB/Day (24 Days)" },
-        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" },
-        { mrp: 479, discount: 2, desc: "₹479 - 1.5GB/Day (56 Days)" },
-        { mrp: 719, discount: 2, desc: "₹719 - 1.5GB/Day (84 Days)" }
+        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
       ],
       Vi: [
         { mrp: 19, discount: 1, desc: "₹19 - 1GB Data (1 Day)" },
-        { mrp: 199, discount: 2, desc: "₹199 - 1GB/Day (18 Days)" },
-        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" },
-        { mrp: 479, discount: 2, desc: "₹479 - 1.5GB/Day (56 Days)" }
+        { mrp: 299, discount: 2, desc: "₹299 - 1.5GB/Day (28 Days)" }
       ],
       BSNL: [
         { mrp: 16, discount: 1, desc: "₹16 - 2GB Data Booster" },
-        { mrp: 99, discount: 1, desc: "₹99 - Unlimited Calls (18 Days)" },
-        { mrp: 199, discount: 2, desc: "₹199 - 2GB/Day (30 Days)" },
-        { mrp: 397, discount: 2, desc: "₹397 - Long Validity Pack" }
+        { mrp: 199, discount: 2, desc: "₹199 - 2GB/Day (30 Days)" }
       ]
     };
 
@@ -357,46 +295,17 @@
     function openUpiApp(app) {
       const amt = document.getElementById("add-amt").value;
       if(!amt || amt <= 0) { alert("Pehle Amount bharein!"); return; }
-      const upiUrl = `upi://pay?pa=${TARGET_UPI}&pn=AbhishekStore&am=${amt}&cu=INR`;
-      window.location.href = upiUrl;
+      window.location.href = `upi://pay?pa=${TARGET_UPI}&pn=AbhishekStore&am=${amt}&cu=INR`;
     }
 
     function loadOperatorPlans() {
       const op = document.getElementById("rc-operator").value;
       const planSelect = document.getElementById("rc-plan-select");
       planSelect.innerHTML = "";
-
-      const plans = allRechargePlans[op] || [];
-      plans.forEach((p, idx) => {
+      (allRechargePlans[op] || []).forEach((p, idx) => {
         const netPrice = p.mrp - p.discount;
         planSelect.innerHTML += `<option value="${idx}">${p.desc} (Offer Pay: ₹${netPrice})</option>`;
       });
-
-      updateDiscountTag();
-    }
-
-    function updateDiscountTag() {
-      const op = document.getElementById("rc-operator").value;
-      const planSelect = document.getElementById("rc-plan-select");
-      const idx = planSelect.value;
-      if(idx !== null && allRechargePlans[op][idx]) {
-        const p = allRechargePlans[op][idx];
-        const payPrice = p.mrp - p.discount;
-        document.getElementById("discount-info").innerHTML = `<b>MRP:</b> ₹${p.mrp} | <b>Discount:</b> ₹${p.discount} Off | <b>Your Price:</b> <span style="color:#28a745; font-size:14px;">₹${payPrice}</span>`;
-      }
-    }
-
-    function deductAndExecute(cost, serviceName, detailText) {
-      if(currentUser.balance < cost) {
-        alert(`Wallet balance kam hai! Is service ke liye ₹${cost} chahiye.`);
-        return false;
-      }
-      currentUser.balance -= cost;
-      currentUser.history.push({ type: serviceName, details: detailText, amount: cost, status: "Processing" });
-      updateStorage();
-      sendTelegramAlert(`🔔 *NEW REQUEST: ${serviceName}*\nUser: ${currentUser.name}\nDetails: ${detailText}\nAmount Charged: ₹${cost}`);
-      alert(`${serviceName} request successfully submit ho gayi hai!`);
-      return true;
     }
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -407,10 +316,8 @@
       }, 1000);
 
       if(currentUser) { showPortal(); }
-
       loadOperatorPlans();
       document.getElementById("rc-operator").onchange = loadOperatorPlans;
-      document.getElementById("rc-plan-select").onchange = updateDiscountTag;
 
       document.getElementById("link-show-login").onclick = (e) => {
         e.preventDefault();
@@ -444,7 +351,7 @@
           return;
         }
 
-        const newUser = { name, dob, shop, email, password: pass, balance: 10.0, history: [] };
+        const newUser = { name, dob, shop, email, password: pass, balance: 10.0, history: [], documents: [] };
         usersDB.push(newUser);
         currentUser = newUser;
         updateStorage();
@@ -460,6 +367,7 @@
 
         if(user) {
           currentUser = user;
+          if(!currentUser.documents) currentUser.documents = [];
           localStorage.setItem("currentUser", JSON.stringify(currentUser));
           showPortal();
         } else {
@@ -467,7 +375,7 @@
         }
       };
 
-      // ADMIN LOGIN & LOAD USERS FIXED
+      // ADMIN LOGIN & LOAD USERS WITH FILES
       document.getElementById("btn-admin-login").onclick = function() {
         const u = document.getElementById("admin-user").value;
         const p = document.getElementById("admin-pass").value;
@@ -475,29 +383,56 @@
           document.getElementById("auth-section").style.display = "none";
           document.getElementById("admin-dashboard").style.display = "grid";
           
-          // Load Users into Admin Table
           const userTableBody = document.getElementById("user-table-body");
           userTableBody.innerHTML = "";
           
           if(usersDB.length === 0) {
-            userTableBody.innerHTML = `<tr><td colspan="4" style="color:red;">Koi user registered nahi hai!</td></tr>`;
+            userTableBody.innerHTML = `<tr><td colspan="5" style="color:red;">Koi user registered nahi hai!</td></tr>`;
           } else {
             usersDB.forEach(usr => {
-              userTableBody.innerHTML += `<tr><td>${usr.name}</td><td>${usr.email}</td><td>${usr.shop || 'N/A'}</td><td>₹${usr.balance.toFixed(2)}</td></tr>`;
+              let fileLinks = (usr.documents && usr.documents.length > 0) 
+                ? usr.documents.map(d => `<a href="${d.data}" target="_blank" download="${d.name}">📄 ${d.title}</a>`).join("<br>") 
+                : "No Files";
+              userTableBody.innerHTML += `<tr><td>${usr.name}</td><td>${usr.email}</td><td>${usr.shop || 'N/A'}</td><td>₹${usr.balance.toFixed(2)}</td><td>${fileLinks}</td></tr>`;
             });
           }
         } else {
-          alert("Invalid Admin!");
+          alert("Invalid Admin Credentials!");
         }
       };
 
-      // ADD MONEY SUBMIT
-      document.getElementById("btn-submit-add-money").onclick = function() {
-        const amt = document.getElementById("add-amt").value;
-        const utr = document.getElementById("add-utr").value;
-        if(!amt || !utr) { alert("Amount aur UTR number enter karein!"); return; }
-        sendTelegramAlert(`💰 *ADD MONEY REQUEST*\nUser: ${currentUser.name}\nAmount: ₹${amt}\nUTR: ${utr}`);
-        alert("Add Money request bhej di gayi hai! Admin verification ke baad balance add hoga.");
+      // THEME CUSTOMIZER SAVE
+      document.getElementById("btn-apply-theme").onclick = function() {
+        const primary = document.getElementById("theme-primary-color").value;
+        const bg = document.getElementById("theme-bg-mode").value;
+        siteTheme = { primary, bg };
+        localStorage.setItem("siteTheme", JSON.stringify(siteTheme));
+        applyThemeSettings(primary, bg);
+        alert("Site theme successfully update ho gayi hai!");
+      };
+
+      // USER DOCUMENT / PDF UPLOAD HANDLER
+      document.getElementById("btn-upload-doc").onclick = function() {
+        const title = document.getElementById("doc-title").value;
+        const fileInput = document.getElementById("doc-file");
+        if(!title || fileInput.files.length === 0) {
+          alert("Kripya Document Title aur File dono select karein!");
+          return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const fileData = e.target.result;
+          currentUser.documents.push({ title: title, name: file.name, data: fileData });
+          currentUser.history.push({ type: "File Upload", details: `Uploaded: ${title} (${file.name})`, amount: "Success" });
+          updateStorage();
+          sendTelegramAlert(`📁 *DOCUMENT UPLOADED*\nUser: ${currentUser.name}\nTitle: ${title}\nFile: ${file.name}`);
+          alert("Aapka document successfully upload ho gaya hai!");
+          document.getElementById("doc-title").value = "";
+          document.getElementById("doc-file").value = "";
+        };
+        reader.readAsDataURL(file);
       };
 
       // RECHARGE
@@ -505,74 +440,17 @@
         const op = document.getElementById("rc-operator").value;
         const mob = document.getElementById("rc-mobile").value;
         const idx = document.getElementById("rc-plan-select").value;
-
         if(!mob || mob.length !== 10) { alert("Valid 10 Digit Mobile Number bharein!"); return; }
 
         const selectedPlan = allRechargePlans[op][idx];
-        const finalPayablePrice = selectedPlan.mrp - selectedPlan.discount;
+        const finalPrice = selectedPlan.mrp - selectedPlan.discount;
 
-        const detailsText = `${op} - ${mob} | Plan: ${selectedPlan.desc} | Discounted Paid: ₹${finalPayablePrice}`;
-        deductAndExecute(finalPayablePrice, "Mobile Recharge", detailsText);
-      };
-
-      // BILL
-      document.getElementById("btn-pay-bill").onclick = function() {
-        const board = document.getElementById("bill-board").value;
-        const cons = document.getElementById("bill-consumer").value;
-        const amt = parseFloat(document.getElementById("bill-amount").value);
-        if(!cons || !amt) { alert("Details bharein!"); return; }
-        deductAndExecute(amt, "Electricity Bill", `${board} - ${cons}`);
-      };
-
-      // PLAY
-      document.getElementById("btn-play-code").onclick = function() {
-        const amt = parseFloat(document.getElementById("play-amt").value);
-        const mob = document.getElementById("play-mobile").value;
-        if(!mob || !amt) { alert("Details bharein!"); return; }
-        deductAndExecute(amt, "Google Play Voucher", `Mobile: ${mob}`);
-      };
-
-      // VOUCHER
-      document.getElementById("btn-voucher").onclick = function() {
-        const type = document.getElementById("voucher-type").value;
-        const amt = parseFloat(document.getElementById("voucher-amt").value);
-        if(!amt) { alert("Amount bharein!"); return; }
-        deductAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
-      };
-
-      // VOTER
-      document.getElementById("btn-voter").onclick = function() {
-        const id = document.getElementById("voter-id").value;
-        if(!id) { alert("EPIC Number bharein!"); return; }
-        deductAndExecute(50, "Voter ID Service", `EPIC: ${id}`);
-      };
-
-      // RC SEARCH
-      document.getElementById("btn-rc-search").onclick = function() {
-        const rc = document.getElementById("rc-num").value;
-        if(!rc) { alert("Vehicle Number bharein!"); return; }
-        deductAndExecute(20, "Vehicle RC Info", `Vehicle: ${rc}`);
-      };
-
-      // RATION
-      document.getElementById("btn-ration-fetch").onclick = function() {
-        const rno = document.getElementById("ration-no").value;
-        if(!rno) { alert("Ration Card No bharein!"); return; }
-        deductAndExecute(30, "Ration Card Info", `Ration No: ${rno}`);
-      };
-
-      // PAN
-      document.getElementById("btn-apply-pan").onclick = function() {
-        const name = document.getElementById("pan-name").value;
-        if(!name) { alert("Applicant Name bharein!"); return; }
-        deductAndExecute(180, "PAN Card Service", `Applicant: ${name}`);
-      };
-
-      // BIRTH
-      document.getElementById("btn-apply-birth").onclick = function() {
-        const name = document.getElementById("birth-name").value;
-        if(!name) { alert("Child Name bharein!"); return; }
-        deductAndExecute(200, "Birth Certificate", `Name: ${name}`);
+        if(currentUser.balance < finalPrice) { alert("Wallet balance kam hai!"); return; }
+        currentUser.balance -= finalPrice;
+        currentUser.history.push({ type: "Recharge", details: `${op} - ${mob} (${selectedPlan.desc})`, amount: `₹${finalPrice}` });
+        updateStorage();
+        sendTelegramAlert(`📱 *RECHARGE: ${op}*\nUser: ${currentUser.name}\nMobile: ${mob}\nAmount: ₹${finalPrice}`);
+        alert("Recharge request submit ho gayi hai!");
       };
 
       // LOGOUT
@@ -590,7 +468,7 @@
       const tbody = document.getElementById("user-history-body");
       tbody.innerHTML = "";
       (currentUser.history || []).forEach(h => {
-        tbody.innerHTML += `<tr><td>${h.type}</td><td>${h.details}</td><td>₹${h.amount}</td><td>${h.status}</td></tr>`;
+        tbody.innerHTML += `<tr><td>${h.type}</td><td>${h.details}</td><td>${h.amount}</td></tr>`;
       });
     }
 
