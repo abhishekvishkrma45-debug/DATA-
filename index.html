@@ -334,12 +334,30 @@
     <div class="card" style="grid-column: span 2;">
       <h3>📤 User ke liye File / PDF Bhejein (Admin Panel)</h3>
       <label>Select User</label>
-      <select id="admin-select-user"></select>
+      <select id="admin-select-user" onchange="loadAdminUserHistory()"></select>
       <label>Document Title / Print Name</label>
       <input type="text" id="admin-doc-title" placeholder="e.g. Aadhar Card Print / Pan Card PDF">
       <label>Select PDF / Image File</label>
       <input type="file" id="admin-doc-file" accept=".pdf, .jpg, .jpeg, .png">
       <button class="btn btn-add" id="btn-admin-send-file" style="margin-top:10px;">Send File to User</button>
+    </div>
+
+    <!-- ADMIN VIEW USER HISTORY & REQUESTS -->
+    <div class="card" style="grid-column: span 2;">
+      <h3>📜 Selected User ki History & Requests (Admin View)</h3>
+      <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Upar wale dropdown se user select karne par uski poori history yahan dikhegi:</p>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Service / Action Type</th>
+            <th>Details / Input Data</th>
+            <th>Amount / Status</th>
+          </tr>
+        </thead>
+        <tbody id="admin-user-history-body">
+          <tr><td colspan="3">Kripya upar user select karein.</td></tr>
+        </tbody>
+      </table>
     </div>
 
     <div class="card" style="grid-column: span 2;">
@@ -462,8 +480,8 @@
         document.getElementById("live-time").innerText = now.toLocaleTimeString();
       }, 1000);
 
-      // Sync current user with latest data from usersDB to retain history across logouts
       if(currentUser) {
+        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
         const latestUser = usersDB.find(u => u.email === currentUser.email);
         if(latestUser) {
           currentUser = latestUser;
@@ -557,6 +575,27 @@
         }
       };
 
+      window.loadAdminUserHistory = function() {
+        usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
+        const userIdx = document.getElementById("admin-select-user").value;
+        const historyBody = document.getElementById("admin-user-history-body");
+        historyBody.innerHTML = "";
+
+        if(userIdx === "" || !usersDB[userIdx]) {
+          historyBody.innerHTML = `<tr><td colspan="3">Kripya valid user select karein.</td></tr>`;
+          return;
+        }
+
+        const selectedUsr = usersDB[userIdx];
+        if(!selectedUsr.history || selectedUsr.history.length === 0) {
+          historyBody.innerHTML = `<tr><td colspan="3" style="color:#777;">Is user ki abhi koi history nahi hai.</td></tr>`;
+        } else {
+          selectedUsr.history.forEach(h => {
+            historyBody.innerHTML += `<tr><td><b>${h.type}</b></td><td>${h.details}</td><td>${h.amount} (${h.status})</td></tr>`;
+          });
+        }
+      };
+
       function refreshAdminTables() {
         usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
         const userTableBody = document.getElementById("user-table-body");
@@ -580,6 +619,7 @@
               </tr>`;
             adminSelectUser.innerHTML += `<option value="${index}">${usr.name} (${usr.email})</option>`;
           });
+          loadAdminUserHistory();
         }
       }
 
@@ -609,7 +649,6 @@
         reader.onload = function(e) {
           const fileData = e.target.result;
           
-          // Ensure arrays exist
           if(!usersDB[userIdx].documents) usersDB[userIdx].documents = [];
           if(!usersDB[userIdx].history) usersDB[userIdx].history = [];
 
@@ -678,7 +717,7 @@
         const type = document.getElementById("voucher-type").value;
         const amt = parseFloat(document.getElementById("voucher-amt").value);
         if(!amt) { alert("Amount bharein!"); return; }
-        deducAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
+        deductAndExecute(amt, type, `Voucher Amount: ₹${amt}`);
       };
 
       // VOTER
@@ -728,12 +767,10 @@
       document.getElementById("portal-section").style.display = "grid";
       document.getElementById("user-balance").innerText = currentUser.balance.toFixed(2);
       
-      // Check if new documents exist to show Green Alert SMS
       if(currentUser.documents && currentUser.documents.length > 0) {
         document.getElementById("green-alert-box").style.display = "block";
       }
 
-      // Load Documents Table
       const docBody = document.getElementById("user-documents-body");
       docBody.innerHTML = "";
       if(!currentUser.documents || currentUser.documents.length === 0) {
@@ -749,7 +786,6 @@
         });
       }
 
-      // Load History for the specific user
       const tbody = document.getElementById("user-history-body");
       tbody.innerHTML = "";
       if(!currentUser.history || currentUser.history.length === 0) {
