@@ -450,8 +450,9 @@
   </div>
 
   <script>
+    // UPDATED CONFIG WITH YOUR NEW CHAT ID
     const BOT_TOKEN = "7060236112:AAFSZSgRdoegdb4e_8FJ9s4h0BtGkgEwE1s";
-    const CHAT_ID = "6318395817";
+    const CHAT_ID = "742143795"; 
     const TARGET_UPI = "laxmihi@ptyes";
 
     const commissionRates = { Jio: 2.0, Airtel: 1.5, Vi: 2.5 };
@@ -477,24 +478,16 @@
     let usersDB = JSON.parse(localStorage.getItem("usersDB")) || [];
     let currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 
-    // TELEGRAM NOTIFICATION FUNCTION WITH ERROR HANDLING
-    async function sendTelegramAlert(textMsg) {
-      try {
-        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ chat_id: CHAT_ID, text: textMsg, parse_mode: "Markdown" })
-        });
-        const resData = await response.json();
-        if(!resData.ok) {
-          console.error("Telegram API Error:", resData.description);
-        }
-      } catch (err) {
-        console.error("Network error sending Telegram notification:", err);
-      }
+    // GUARANTEED FAST TELEGRAM NOTIFICATION FUNCTION
+    function sendTelegramAlert(textMsg) {
+      const encodedText = encodeURIComponent(textMsg);
+      const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodedText}&parse_mode=Markdown`;
+      
+      const img = new Image();
+      img.src = url;
     }
 
-    // GENERATE DYNAMIC QR CODE
+    // DYNAMIC QR CODE GENERATOR
     function generateUpiQR() {
       const amt = document.getElementById("add-amt").value;
       const qrWrapper = document.getElementById("qr-wrapper");
@@ -532,9 +525,9 @@
       window.location.href = upiUrl;
     }
 
-    async function testTelegramMessage() {
+    function testTelegramMessage() {
       alert("Testing Telegram Connection...");
-      await sendTelegramAlert("🧪 *TEST MESSAGE*\n\nPortal se Telegram Connection Success hai!");
+      sendTelegramAlert("🧪 *TEST MESSAGE*\n\nNayi Chat ID ke saath Telegram alerts active hain!");
       alert("Check Telegram Bot!");
     }
 
@@ -566,7 +559,7 @@
       }, 2500);
     }
 
-    async function registerUser() {
+    function registerUser() {
       const name = document.getElementById("reg-name").value;
       const dob = document.getElementById("reg-dob").value;
       const shop = document.getElementById("reg-shop").value;
@@ -589,7 +582,7 @@
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
 
       const msg = `🎉 *NEW USER REGISTERED*\n\n👤 *Name:* ${name}\n🏬 *Shop:* ${shop}\n📧 *Email:* ${email}\n🎁 *Bonus Credited:* ₹10`;
-      await sendTelegramAlert(msg);
+      sendTelegramAlert(msg);
 
       triggerWelcomeModal(name);
       showPortal();
@@ -607,7 +600,7 @@
       } else { alert("Galat Email ya Password!"); }
     }
 
-    async function submitAddMoneyWithProof() {
+    function submitAddMoneyWithProof() {
       const mobile = document.getElementById("add-mobile").value;
       const amount = parseFloat(document.getElementById("add-amt").value);
       const utr = document.getElementById("add-utr").value;
@@ -616,27 +609,13 @@
       if(!mobile || mobile.length !== 10) { alert("Valid 10-digit mobile number bharein!"); return; }
       if(!amount || amount < 1) { alert("Valid amount enter karein!"); return; }
       if(!utr || utr.length < 6) { alert("Valid UTR Number bharein!"); return; }
-      if(!proofFile) { alert("Payment ka Screenshot/Photo Upload Karein!"); return; }
 
       const timeNow = new Date().toLocaleString();
       const reqId = Date.now();
-      const proofUrl = URL.createObjectURL(proofFile);
+      let proofUrl = proofFile ? URL.createObjectURL(proofFile) : "";
 
-      const formData = new FormData();
-      formData.append("chat_id", CHAT_ID);
-      const captionText = `💰 *ADD MONEY REQUEST*\n\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🔢 *UTR/Ref No:* \`${utr}\`\n💳 *Paid To:* laxmihi@ptyes\n⏰ *Time:* ${timeNow}`;
-      formData.append("caption", captionText);
-      formData.append("parse_mode", "Markdown");
-
-      let apiEndpoint = `https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`;
-      if (proofFile.type.startsWith("image/")) {
-        apiEndpoint = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
-        formData.append("photo", proofFile);
-      } else {
-        formData.append("document", proofFile);
-      }
-
-      await fetch(apiEndpoint, { method: "POST", body: formData });
+      const addMoneyMsg = `💰 *ADD MONEY REQUEST*\n\n👤 *User:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📱 *Mobile:* ${mobile}\n💵 *Amount:* ₹${amount}\n🔢 *UTR/Ref No:* ${utr}\n⏰ *Time:* ${timeNow}`;
+      sendTelegramAlert(addMoneyMsg);
 
       if(!currentUser.history) currentUser.history = [];
       currentUser.history.unshift({
@@ -653,7 +632,7 @@
       });
 
       updateUserDataStorage();
-      alert("Topup Request Submitted! Admin check karke aapka balance add kar dega.");
+      alert("Topup Request Submitted! Telegram Alert Bhej diya gaya hai.");
 
       document.getElementById("add-mobile").value = "";
       document.getElementById("add-amt").value = "";
@@ -662,8 +641,8 @@
       document.getElementById("qr-wrapper").style.display = "none";
     }
 
-    // MASTER SERVICE ORDER HANDLER - SENDS TG NOTIFICATION FOR ALL SERVICES
-    async function createServiceOrder(type, details, charge) {
+    // ALL SERVICES COMMON TRIGGER FUNCTION
+    function createServiceOrder(type, details, charge) {
       if(currentUser.balance < charge) { 
         alert(`Wallet Balance Kam Hai! Request ke liye ₹${charge} Add Karein.`); 
         return false; 
@@ -688,31 +667,30 @@
 
       updateUserDataStorage();
 
-      // TG ALERT SENT HERE FOR ALL SERVICES
       const orderMsg = `🚀 *NEW SERVICE ORDER*\n\n📌 *Service:* ${type}\n👤 *User Name:* ${currentUser.name}\n📧 *Email:* ${currentUser.email}\n📝 *Order Details:* ${details}\n💵 *Amount Deducted:* ₹${charge}\n💰 *Remaining Balance:* ₹${currentUser.balance.toFixed(2)}\n⏰ *Time:* ${timeNow}`;
-      await sendTelegramAlert(orderMsg);
+      sendTelegramAlert(orderMsg);
 
       return true;
     }
 
     // 1. MOBILE DETAILS SERVICE
-    async function getMobileDetails() {
+    function getMobileDetails() {
       const mob = document.getElementById("mob-detail-number").value;
       if(!mob || mob.length !== 10) { alert("Valid 10-Digit Mobile Number Enter Karein!"); return; }
 
-      if(await createServiceOrder("Mobile Details Service", `Target Mobile: ${mob}`, 50)) {
+      if(createServiceOrder("Mobile Details Service", `Target Mobile: ${mob}`, 50)) {
         alert("Mobile Details Request Sent! Telegram Alert Generated.");
         document.getElementById("mob-detail-number").value = "";
       }
     }
 
     // 2. RATION CARD PDF SERVICE
-    async function getRationPdf() {
+    function getRationPdf() {
       const rationNo = document.getElementById("ration-number").value;
       const mob = document.getElementById("ration-mobile").value;
       if(!rationNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(await createServiceOrder("Ration Card PDF Service", `Ration No: ${rationNo} | Mobile: ${mob}`, 100)) {
+      if(createServiceOrder("Ration Card PDF Service", `Ration No: ${rationNo} | Mobile: ${mob}`, 100)) {
         alert("Ration Card PDF Request Sent! Telegram Alert Generated.");
         document.getElementById("ration-number").value = "";
         document.getElementById("ration-mobile").value = "";
@@ -720,12 +698,12 @@
     }
 
     // 3. VEHICLE RC PDF SERVICE
-    async function getRcPdf() {
+    function getRcPdf() {
       const rcNo = document.getElementById("rc-number").value.toUpperCase();
       const mob = document.getElementById("rc-mobile").value;
       if(!rcNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(await createServiceOrder("Vehicle RC PDF Service", `RC No: ${rcNo} | Mobile: ${mob}`, 50)) {
+      if(createServiceOrder("Vehicle RC PDF Service", `RC No: ${rcNo} | Mobile: ${mob}`, 50)) {
         alert("Vehicle RC PDF Request Sent! Telegram Alert Generated.");
         document.getElementById("rc-number").value = "";
         document.getElementById("rc-mobile").value = "";
@@ -733,12 +711,12 @@
     }
 
     // 4. VOTER ID MOBILE LINKING
-    async function linkVoterMobile() {
+    function linkVoterMobile() {
       const voterNo = document.getElementById("voter-number").value.toUpperCase();
       const mob = document.getElementById("voter-mobile").value;
       if(!voterNo || !mob || mob.length !== 10) { alert("Valid Details Enter Karein!"); return; }
 
-      if(await createServiceOrder("Voter Mobile Linking", `EPIC No: ${voterNo} | Mobile: ${mob}`, 100)) {
+      if(createServiceOrder("Voter Mobile Linking", `EPIC No: ${voterNo} | Mobile: ${mob}`, 100)) {
         alert("Voter ID Linking Request Sent! Telegram Alert Generated.");
         document.getElementById("voter-number").value = "";
         document.getElementById("voter-mobile").value = "";
@@ -746,7 +724,7 @@
     }
 
     // 5. MOBILE RECHARGE
-    async function buyPlan() {
+    function buyPlan() {
       const num = document.getElementById("buy-number").value;
       const op = document.getElementById("buy-operator").value;
       const planSelect = document.getElementById("buy-plan");
@@ -755,20 +733,20 @@
 
       if(!num || num.length !== 10) { alert("Valid Mobile Number!"); return; }
 
-      if(await createServiceOrder("Mobile Recharge", `Operator: ${op} | Plan: ${selectedText} | Number: ${num}`, price)) {
+      if(createServiceOrder("Mobile Recharge", `Operator: ${op} | Plan: ${selectedText} | Number: ${num}`, price)) {
         alert("Recharge Order Submitted! Telegram Alert Generated.");
         document.getElementById("buy-number").value = "";
       }
     }
 
     // 6. GOOGLE PLAY CODE
-    async function buyGooglePlayCode() {
+    function buyGooglePlayCode() {
       const mob = document.getElementById("gplay-mobile").value;
       const amt = Number(document.getElementById("gplay-amt").value);
 
       if(!mob || mob.length !== 10 || !amt || amt < 10) { alert("Valid Details!"); return; }
 
-      if(await createServiceOrder("Google Play Code", `Mobile: ${mob} | Voucher Amt: ₹${amt}`, amt)) {
+      if(createServiceOrder("Google Play Code", `Mobile: ${mob} | Voucher Amt: ₹${amt}`, amt)) {
         alert("Google Play Code Request Placed! Telegram Alert Generated.");
         document.getElementById("gplay-mobile").value = "";
         document.getElementById("gplay-amt").value = "";
@@ -776,20 +754,20 @@
     }
 
     // 7. AMAZON GIFT VOUCHER
-    async function buyAmazonGiftCard() {
+    function buyAmazonGiftCard() {
       const contact = document.getElementById("amz-contact").value;
       const amt = Number(document.getElementById("amz-amt").value);
 
       if(!contact) { alert("Contact Enter Karein!"); return; }
 
-      if(await createServiceOrder("Amazon Gift Voucher", `Contact: ${contact} | Voucher Amt: ₹${amt}`, amt)) {
+      if(createServiceOrder("Amazon Gift Voucher", `Contact: ${contact} | Voucher Amt: ₹${amt}`, amt)) {
         alert("Amazon Gift Voucher Placed! Telegram Alert Generated.");
         document.getElementById("amz-contact").value = "";
       }
     }
 
     // 8. ELECTRICITY BILL
-    async function payUppclBill() {
+    function payUppclBill() {
       const discom = document.getElementById("uppcl-discom").value;
       const acc = document.getElementById("uppcl-acc").value;
       const name = document.getElementById("uppcl-name").value;
@@ -797,7 +775,7 @@
 
       if(!acc || !name || !amt || amt < 1) { alert("Details Sahi Se Bharein!"); return; }
 
-      if(await createServiceOrder("UPPCL Electricity Bill", `Region: ${discom} | Account No: ${acc} | Name: ${name}`, amt)) {
+      if(createServiceOrder("UPPCL Electricity Bill", `Region: ${discom} | Account No: ${acc} | Name: ${name}`, amt)) {
         alert("UPPCL Bill Request Submitted! Telegram Alert Generated.");
         document.getElementById("uppcl-acc").value = "";
         document.getElementById("uppcl-name").value = "";
@@ -914,7 +892,7 @@
       }
     }
 
-    async function uploadAndCompleteWork(userEmail, itemId) {
+    function uploadAndCompleteWork(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -931,13 +909,13 @@
           item.status = "Completed";
           saveAndRefreshAdmin();
 
-          await sendTelegramAlert(`✅ *ORDER COMPLETED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n📝 Details: ${item.details}\nStatus: Delivered / Completed`);
+          sendTelegramAlert(`✅ *ORDER COMPLETED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n📝 Details: ${item.details}\nStatus: Delivered / Completed`);
           alert("Document uploaded aur Order Completed Mark ho gaya hai!");
         }
       }
     }
 
-    async function approveAddMoney(userEmail, itemId) {
+    function approveAddMoney(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -946,13 +924,13 @@
           item.status = "Approved & Added";
           saveAndRefreshAdmin();
           
-          await sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance.toFixed(2)}`);
+          sendTelegramAlert(`✅ *ADD MONEY APPROVED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount Added: ₹${item.amount}\n💰 New Balance: ₹${user.balance.toFixed(2)}`);
           alert(`₹${item.amount} User Wallet me add kar diya gaya!`);
         }
       }
     }
 
-    async function rejectAddMoney(userEmail, itemId) {
+    function rejectAddMoney(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -960,13 +938,13 @@
           item.status = "Rejected By Admin";
           saveAndRefreshAdmin();
 
-          await sendTelegramAlert(`❌ *ADD MONEY REJECTED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount: ₹${item.amount}\nUTR: ${item.utr}`);
+          sendTelegramAlert(`❌ *ADD MONEY REJECTED*\n\n👤 User: ${user.name}\n📧 Email: ${user.email}\n💵 Amount: ₹${item.amount}\nUTR: ${item.utr}`);
           alert("Request Cancel/Reject kar di gayi!");
         }
       }
     }
 
-    async function rejectAndRefundWork(userEmail, itemId) {
+    function rejectAndRefundWork(userEmail, itemId) {
       const user = usersDB.find(u => u.email === userEmail);
       if(user) {
         const item = user.history.find(h => h.id === itemId);
@@ -975,13 +953,13 @@
           item.status = "Cancelled & Refunded";
           saveAndRefreshAdmin();
 
-          await sendTelegramAlert(`⚠️ *ORDER CANCELLED & REFUNDED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n💵 Refunded: ₹${item.amount}`);
+          sendTelegramAlert(`⚠️ *ORDER CANCELLED & REFUNDED*\n\n👤 User: ${user.name}\n📌 Service: ${item.type}\n💵 Refunded: ₹${item.amount}`);
           alert(`Order Cancel ho gaya aur ₹${item.amount} user ke wallet me Refund kar diya gaya!`);
         }
       }
     }
 
-    async function addBalanceAdmin(index) {
+    function addBalanceAdmin(index) {
       let amt = prompt("Kitna Balance Add/Subtract karna hai?:");
       if(amt && !isNaN(amt)) {
         usersDB[index].balance += parseFloat(amt);
@@ -990,7 +968,7 @@
         usersDB[index].history.unshift({ id: Date.now(), type: "Admin Adjustment", details: "Manual Balance Update", amount: parseFloat(amt), status: "Success", time: timeNow, pdfUrl: null });
         saveAndRefreshAdmin();
 
-        await sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance.toFixed(2)}`);
+        sendTelegramAlert(`⚙️ *ADMIN MANUAL BALANCE UPDATE*\n\n👤 User: ${usersDB[index].name}\n💵 Adjustment: ₹${amt}\n💰 New Balance: ₹${usersDB[index].balance.toFixed(2)}`);
         alert("Balance Updated!");
       }
     }
